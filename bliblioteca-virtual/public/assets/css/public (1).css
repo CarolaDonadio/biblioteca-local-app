@@ -1,0 +1,79 @@
+/* Portal público: header, buscador, grilla de catálogo tipo ficha */
+.pub-header {
+  background: var(--tinta);
+  color: var(--papel);
+  padding: 1em 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+.pub-header__marca { font-family: var(--font-display); font-size: 1.2rem; text-decoration: none; color: var(--papel); }
+.pub-header__marca span { display: block; font-family: var(--font-mono); font-size: .65rem; opacity: .6; }
+.pub-nav { display: flex; gap: 1.3em; align-items: center; }
+.pub-nav a { color: var(--papel); text-decoration: none; font-size: .88rem; opacity: .85; }
+.pub-nav a:hover { opacity: 1; text-decoration: underline; }
+
+.pub-hero {
+  padding: 2.5em 2em;
+  border-bottom: 1px solid var(--papel-borde);
+}
+.pub-hero h1 { font-size: 2rem; max-width: 620px; }
+
+.buscador { display: flex; gap: .5em; max-width: 640px; margin-top: 1.2em; }
+.buscador input[type="text"] { flex: 1; }
+
+.pub-contenido { padding: 2em; max-width: 1200px; margin: 0 auto; }
+
+/* Grilla de fichas de catálogo — ficha con "esquina perforada" como firma visual */
+.catalogo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1.4em; }
+
+.ficha-libro {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--papel-borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--tinta);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow .12s ease, transform .12s ease;
+}
+.ficha-libro:hover { box-shadow: var(--sombra); transform: translateY(-2px); }
+.ficha-libro::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 14px;
+  width: 10px; height: 10px;
+  background: var(--papel);
+  border-radius: 0 0 50% 50%;
+  border: 1px solid var(--papel-borde);
+  border-top: none;
+}
+.ficha-libro__portada {
+  aspect-ratio: 2/3;
+  background: var(--papel-borde) center/cover no-repeat;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gris-texto); font-family: var(--font-mono); font-size: .7rem;
+}
+.ficha-libro__cuerpo { padding: .8em .9em 1em; flex: 1; display: flex; flex-direction: column; gap: .3em; }
+.ficha-libro__titulo { font-family: var(--font-display); font-size: .98rem; line-height: 1.25; }
+.ficha-libro__autor { font-size: .8rem; color: var(--gris-texto); }
+
+.promo-banner {
+  display: flex; gap: 1.2em; overflow-x: auto; padding: 1.4em 2em; background: #fff;
+  border-bottom: 1px solid var(--papel-borde);
+}
+.promo-card { min-width: 240px; border: 1px solid var(--oro-cinta); border-radius: var(--radio); padding: 1em; background: #FFFBEF; }
+.promo-card h3 { font-size: 1rem; }
+
+.detalle-libro { display: grid; grid-template-columns: 260px 1fr; gap: 2em; }
+.detalle-libro__portada img, .detalle-libro__portada .placeholder { width: 100%; border-radius: var(--radio); border: 1px solid var(--papel-borde); }
+
+@media (max-width: 720px) {
+  .detalle-libro { grid-template-columns: 1fr; }
+  .pub-header { padding: 1em; }
+  .pub-contenido, .pub-hero { padding: 1.3em; }
+}

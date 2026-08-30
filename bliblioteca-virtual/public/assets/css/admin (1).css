@@ -1,0 +1,57 @@
+/* Panel de administración: layout de sidebar fija + contenido */
+.admin-layout { display: flex; min-height: 100vh; }
+
+.admin-sidebar {
+  width: var(--sidebar-w);
+  background: var(--tinta);
+  color: var(--papel);
+  padding: 1.5em 0;
+  position: fixed;
+  top: 0; bottom: 0; left: 0;
+  overflow-y: auto;
+}
+.admin-sidebar__marca {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  padding: 0 1.3em 1em;
+  border-bottom: 1px solid rgba(250,248,243,.15);
+  margin-bottom: 1em;
+}
+.admin-sidebar__marca span { display: block; font-family: var(--font-mono); font-size: .68rem; opacity: .6; margin-top: .2em; }
+
+.admin-nav { list-style: none; margin: 0; padding: 0; }
+.admin-nav__grupo { font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; opacity: .55; padding: 1em 1.3em .4em; }
+.admin-nav a {
+  display: block;
+  color: var(--papel);
+  text-decoration: none;
+  padding: .55em 1.3em;
+  font-size: .88rem;
+  border-left: 3px solid transparent;
+}
+.admin-nav a:hover, .admin-nav a.activo { background: rgba(250,248,243,.08); border-left-color: var(--oro-cinta); }
+
+.admin-contenido { margin-left: var(--sidebar-w); flex: 1; padding: 2em 2.5em; max-width: 1200px; }
+
+.admin-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.6em; }
+.admin-topbar__usuario { font-size: .85rem; color: var(--gris-texto); }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1em; margin-bottom: 2em; }
+.kpi { padding: 1.1em 1.3em; }
+.kpi__valor { font-family: var(--font-display); font-size: 2rem; }
+.kpi__etiqueta { font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--gris-texto); }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1em; margin-bottom: 1.2em; flex-wrap: wrap; }
+.toolbar form { display: flex; gap: .5em; }
+
+.login-box {
+  max-width: 380px;
+  margin: 8vh auto;
+  padding: 2.2em;
+}
+
+@media (max-width: 860px) {
+  .admin-sidebar { position: static; width: 100%; }
+  .admin-contenido { margin-left: 0; padding: 1.3em; }
+  .admin-layout { flex-direction: column; }
+}

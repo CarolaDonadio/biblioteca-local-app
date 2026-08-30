@@ -1,0 +1,29 @@
+#--------------------------------------------------------------------
+# Mi Biblioteca Virtual — variables de entorno
+# Copiar este archivo como ".env" en la raíz del proyecto CodeIgniter 4
+# y completar con los valores reales. NUNCA subir el ".env" real a Git.
+#--------------------------------------------------------------------
+
+CI_ENVIRONMENT = development
+
+app.baseURL = 'http://localhost:8080/'
+
+database.default.hostname = localhost
+database.default.database = biblioteca_virtual
+database.default.username = root
+database.default.password =
+database.default.DBDriver = MySQLi
+database.default.port     = 3306
+
+# Módulo de Notificaciones automatizadas
+TELEGRAM_BOT_TOKEN   =
+WHATSAPP_API_TOKEN   =
+WHATSAPP_PHONE_ID    =
+
+email.protocol    = smtp
+email.SMTPHost     =
+email.SMTPUser     =
+email.SMTPPass     =
+email.SMTPPort     = 587
+email.fromEmail    = no-responder@biblioteca.local
+email.fromName     = 'Mi Biblioteca Virtual'
