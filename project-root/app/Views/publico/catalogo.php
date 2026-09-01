@@ -1,41 +1,78 @@
-<?php ob_start(); ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Público - Mi Biblioteca Virtual</title>
+    <link rel="stylesheet" href="<?= base_url('assets/css/home.css') ?>">
+</head>
+<body>
 
-<section class="pub-hero">
-  <h1>Buscá en el catálogo de la biblioteca</h1>
-  <p style="color:var(--gris-texto);">Consultá disponibilidad de libros físicos y accedé a material digital.</p>
-  <form id="form-buscador" class="buscador" action="/catalogo/buscar" method="get">
-    <input type="text" name="q" placeholder="Título, autor o ISBN..." value="<?= esc($termino ?? '') ?>">
-    <select name="categoria">
-      <option value="">Todas las categorías</option>
-      <?php foreach ($categorias ?? [] as $c): if (empty($c['categoria'])) continue; ?>
-        <option value="<?= esc($c['categoria']) ?>" <?= ($categoria ?? '') === $c['categoria'] ? 'selected' : '' ?>><?= esc($c['categoria']) ?></option>
-      <?php endforeach; ?>
-    </select>
-    <button type="submit" class="btn">Buscar</button>
-  </form>
-</section>
+    <header>
+        <a href="<?= base_url() ?>" class="logo">📚 Biblioteca Virtual</a>
+        <nav>
+            <a href="<?= base_url('catalogo') ?>">Catálogo</a>
+            <a href="<?= base_url('promociones') ?>">Promociones</a>
+            <a href="<?= base_url('socio/login') ?>">Portal Socios</a>
+            <a href="<?= base_url('admin/login') ?>">Administración</a>
+        </nav>
+    </header>
 
-<?php if (! empty($promociones)): ?>
-<div class="promo-banner">
-  <?php foreach ($promociones as $p): ?>
-    <div class="promo-card">
-      <span class="sello sello--promocion">promoción</span>
-      <h3><?= esc($p['titulo']) ?></h3>
-      <p style="font-size:.85rem;color:var(--gris-texto);"><?= esc(mb_strimwidth($p['descripcion'] ?? '', 0, 90, '…')) ?></p>
-    </div>
-  <?php endforeach; ?>
-</div>
-<?php endif; ?>
+    <main class="container">
+        <h2 class="section-title">Catálogo de la Biblioteca</h2>
 
-<div class="pub-contenido">
-  <div id="catalogo-resultados">
-    <?= view('publico/_fragmento_resultados', ['libros' => $libros]) ?>
-  </div>
-</div>
+        <!-- Barra de búsqueda y Filtros visuales -->
+        <section style="margin-bottom: 2rem;">
+            <form action="<?= base_url('catalogo') ?>" method="get" class="search-box">
+                <input type="text" name="q" value="<?= esc($termino) ?>" placeholder="Buscar por título, autor o ISBN...">
+                <button type="submit">Buscar</button>
+            </form>
+        </section>
 
-<?php $contenido = ob_get_clean(); ?>
-<?= view('layouts/public_layout', [
-  'titulo' => 'Catálogo',
-  'contenido' => $contenido,
-  'js_extra' => '<script src="/assets/js/public/catalogo.js"></script>',
-]) ?>
+        <!-- Grid de Libros -->
+        <div class="grid">
+            <?php foreach ($libros as $libro): ?>
+                <article class="card">
+                    <div>
+                        <div class="cover">
+                            <?php if (!empty($libro['portada_url'])): ?>
+                                <!-- Lazy Load para optimización de carga en el MVP -->
+                                <img src="<?= base_url('uploads/' . $libro['portada_url']) ?>" 
+                                     alt="<?= esc($libro['titulo']) ?>" 
+                                     loading="lazy" 
+                                     width="100%" 
+                                     height="100%" 
+                                     style="object-fit: cover; border-radius: 8px;">
+                            <?php else: ?>
+                                📖
+                            <?php endif; ?>
+                        </div>
+
+                        <h3><?= esc($libro['titulo']) ?></h3>
+                        <p><?= esc($libro['autor']) ?></p>
+                        
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <span class="badge"><?= esc($libro['categoria']) ?></span>
+                            
+                            <?php if ($libro['disponible']): ?>
+                                <span class="badge" style="background: #dcfce7; color: #166534;">Disponible</span>
+                            <?php else: ?>
+                                <span class="badge" style="background: #fee2e2; color: #991b1b;">Prestado</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <a href="<?= base_url('catalogo/libro/' . $libro['id']) ?>" class="btn-card" style="text-align: center; text-decoration: none; display: block;">
+                        Ver detalle
+                    </a>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; <?= date('Y') ?> Biblioteca Virtual · Maquetación Front-End</p>
+    </footer>
+
+</body>
+</html>
