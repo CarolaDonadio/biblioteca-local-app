@@ -1,0 +1,114 @@
+/* =========================================================
+   Mi Biblioteca Virtual — Sistema de diseño
+   Inspirado en el mundo del catálogo de biblioteca: fichas de
+   cartulina, sellos de "vence el...", tarjetas perforadas.
+   ========================================================= */
+
+:root {
+  /* Color — paleta "ficha de catálogo" */
+  --tinta:        #1B2A3D;   /* azul tinta, texto principal / sidebar admin */
+  --tinta-suave:  #33465E;
+  --papel:        #FAF8F3;   /* papel de ficha, fondo general */
+  --papel-borde:  #E4DFD3;
+  --sello-rojo:   #7A2E2E;   /* vencidos, perdido/dañado, alertas */
+  --verde-tejo:   #3F6B4C;   /* disponible, confirmado, éxito */
+  --oro-cinta:    #C9A227;   /* promociones, destacados */
+  --gris-texto:   #5B5648;
+
+  /* Tipografía */
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body:    "Inter", -apple-system, Segoe UI, Roboto, sans-serif;
+  --font-mono:    "IBM Plex Mono", "Courier New", monospace;
+
+  /* Layout */
+  --radio: 3px;
+  --sombra: 0 1px 3px rgba(27, 42, 61, 0.12), 0 1px 2px rgba(27, 42, 61, 0.08);
+  --sidebar-w: 240px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--tinta);
+  background: var(--papel);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0 0 .5em; }
+
+a { color: var(--tinta); }
+
+code, .mono, .isbn, .codigo { font-family: var(--font-mono); letter-spacing: .01em; }
+
+/* --- Sello / badge de estado: el elemento "firma" del sistema --- */
+.sello {
+  display: inline-flex;
+  align-items: center;
+  gap: .35em;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: .22em .6em;
+  border-radius: 999px;
+  border: 1.5px solid currentColor;
+  white-space: nowrap;
+}
+.sello--disponible { color: var(--verde-tejo); }
+.sello--prestado, .sello--pendiente { color: var(--tinta-suave); }
+.sello--vencido, .sello--perdido, .sello--danado, .sello--fallido { color: var(--sello-rojo); }
+.sello--reservado, .sello--promocion { color: var(--oro-cinta); }
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: .875rem;
+  padding: .55em 1.1em;
+  border-radius: var(--radio);
+  border: 1px solid var(--tinta);
+  background: var(--tinta);
+  color: var(--papel);
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .08s ease, box-shadow .08s ease;
+}
+.btn:hover { box-shadow: var(--sombra); transform: translateY(-1px); }
+.btn--outline { background: transparent; color: var(--tinta); }
+.btn--peligro { background: var(--sello-rojo); border-color: var(--sello-rojo); }
+.btn--chico { padding: .3em .7em; font-size: .78rem; }
+
+.tarjeta {
+  background: #fff;
+  border: 1px solid var(--papel-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.alerta { padding: .8em 1em; border-radius: var(--radio); margin-bottom: 1em; font-size: .9rem; }
+.alerta--exito  { background: #EAF3EC; color: var(--verde-tejo); border: 1px solid var(--verde-tejo); }
+.alerta--error  { background: #F6EAEA; color: var(--sello-rojo); border: 1px solid var(--sello-rojo); }
+
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+th, td { text-align: left; padding: .65em .8em; border-bottom: 1px solid var(--papel-borde); }
+th { font-family: var(--font-mono); text-transform: uppercase; font-size: .72rem; letter-spacing: .05em; color: var(--gris-texto); }
+
+label { display: block; font-size: .82rem; font-weight: 600; margin-bottom: .3em; }
+input, select, textarea {
+  width: 100%;
+  padding: .6em .7em;
+  border: 1px solid var(--papel-borde);
+  border-radius: var(--radio);
+  font-family: var(--font-body);
+  font-size: .9rem;
+  background: #fff;
+  color: var(--tinta);
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--oro-cinta);
+  outline-offset: 1px;
+  border-color: var(--oro-cinta);
+}
+.campo { margin-bottom: 1.1em; }

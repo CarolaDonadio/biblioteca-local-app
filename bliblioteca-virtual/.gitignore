@@ -1,0 +1,10 @@
+/vendor/
+/.env
+/app/Config/Database.php
+/writable/cache/*
+/writable/logs/*
+/writable/session/*
+/writable/uploads/*
+!/writable/uploads/.gitkeep
+.DS_Store
+node_modules/

@@ -7,14 +7,9 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // -----------------------------------------------------------------
-// 1. TU HOME PERSONALIZADO (Carga app/Controllers/Inicio.php)
+// PORTAL PÚBLICO — Consulta pública + Promociones + Portal del socio
 // -----------------------------------------------------------------
-$routes->get('/', 'Inicio::index');
-
-
-// -----------------------------------------------------------------
-// 2. PORTAL PÚBLICO — Consulta pública + Promociones + Portal del socio
-// -----------------------------------------------------------------
+$routes->get('/', 'Publico\CatalogoController::index');
 $routes->get('catalogo', 'Publico\CatalogoController::index');
 $routes->get('catalogo/buscar', 'Publico\CatalogoController::buscar');
 $routes->get('catalogo/libro/(:num)', 'Publico\CatalogoController::detalle/$1');
@@ -36,7 +31,7 @@ $routes->group('socio/panel', ['filter' => 'socioAuth'], static function ($route
 });
 
 // -----------------------------------------------------------------
-// 3. PANEL DE ADMINISTRACIÓN — auth + módulos internos, todo bajo /admin
+// PANEL DE ADMINISTRACIÓN — auth + módulos internos, todo bajo /admin
 // -----------------------------------------------------------------
 $routes->get('admin/login', 'Admin\AuthController::login');
 $routes->post('admin/login', 'Admin\AuthController::autenticar');
@@ -86,6 +81,6 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
     // Gestión de promociones
     $routes->resource('promociones', ['controller' => 'Admin\PromocionController']);
 
-    // Roles / usuarios administradores
+    // Roles / usuarios administradores (solo superadmin, validado en el controlador)
     $routes->resource('usuarios', ['controller' => 'Admin\UsuarioAdminController']);
 });
