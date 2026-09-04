@@ -166,3 +166,121 @@ footer {
     .search-box input { background: white; width: 100%; }
     .search-box button { width: 100%; }
 }
+
+/* CSS Complementario para las nuevas secciones */
+
+/* Sección de Bienvenida */
+.info-section {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 2em;
+    margin: 2.5em 0;
+}
+
+.info-desc {
+    text-align: center;
+    max-width: 750px;
+    margin: 0 auto 1.5em auto;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5em;
+    margin-top: 1em;
+}
+
+.info-box {
+    text-align: center;
+    padding: 1em;
+}
+
+.info-box .icon {
+    font-size: 2rem;
+    margin-bottom: .5em;
+    display: block;
+}
+
+/* Modificadores de Título */
+.section-title--spaced {
+    margin-top: 3em;
+}
+
+/* Eventos y Fechas */
+.event-date {
+    display: inline-block;
+    background: #2563eb;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 0.3em 0.8em;
+    border-radius: 20px;
+    margin-bottom: 0.8em;
+}
+
+/* Tarjetas Específicas */
+.card .btn-card {
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+}
+
+.card--team {
+    text-align: center;
+}
+
+.team-avatar {
+    font-size: 3rem;
+    margin-bottom: 0.3em;
+}
+
+/* Footer Enriquecido */
+footer {
+    margin-top: 4em;
+    padding-top: 3em;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2em;
+    text-align: left;
+    max-width: 1100px;
+    margin: 0 auto 2em auto;
+    padding: 0 1em;
+}
+
+.footer-col h4 {
+    margin-bottom: 0.8em;
+    font-size: 1.1rem;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 0.5em;
+}
+
+.footer-col a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+.footer-col a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5em;
+    text-align: center;
+}

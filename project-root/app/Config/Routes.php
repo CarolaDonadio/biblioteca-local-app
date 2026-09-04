@@ -46,13 +46,13 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
 
     $routes->get('/', 'Admin\DashboardController::index');
 
-    // Gestión del catálogo (libros)
-    $routes->resource('libros', ['controller' => 'Admin\LibroController']);
-
-    // Multimedia asociado a cada libro
+    // Multimedia asociado a cada libro (SE DEFINE ANTES DE RESOURCE)
     $routes->get('libros/(:num)/multimedia', 'Admin\LibroController::multimedia/$1');
     $routes->post('libros/(:num)/multimedia', 'Admin\LibroController::subirMultimedia/$1');
     $routes->post('multimedia/(:num)/eliminar', 'Admin\LibroController::eliminarMultimedia/$1');
+
+    // Gestión del catálogo (libros)
+    $routes->resource('libros', ['controller' => 'Admin\LibroController']);
 
     // Administración e inventario (ejemplares físicos)
     $routes->resource('ejemplares', ['controller' => 'Admin\EjemplarController']);
@@ -88,4 +88,11 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
 
     // Roles / usuarios administradores
     $routes->resource('usuarios', ['controller' => 'Admin\UsuarioAdminController']);
+});
+
+// -----------------------------------------------------------------
+// 4. RUTAS DE PREVISUALIZACIÓN TEMPORALES (Sin filtro de login)
+// -----------------------------------------------------------------
+$routes->get('admin/prestamos-preview', static function() {
+    return view('admin/prestamos/index');
 });
