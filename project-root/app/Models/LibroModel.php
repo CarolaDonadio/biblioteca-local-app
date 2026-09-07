@@ -11,7 +11,6 @@ class LibroModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
 
-    // Mapeo directo con las columnas de la tabla 'libros' de tu SQL
     protected $allowedFields = [
         'isbn',
         'titulo',
@@ -21,7 +20,7 @@ class LibroModel extends Model
         'categoria',
         'cantidad',
         'sinopsis',
-        'disponible'
+        'disponible',
     ];
 
     /**

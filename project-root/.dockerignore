@@ -1,0 +1,12 @@
+.git
+.env
+vendor/
+writable/cache/*
+writable/debugbar/*
+writable/logs/*
+writable/session/*
+writable/uploads/*
+tests/coverage*
+phpunit
+php_errors.log
+.DS_Store
