@@ -1,0 +1,33 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "${APP_PORT:-8081}:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - writable_data:/var/www/html/writable
+
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: biblioteca_virtual
+      MYSQL_USER: biblioteca
+      MYSQL_PASSWORD: biblioteca
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "biblioteca", "-pbiblioteca"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  db_data:
+  writable_data:

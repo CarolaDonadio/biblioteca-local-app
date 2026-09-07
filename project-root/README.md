@@ -28,6 +28,39 @@ to your `app` folder. The affected files can be copied or merged from
 Copy `env` to `.env` and tailor for your app, specifically the baseURL
 and any database settings.
 
+## Docker local
+
+Para levantar la aplicación con PHP/Apache, Composer y MySQL:
+
+```bash
+docker compose up --build
+```
+
+La aplicación queda disponible en <http://localhost:8081>. MySQL se expone en
+`localhost:3306` con estos datos de desarrollo:
+
+- Base de datos: `biblioteca_virtual`
+- Usuario: `biblioteca`
+- Password: `biblioteca`
+- Root password: `root`
+
+El contenedor de la app usa `env.docker` como `.env` de CodeIgniter y apunta el
+document root de Apache a `public/`. La base se inicializa la primera vez con el
+script de `docker/mysql/init/01-schema.sql`.
+
+Si necesitas otro puerto HTTP, puedes definir `APP_PORT`:
+
+```bash
+APP_PORT=8080 docker compose up --build
+```
+
+Para reiniciar todo desde cero, incluyendo los datos de MySQL:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
 ## Important Change with index.php
 
 `index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
