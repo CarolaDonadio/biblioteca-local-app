@@ -3,13 +3,23 @@
 namespace App\Controllers\Publico;
 
 use App\Controllers\BaseController;
-use App\Models\PromocionModel;
 
-class PromocionPublicaController extends BaseController
+class SocioPortalController extends BaseController
 {
-    public function index()
+    public function login()
     {
-        $data['promociones'] = (new PromocionModel())->vigentes();
-        return view('publico/promociones', $data);
+        return view('publico/socio_login');
+    }
+
+    public function registro()
+    {
+        return view('publico/socio_registro');
+    }
+
+    public function logout()
+    {
+        session()->destroy();
+
+        return redirect()->to('/');
     }
 }

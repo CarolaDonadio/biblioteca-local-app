@@ -1,52 +1,79 @@
 <?php ob_start(); ?>
 
 <div class="pub-contenido">
-  <div class="detalle-libro">
-    <div class="detalle-libro__portada">
-      <?php if (! empty($libro['portada_url'])): ?>
-        <img src="/<?= esc($libro['portada_url']) ?>" alt="Portada de <?= esc($libro['titulo']) ?>">
+  <div style="margin-bottom:1.5em;">
+    <a href="/catalogo" style="text-decoration:none;color:var(--azul-primario, #2563eb);font-weight:600;">← Volver al catálogo</a>
+  </div>
+
+  <div class="tarjeta" style="padding:2em;display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:2em;">
+    
+    <!-- Imagen / Portada -->
+    <div style="text-align:center;background:#f3f4f6;border-radius:var(--radio, 8px);padding:2em;display:flex;align-items:center;justify-content:center;min-height:300px;">
+      <?php if (!empty($libro['imagen_url'])): ?>
+        <img class="lazy" data-src="/<?= esc($libro['imagen_url']) ?>" alt="<?= esc($libro['titulo'] ?? 'Libro') ?>" style="max-width:100%;max-height:360px;object-fit:contain;border-radius:var(--radio);">
       <?php else: ?>
-        <div class="placeholder tarjeta" style="aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;color:var(--gris-texto);">sin portada</div>
+        <span style="font-size:4.5rem;" role="img" aria-label="Libro">📖</span>
       <?php endif; ?>
     </div>
 
-    <div>
-      <h1><?= esc($libro['titulo']) ?></h1>
-      <p style="color:var(--gris-texto);"><?= esc($libro['autor']) ?> <?= $libro['editorial'] ? '· ' . esc($libro['editorial']) : '' ?> <?= $libro['anio'] ? '· ' . esc($libro['anio']) : '' ?></p>
-      <p class="isbn" style="color:var(--gris-texto);font-size:.85rem;">ISBN <?= esc($libro['isbn']) ?></p>
+    <!-- Información bibliográfica -->
+    <div style="display:flex;flex-direction:column;justify-content:space-between;">
+      <div>
+        <span class="sello sello--promocion"><?= esc($libro['categoria'] ?? 'General') ?></span>
 
-      <p><span class="sello sello--<?= $disponibilidad['disponibles'] > 0 ? 'disponible' : 'pendiente' ?>">
-        <?= $disponibilidad['disponibles'] ?> de <?= $disponibilidad['total'] ?> ejemplares disponibles
-      </span></p>
+        <h1 style="margin:.4em 0 .2em 0;"><?= esc($libro['titulo'] ?? 'El Principito') ?></h1>
+        
+        <p style="color:var(--gris-texto);font-size:1.1rem;margin-bottom:1.5em;">
+          Autor: <strong><?= esc($libro['autor'] ?? 'Antoine de Saint-Exupéry') ?></strong>
+        </p>
 
-      <?php if ($libro['sinopsis']): ?>
-        <p><?= nl2br(esc($libro['sinopsis'])) ?></p>
-      <?php endif; ?>
+        <!-- Ficha de Datos -->
+        <div class="tarjeta" style="padding:1em;background:#fafafa;margin-bottom:1.5em;display:grid;grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));gap:1em;font-size:.9rem;">
+          <div>
+            <span style="color:var(--gris-texto);display:block;">ISBN</span>
+            <strong><?= esc($libro['isbn'] ?? '978-9875666870') ?></strong>
+          </div>
+          <div>
+            <span style="color:var(--gris-texto);display:block;">Editorial</span>
+            <strong><?= esc($libro['editorial'] ?? 'Salamandra') ?></strong>
+          </div>
+          <div>
+            <span style="color:var(--gris-texto);display:block;">Año</span>
+            <strong><?= esc($libro['anio'] ?? '1943') ?></strong>
+          </div>
+          <div>
+            <span style="color:var(--gris-texto);display:block;">Disponibilidad</span>
+            <?php if (!isset($libro['disponible']) || $libro['disponible']): ?>
+              <span style="color:#166534;font-weight:bold;">Disponible</span>
+            <?php else: ?>
+              <span style="color:#991b1b;font-weight:bold;">Prestado</span>
+            <?php endif; ?>
+          </div>
+        </div>
 
-      <?php if (session('socio_id')): ?>
-        <form action="/socio/panel/reservar/<?= $libro['id'] ?>" method="post" data-confirmar-reserva="¿Reservar este libro?">
-          <?= csrf_field() ?>
-          <button type="submit" class="btn"><?= $disponibilidad['disponibles'] > 0 ? 'Reservar ahora' : 'Sumarme a la cola de espera' ?></button>
-        </form>
-      <?php else: ?>
-        <p><a href="/socio/login" class="btn">Iniciá sesión para reservar</a></p>
-      <?php endif; ?>
+        <div style="margin-bottom:1.5em;">
+          <h3>Sinopsis</h3>
+          <p style="color:var(--gris-texto);line-height:1.6;font-size:.95rem;">
+            <?= esc($libro['sinopsis'] ?? 'Un pequeño príncipe viaja por el universo descubriendo la extraña forma en que los adultos ven la vida y la importancia de lo esencial.') ?>
+          </p>
+        </div>
+      </div>
 
-      <?php if (! empty($multimedia)): ?>
-        <h3 style="margin-top:1.5em;">Material digital</h3>
-        <ul>
-          <?php foreach ($multimedia as $m): ?>
-            <li><span class="sello sello--promocion"><?= esc($m['tipo']) ?></span> <a href="/<?= esc($m['archivo_url']) ?>" target="_blank">abrir</a></li>
-          <?php endforeach; ?>
-        </ul>
-      <?php endif; ?>
+      <!-- Botón de Acción -->
+      <div>
+        <?php if (session('socio_id')): ?>
+          <form action="/socio/reservar/<?= esc($libro['id'] ?? 1) ?>" method="post">
+            <?= csrf_field() ?>
+            <button type="submit" class="btn" style="width:100%;">Reservar este libro</button>
+          </form>
+        <?php else: ?>
+          <a href="/socio/login" class="btn" style="display:block;text-align:center;text-decoration:none;">Ingresá a tu cuenta para reservar</a>
+        <?php endif; ?>
+      </div>
+
     </div>
   </div>
 </div>
 
 <?php $contenido = ob_get_clean(); ?>
-<?= view('layouts/public_layout', [
-  'titulo' => $libro['titulo'],
-  'contenido' => $contenido,
-  'js_extra' => '<script src="/assets/js/public/reservas.js"></script>',
-]) ?>
+<?= view('layouts/public_layout', ['titulo' => $libro['titulo'] ?? 'Detalle del Libro', 'contenido' => $contenido]) ?>

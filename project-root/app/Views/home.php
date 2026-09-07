@@ -3,123 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Biblioteca Virtual</title>
-    
-    <!-- Enlaces corregidos con base_url() para CodeIgniter 4 -->
-    <link rel="stylesheet" href="<?= base_url('assets/css/design-system.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/public.css') ?>">
+    <title>Biblioteca Virtual</title>
     <link rel="stylesheet" href="<?= base_url('assets/css/home.css') ?>">
 </head>
 <body>
 
     <header>
-        <strong>📚 Mi Biblioteca Virtual</strong>
+        <a href="<?= base_url() ?>" class="logo">📚 Biblioteca Virtual</a>
         <nav>
-            <a href="#catalogo">Catálogo</a>
-            <a href="#promociones">Promociones</a>
-            <a href="#socio">Socios</a>
-            <a href="#admin">Administración</a>
+            <a href="<?= base_url('catalogo') ?>">Catálogo</a>
+            <a href="<?= base_url('promociones') ?>">Promociones</a>
+            <a href="<?= base_url('socio/login') ?>">Portal Socios</a>
+            <a href="<?= base_url('admin/login') ?>">Administración</a>
         </nav>
     </header>
 
     <section class="hero">
-        <h1>Gestión y Comunidad para Bibliotecas</h1>
-        <p>Consulta libros, promociones y servicios de la biblioteca.</p>
-        <div class="search">
-            <input id="buscar" placeholder="Buscar por título, autor o ISBN">
-            <button onclick="buscarLibro()">Buscar</button>
-        </div>
-        <p id="resultado"></p>
+        <h1>Tu biblioteca, donde sea que estés</h1>
+        <p>Explora nuestro catálogo en línea, reserva ejemplares y gestiona tu cuenta de socio fácilmente.</p>
+        
+        <form action="<?= base_url('catalogo') ?>" method="get" class="search-box">
+            <input type="text" name="q" placeholder="Buscar por título, autor o ISBN...">
+            <button type="submit">Buscar</button>
+        </form>
     </section>
 
     <main class="container">
-        <section id="catalogo">
-            <h2>Catálogo público</h2>
-            <div class="grid">
-                <article class="card">
+
+        <!-- 1. BIENVENIDA E INFORMACIÓN RÁPIDA -->
+        <section class="info-section">
+            <h2 class="section-title">Bienvenido a nuestra comunidad</h2>
+            <p class="info-desc">
+                Un espacio dedicado al aprendizaje, la cultura y el encuentro. Ofrecemos préstamo de libros físicos, acceso a recursos digitales, puestos de lectura y actividades gratuitas durante todo el año.
+            </p>
+            <div class="info-grid">
+                <div class="info-box">
+                    <span class="icon">🕒</span>
+                    <h3>Horarios</h3>
+                    <p><small>Lunes a Viernes: 08:00 - 20:00 hs<br>Sábados: 09:00 - 13:00 hs</small></p>
+                </div>
+                <div class="info-box">
+                    <span class="icon">📍</span>
+                    <h3>Ubicación</h3>
+                    <p><small>Av. Principal 1234, Centro<br>Ciudad, Provincia</small></p>
+                </div>
+                <div class="info-box">
+                    <span class="icon">💳</span>
+                    <h3>Hazte Socio</h3>
+                    <p><small>Accede a préstamos a domicilio, reservas online y material exclusivo.</small></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. LIBROS DESTACADOS -->
+        <h2 class="section-title">Libros Destacados</h2>
+        
+        <div class="grid" id="grid-libros">
+            <article class="card">
+                <div>
                     <div class="cover">📖</div>
                     <h3>El Principito</h3>
                     <p>Antoine de Saint-Exupéry</p>
-                    <p><strong>Disponible</strong></p>
-                    <button>Ver detalles</button>
-                </article>
-                <article class="card">
+                    <span class="badge">Disponible</span>
+                </div>
+                <a href="<?= base_url('catalogo') ?>" class="btn-card">Ver detalle</a>
+            </article>
+
+            <article class="card">
+                <div>
                     <div class="cover">📚</div>
-                    <h3>Cien años de soledad</h3>
+                    <h3>Cien Años de Soledad</h3>
                     <p>Gabriel García Márquez</p>
-                    <p><strong>Disponible</strong></p>
-                    <button>Reservar</button>
-                </article>
-                <article class="card">
+                    <span class="badge">Disponible</span>
+                </div>
+                <a href="<?= base_url('catalogo') ?>" class="btn-card">Ver detalle</a>
+            </article>
+
+            <article class="card">
+                <div>
                     <div class="cover">📕</div>
-                    <h3>Don Quijote</h3>
-                    <p>Miguel de Cervantes</p>
-                    <p><strong>Consultar disponibilidad</strong></p>
-                    <button>Ver detalles</button>
-                </article>
-            </div>
-        </section>
+                    <h3>1984</h3>
+                    <p>George Orwell</p>
+                    <span class="badge">Disponible</span>
+                </div>
+                <a href="<?= base_url('catalogo') ?>" class="btn-card">Ver detalle</a>
+            </article>
+        </div>
 
-        <section id="promociones">
-            <h2>Promociones y novedades</h2>
-            <div class="grid">
-                <article class="card">
-                    <h3 style="margin-top: 0;">Campaña nuevos socios</h3>
-                    <p>Beneficios especiales para quienes se registren durante este mes.</p>
-                    <button>Ver promoción</button>
-                </article>
-                <article class="card">
-                    <h3 style="margin-top: 0;">Semana de lectura</h3>
-                    <p>Actividades y novedades para toda la comunidad.</p>
-                    <button>Más información</button>
-                </article>
-            </div>
-        </section>
+        <!-- 3. PRÓXIMOS EVENTOS -->
+        <h2 class="section-title section-title--spaced">Agenda de Eventos</h2>
+        <div class="grid">
+            <article class="card card--evento">
+                <div>
+                    <span class="event-date">15 de Septiembre · 18:00 hs</span>
+                    <h3>Club de Lectura: Clásicos Latinoamericanos</h3>
+                    <p>Debate abierto sobre «Rayuela» de Julio Cortázar. Coordinado por el equipo de literatura.</p>
+                </div>
+                <button class="btn-card btn-inscribir" data-evento="Club de Lectura">Inscribirme</button>
+            </article>
 
-        <section id="socio">
-            <h2>Portal del socio</h2>
-            <div class="grid">
-                <article class="card">
-                    <h3 style="margin-top: 0;">Iniciar sesión</h3>
-                    <p>Consultá préstamos, reservas y devoluciones.</p>
-                    <button>Ingresar</button>
-                </article>
-                <article class="card">
-                    <h3 style="margin-top: 0;">Registrarme</h3>
-                    <p>Creá tu cuenta para acceder a los servicios.</p>
-                    <button>Registrarme</button>
-                </article>
-            </div>
-        </section>
+            <article class="card card--evento">
+                <div>
+                    <span class="event-date">22 de Septiembre · 16:00 hs</span>
+                    <h3>Taller de Encuadernación Artesanal</h3>
+                    <p>Aprende técnicas básicas para reparar y conservar tus propios libros. Incluye materiales.</p>
+                </div>
+                <button class="btn-card btn-inscribir" data-evento="Taller de Encuadernación">Inscribirme</button>
+            </article>
 
-        <section id="admin">
-            <h2>Panel de administración</h2>
-            <div class="stats">
-                <div class="stat"><strong>1.250</strong><br>Libros registrados</div>
-                <div class="stat"><strong>340</strong><br>Socios activos</div>
-                <div class="stat"><strong>87</strong><br>Préstamos activos</div>
-                <div class="stat"><strong>12</strong><br>Reservas pendientes</div>
-            </div>
-            <div class="grid" style="margin-top:20px">
-                <article class="card"><h3 style="margin-top: 0;">Catálogo</h3><p>Gestión de libros y multimedia.</p></article>
-                <article class="card"><h3 style="margin-top: 0;">Inventario</h3><p>Control de ejemplares.</p></article>
-                <article class="card"><h3 style="margin-top: 0;">Préstamos</h3><p>Préstamos, devoluciones y renovaciones.</p></article>
-                <article class="card"><h3 style="margin-top: 0;">Reservas</h3><p>Solicitudes y disponibilidad.</p></article>
-                <article class="card"><h3 style="margin-top: 0;">Notificaciones</h3><p>Email, Telegram y WhatsApp.</p></article>
-                <article class="card"><h3 style="margin-top: 0;">Promociones</h3><p>Campañas y beneficios.</p></article>
-            </div>
-        </section>
+            <article class="card card--evento">
+                <div>
+                    <span class="event-date">30 de Septiembre · 17:30 hs</span>
+                    <h3>Hora del Cuento Infantil</h3>
+                    <p>Lecturas dramatizadas y actividades lúdicas para niños de 5 a 10 años. Entrada libre.</p>
+                </div>
+                <a href="<?= base_url('socio/login') ?>" class="btn-card">Ver más</a>
+            </article>
+        </div>
+
+        <!-- 4. EQUIPO DE LA BIBLIOTECA -->
+        <h2 class="section-title section-title--spaced">Nuestro Equipo</h2>
+        <div class="grid">
+            <article class="card card--team">
+                <div class="team-avatar">👩‍💼</div>
+                <h3>Dra. Laura Giménez</h3>
+                <p><strong>Directora de la Biblioteca</strong></p>
+                <p><small>Especialista en gestión de archivos y patrimonio cultural.</small></p>
+            </article>
+
+            <article class="card card--team">
+                <div class="team-avatar">👨‍🔬</div>
+                <h3>Lic. Martín Rossi</h3>
+                <p><strong>Bibliotecario General</strong></p>
+                <p><small>Encargado del área de catálogo, consultas e investigación.</small></p>
+            </article>
+
+            <article class="card card--team">
+                <div class="team-avatar">👩‍💻</div>
+                <h3>Sofía Benítez</h3>
+                <p><strong>Coordinadora de Servicios Digitales</strong></p>
+                <p><small>Soporte a socios, biblioteca virtual y recursos multimedia.</small></p>
+            </article>
+        </div>
+
     </main>
 
-    <footer>Mi Biblioteca Virtual · MVP académico · HTML, CSS, JavaScript, PHP, CodeIgniter 4 y MySQL</footer>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>📚 Biblioteca Virtual</h4>
+                <p><small>Fomentando la lectura y el acceso libre a la información desde nuestro espacio institucional.</small></p>
+            </div>
+            <div class="footer-col">
+                <h4>Enlaces Rápidos</h4>
+                <ul>
+                    <li><a href="<?= base_url('catalogo') ?>">Buscar en Catálogo</a></li>
+                    <li><a href="<?= base_url('promociones') ?>">Promociones</a></li>
+                    <li><a href="<?= base_url('socio/registro') ?>">Hazte Socio</a></li>
+                    <li><a href="<?= base_url('admin/login') ?>">Acceso Staff</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul>
+                    <li>📧 contacto@biblioteca.edu.ar</li>
+                    <li>📞 (011) 4567-8900</li>
+                    <li>📍 Av. Principal 1234, Centro</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <?= date('Y') ?> Biblioteca Virtual · Desarrollado en CodeIgniter 4</p>
+        </div>
+    </footer>
 
-    <script>
-        function buscarLibro(){
-            const t = document.getElementById('buscar').value.trim();
-            document.getElementById('resultado').textContent = t 
-                ? 'Buscando: "' + t + '". La búsqueda real se conectará a MySQL mediante CodeIgniter.'
-                : 'Ingresá un título, autor o ISBN.';
-        }
-    </script>
+    <!-- Carga del archivo JavaScript personalizado -->
+    <script src="<?= base_url('assets/js/home.js') ?>"></script>
 </body>
 </html>
