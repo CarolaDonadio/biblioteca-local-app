@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class SugerenciaModel extends Model
+class PagoModel extends Model
 {
-    protected $table            = 'sugerencias';
+    protected $table            = 'pagos';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $useTimestamps    = false;
 
     protected $allowedFields = [
-        'socio_id', 'titulo_sugerido', 'autor_sugerido', 'comentario', 'estado', 'fecha',
+        'dniUsuario',
+        'fecha',
     ];
 }

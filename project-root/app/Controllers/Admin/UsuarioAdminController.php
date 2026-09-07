@@ -11,11 +11,11 @@ use App\Models\UsuarioAdminModel;
  */
 class UsuarioAdminController extends BaseController
 {
-    protected UsuarioAdminModel $usuarios;
+    protected UsuarioModel $usuarios;
 
     public function __construct()
     {
-        $this->usuarios = new UsuarioAdminModel();
+        $this->usuarios = new UsuarioModel();
     }
 
     private function requerirSuperadmin()
