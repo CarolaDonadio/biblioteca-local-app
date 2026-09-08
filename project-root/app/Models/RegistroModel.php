@@ -19,15 +19,16 @@ class RegistroModel extends Model
         'fechaDevolucion',
     ];
 
+    /** Días de duración por defecto de un préstamo. */
+    public const DIAS_PRESTAMO = 14;
+
     /**
      * Obtiene todos los préstamos activos (sin devolución)
      */
-    public function activos()
+    public function activos(): array
     {
-        return $this->where('fechaDevolucion', null)
-                    ->select('registros.*, libros.titulo, usuarios.nombre_completo as socio_nombre')
-                    ->join('libros', 'libros.id = registros.idlibro', 'left')
-                    ->join('usuarios', 'usuarios.dni = registros.dniUsuario', 'left')
+        return $this->selectConRelaciones()
+                    ->where('registros.fechaDevolucion', null)
                     ->orderBy('registros.fechaVence', 'ASC')
                     ->findAll();
     }
@@ -35,34 +36,83 @@ class RegistroModel extends Model
     /**
      * Obtiene todos los préstamos vencidos (sin devolución y fecha vencimiento pasada)
      */
-    public function vencidos()
+    public function vencidos(): array
     {
-        return $this->where('fechaDevolucion', null)
-                    ->where('fechaVence <', date('Y-m-d'))
-                    ->select('registros.*, libros.titulo, usuarios.nombre_completo as socio_nombre')
-                    ->join('libros', 'libros.id = registros.idlibro', 'left')
-                    ->join('usuarios', 'usuarios.dni = registros.dniUsuario', 'left')
+        return $this->selectConRelaciones()
+                    ->where('registros.fechaDevolucion', null)
+                    ->where('registros.fechaVence <', date('Y-m-d'))
                     ->orderBy('registros.fechaVence', 'ASC')
                     ->findAll();
     }
 
-    /**
-     * Registra un nuevo préstamo
-     */
-    public function registrarPrestamo($idLibro, $dniUsuario, $adminId)
+    private function selectConRelaciones(): self
     {
+        return $this->select('registros.*, libros.titulo, libros.autor, libros.isbn,'
+                . ' usuarios.dni AS socio_dni, usuarios.nombre_completo AS socio_nombre')
+            ->join('libros', 'libros.id = registros.idlibro', 'left')
+            ->join('usuarios', 'usuarios.dni = registros.dniUsuario', 'left');
+    }
+
+    /**
+     * Cantidad de ejemplares de un libro que están prestados en este momento.
+     */
+    public function prestadosDeLibro(int $idLibro): int
+    {
+        return $this->where('idlibro', $idLibro)
+                    ->where('fechaDevolucion', null)
+                    ->countAllResults();
+    }
+
+    /**
+     * Registra un nuevo préstamo asignando un ejemplar del libro al socio.
+     */
+    public function registrarPrestamo($idLibro, $dniUsuario, $adminId = null)
+    {
+        $idLibro    = (int) $idLibro;
+        $dniUsuario = (int) $dniUsuario;
+
+        $libro = (new LibroModel())->find($idLibro);
+        if (! $libro) {
+            throw new \RuntimeException('El libro seleccionado no existe.');
+        }
+
+        $socio = (new SocioModel())->where('perfil', 'socio')->where('dni', $dniUsuario)->first();
+        if (! $socio) {
+            throw new \RuntimeException('El socio seleccionado no existe.');
+        }
+
+        if ($socio['estado'] !== 'activo') {
+            throw new \RuntimeException('El socio está suspendido y no puede retirar ejemplares.');
+        }
+
+        if ($this->prestadosDeLibro($idLibro) >= (int) $libro['cantidad']) {
+            throw new \RuntimeException('No hay ejemplares disponibles de «' . $libro['titulo'] . '».');
+        }
+
+        $yaLoTiene = $this->where('idlibro', $idLibro)
+                          ->where('dniUsuario', $dniUsuario)
+                          ->where('fechaDevolucion', null)
+                          ->countAllResults();
+
+        if ($yaLoTiene > 0) {
+            throw new \RuntimeException('El socio ya tiene un ejemplar de este libro en préstamo.');
+        }
+
         $data = [
             'idlibro'       => $idLibro,
             'dniUsuario'    => $dniUsuario,
             'fechaPrestamo' => date('Y-m-d'),
-            'fechaVence'    => date('Y-m-d', strtotime('+14 days')),
+            'fechaVence'    => date('Y-m-d', strtotime('+' . self::DIAS_PRESTAMO . ' days')),
         ];
 
-        if (!$this->save($data)) {
+        if (! $this->insert($data)) {
             throw new \RuntimeException('No se pudo registrar el préstamo.');
         }
 
-        return $this->getInsertID();
+        $id = $this->getInsertID();
+        $this->sincronizarDisponibilidad($idLibro);
+
+        return $id;
     }
 
     /**
@@ -83,7 +133,24 @@ class RegistroModel extends Model
             throw new \RuntimeException('No se pudo registrar la devolución.');
         }
 
+        $this->sincronizarDisponibilidad((int) $registro['idlibro']);
+
         return true;
+    }
+
+    /**
+     * Mantiene el flag `libros.disponible` en sintonía con los ejemplares libres.
+     */
+    private function sincronizarDisponibilidad(int $idLibro): void
+    {
+        $libros = new LibroModel();
+        $libro  = $libros->find($idLibro);
+        if (! $libro) {
+            return;
+        }
+
+        $libres = max(0, (int) $libro['cantidad'] - $this->prestadosDeLibro($idLibro));
+        $libros->update($idLibro, ['disponible' => $libres > 0 ? 1 : 0]);
     }
 
     /**
@@ -100,7 +167,8 @@ class RegistroModel extends Model
             throw new \RuntimeException('No se puede renovar un préstamo que ya fue devuelto.');
         }
 
-        $nuevaFechaVence = date('Y-m-d', strtotime('+14 days', strtotime($registro['fechaVence'])));
+        $base = max(strtotime($registro['fechaVence']), strtotime(date('Y-m-d')));
+        $nuevaFechaVence = date('Y-m-d', strtotime('+' . self::DIAS_PRESTAMO . ' days', $base));
 
         if (!$this->update($id, ['fechaVence' => $nuevaFechaVence])) {
             throw new \RuntimeException('No se pudo renovar el préstamo.');

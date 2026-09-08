@@ -7,8 +7,10 @@
       <label for="select-libro">Libro</label>
       <select id="select-libro" name="libro_id" required>
         <option value="">Seleccioná un libro...</option>
-        <?php foreach ($libros as $l): ?>
-          <option value="<?= $l['id'] ?>"><?= esc($l['titulo']) ?> — <?= esc($l['autor']) ?></option>
+        <?php foreach (($libros ?? []) as $l): $libres = (int) ($l['disponibles'] ?? 0); ?>
+          <option value="<?= $l['id'] ?>" data-disponibles="<?= $libres ?>" <?= $libres < 1 ? 'disabled' : '' ?>>
+            <?= esc($l['titulo']) ?> — <?= esc($l['autor']) ?> (<?= $libres ?> disp.)
+          </option>
         <?php endforeach; ?>
       </select>
       <small id="aviso-disponibilidad" style="color:var(--gris-texto);"></small>
@@ -17,8 +19,8 @@
       <label for="socio_id">Socio</label>
       <select id="socio_id" name="socio_id" required>
         <option value="">Seleccioná un socio...</option>
-        <?php foreach ($socios as $s): ?>
-          <option value="<?= $s['id'] ?>"><?= esc($s['apellido']) ?>, <?= esc($s['nombre']) ?> (<?= esc($s['dni']) ?>)</option>
+        <?php foreach (($socios ?? []) as $s): ?>
+          <option value="<?= esc($s['dni']) ?>"><?= esc($s['nombre_completo']) ?> (DNI <?= esc($s['dni']) ?>)</option>
         <?php endforeach; ?>
       </select>
     </div>

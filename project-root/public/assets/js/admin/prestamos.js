@@ -16,10 +16,15 @@
 
     aviso.textContent = 'Consultando disponibilidad...';
     try {
-      const resp = await fetch(`/catalogo/libro/${libroId}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-      // Nota: en un entorno de producción conviene un endpoint JSON dedicado
-      // (ej. /admin/libros/:id/disponibilidad) en vez de parsear la vista pública.
-      aviso.textContent = resp.ok ? 'Verificá el detalle del libro para confirmar ejemplares libres.' : '';
+      const resp = await fetch(`/admin/prestamos/disponibilidad/${libroId}`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      });
+      if (!resp.ok) { aviso.textContent = ''; return; }
+
+      const data = await resp.json();
+      aviso.textContent = data.disponibles > 0
+        ? `${data.disponibles} de ${data.cantidad} ejemplar(es) disponible(s).`
+        : 'Sin ejemplares disponibles: todos est\u00e1n prestados.';
     } catch {
       aviso.textContent = '';
     }

@@ -72,6 +72,7 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
     // Préstamos y devoluciones
     $routes->get('prestamos', 'Admin\PrestamoController::index');
     $routes->get('prestamos/nuevo', 'Admin\PrestamoController::nuevo');
+    $routes->get('prestamos/disponibilidad/(:num)', 'Admin\PrestamoController::disponibilidad/$1');
     $routes->post('prestamos', 'Admin\PrestamoController::registrar');
     $routes->post('prestamos/(:num)/devolver', 'Admin\PrestamoController::devolver/$1');
     $routes->post('prestamos/(:num)/renovar', 'Admin\PrestamoController::renovar/$1');
