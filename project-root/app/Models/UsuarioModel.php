@@ -27,7 +27,7 @@ class UsuarioModel extends Model
     protected $validationRules = [
         'nombre_completo' => 'required|max_length[120]',
         'mail'            => 'required|valid_email|is_unique[usuarios.mail,id,{id}]',
-        'perfil'          => 'in_list[superadmin,bibliotecario]',
+        'perfil'          => 'in_list[socio,bibliotecario]',
     ];
 
     public function verificarCredenciales(string $email, string $password): ?array

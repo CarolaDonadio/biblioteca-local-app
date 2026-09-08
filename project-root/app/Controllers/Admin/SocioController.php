@@ -3,20 +3,20 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Models\SocioModel;
+use App\Models\UsuarioModel;
 
 class SocioController extends BaseController
 {
-    protected SocioModel $socios;
+    protected UsuarioModel $socios;
 
     public function __construct()
     {
-        $this->socios = new SocioModel();
+        $this->socios = new UsuarioModel();
     }
 
     public function index()
     {
-        $data['socios'] = $this->socios->orderBy('apellido', 'ASC')->findAll();
+        $data['socios'] = $this->socios->orderBy('nombre_completo', 'ASC')->where('perfil', 'socio')->findAll();
         return view('admin/socios/index', $data);
     }
 
