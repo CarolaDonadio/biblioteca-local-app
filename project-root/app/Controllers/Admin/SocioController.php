@@ -17,7 +17,19 @@ class SocioController extends BaseController
 
     public function index()
     {
-        $data['socios'] = $this->socios->orderBy('nombre_completo', 'ASC')->where('perfil', 'socio')->findAll();
+        $busqueda = trim((string) $this->request->getGet('q'));
+        $consulta = $this->socios->where('perfil', 'socio');
+
+        if ($busqueda !== '') {
+            $consulta->groupStart()
+                ->like('dni', $busqueda)
+                ->orLike('nombre_completo', $busqueda)
+                ->orLike('mail', $busqueda)
+                ->groupEnd();
+        }
+
+        $data['q'] = $busqueda;
+        $data['socios'] = $consulta->orderBy('nombre_completo', 'ASC')->findAll();
         return view('admin/socios/index', $data);
     }
 

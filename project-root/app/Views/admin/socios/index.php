@@ -1,6 +1,13 @@
 <?php ob_start(); ?>
 
 <div class="toolbar">
+  <form action="/admin/socios" method="get">
+    <input type="text" name="q" placeholder="Buscar por DNI, nombre o email..." value="<?= esc($q ?? '') ?>">
+    <button class="btn btn--outline" type="submit">Buscar</button>
+    <?php if (!empty($q)): ?>
+      <a href="/admin/socios" class="btn btn--outline">Borrar filtro</a>
+    <?php endif; ?>
+  </form>
   <span></span>
   <a href="/admin/socios/new" class="btn">+ Nuevo socio</a>
 </div>
