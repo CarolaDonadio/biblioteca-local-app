@@ -27,6 +27,11 @@ $routes->get('socio/registro', 'Publico\SocioPortalController::registro');
 $routes->post('socio/registro', 'Publico\SocioPortalController::guardarRegistro');
 $routes->get('socio/logout', 'Publico\SocioPortalController::logout');
 
+$routes->group('socio', ['filter' => 'socioAuth'], static function ($routes) {
+    $routes->get('home', 'Publico\SocioPortalController::home');
+    $routes->post('actualizarPerfil', 'Publico\SocioPortalController::actualizarPerfil');
+});
+
 $routes->group('socio/panel', ['filter' => 'socioAuth'], static function ($routes) {
     $routes->get('/', 'Publico\SocioPortalController::panel');
     $routes->get('prestamos', 'Publico\SocioPortalController::misPrestamos');

@@ -57,9 +57,9 @@
         Promociones
       </a>
 
-      <?php if (session('socio_id')): ?>
+      <?php if (session('socio_dni')): ?>
 
-        <a href="<?= site_url('socio/panel') ?>">
+        <a href="<?= site_url('socio/home') ?>">
           Mi cuenta
         </a>
 
