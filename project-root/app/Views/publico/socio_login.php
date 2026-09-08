@@ -3,17 +3,11 @@
 <div class="pub-contenido" style="max-width:420px;">
   <h1>Ingresar a mi cuenta</h1>
   <div class="tarjeta" style="padding:1.6em 1.8em;">
-    <?php if (session('error')): ?>
-      <div class="alerta alerta--error"><?= esc(session('error')) ?></div>
-    <?php endif; ?>
-    <?php if (session('mensaje')): ?>
-      <div class="alerta alerta--exito"><?= esc(session('mensaje')) ?></div>
-    <?php endif; ?>
     <form action="/socio/login" method="post">
       <?= csrf_field() ?>
       <div class="campo">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" value="<?= esc(old('email')) ?>" required autofocus>
+        <input type="email" id="email" name="email" required autofocus>
       </div>
       <div class="campo">
         <label for="password">Contraseña</label>
