@@ -107,5 +107,10 @@ INSERT INTO usuarios
 (dni, nombre_completo, telefono, mail, password_hash, perfil, estado)
 VALUES(31001001, 'Administrador', '2241001001', 'admin@biblioteca.local', '$2y$10$E8T7eUceDI3uy6YSUwfLeuVvfCBFFCiJ9Oe3pNPYi.t2by/BVGzoS',
  'bibliotecario', 'activo');
+INSERT INTO usuarios
+(dni, nombre_completo, telefono, mail, password_hash, perfil, estado)
+VALUES(31001002, 'socio', '2241001001', 'socio@biblioteca.local', '$2y$10$E8T7eUceDI3uy6YSUwfLeuVvfCBFFCiJ9Oe3pNPYi.t2by/BVGzoS',
+ 'socio', 'activo');
 
+  
   
