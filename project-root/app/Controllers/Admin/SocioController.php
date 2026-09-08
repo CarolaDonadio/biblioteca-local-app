@@ -3,20 +3,21 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Models\SocioModel;
+use App\Models\UsuarioModel;
+use App\Models\RegistroModel;
 
 class SocioController extends BaseController
 {
-    protected SocioModel $socios;
+    protected UsuarioModel $socios;
 
     public function __construct()
     {
-        $this->socios = new SocioModel();
+        $this->socios = new UsuarioModel();
     }
 
     public function index()
     {
-        $data['socios'] = $this->socios->orderBy('apellido', 'ASC')->findAll();
+        $data['socios'] = $this->socios->orderBy('nombre_completo', 'ASC')->where('perfil', 'socio')->findAll();
         return view('admin/socios/index', $data);
     }
 
@@ -27,11 +28,16 @@ class SocioController extends BaseController
 
     public function create()
     {
-        $data = $this->request->getPost(['nombre', 'apellido', 'dni', 'email', 'telefono', 'telegram_chat_id', 'whatsapp_numero']);
+        $data = $this->request->getPost(['nombre_completo', 'dni', 'mail', 'telefono']);
+        $data['perfil'] = 'socio';
+        $data['estado'] = 'activo';
         $data['password_hash'] = password_hash($this->request->getPost('password') ?: substr(md5(uniqid()), 0, 8), PASSWORD_DEFAULT);
 
         if (! $this->socios->save($data)) {
-            return redirect()->back()->withInput()->with('errors', $this->socios->errors());
+            return view('admin/socios/form', [
+                'socio' => null,
+                'errors' => $this->socios->errors(),
+            ])->with('input', $this->request->getPost());
         }
 
         return redirect()->to('/admin/socios')->with('mensaje', 'Socio registrado.');
@@ -44,8 +50,29 @@ class SocioController extends BaseController
 
     public function update($id = null)
     {
-        $data = $this->request->getPost(['nombre', 'apellido', 'dni', 'email', 'telefono', 'telegram_chat_id', 'whatsapp_numero', 'estado']);
-        $this->socios->update($id, $data);
+        $data = $this->request->getPost(['nombre_completo', 'mail', 'telefono', 'estado']);
+        $errors = [];
+
+        // Validar que el email no esté en uso por otro usuario
+        $usuarioConEmail = $this->socios->where('mail', $data['mail'])->where('dni !=', $id)->first();
+        if ($usuarioConEmail) {
+            $errors['mail'] = 'Este email ya está registrado en otro usuario.';
+        }
+
+        if (!empty($errors)) {
+            return view('admin/socios/form', [
+                'socio' => $this->socios->find($id),
+                'errors' => $errors,
+            ]);
+        }
+
+        if (! $this->socios->skipValidation()->update($id, $data)) {
+            return view('admin/socios/form', [
+                'socio' => $this->socios->find($id),
+                'errors' => $this->socios->errors(),
+            ]);
+        }
+
         return redirect()->to('/admin/socios')->with('mensaje', 'Socio actualizado.');
     }
 
@@ -58,8 +85,20 @@ class SocioController extends BaseController
     // Historial completo requerido por el MVP: préstamos pasados, sanciones, libros leídos
     public function historial($id)
     {
-        $data['socio']     = $this->socios->find($id);
-        $data['historial'] = $this->socios->historial((int) $id);
+        $socio = $this->socios->find($id);
+        
+        if (!$socio) {
+            return redirect()->to('/admin/socios')->with('error', 'Socio no encontrado.');
+        }
+
+        // Dividir nombre_completo en nombre y apellido para compatibilidad con la vista
+        $nombres = explode(' ', $socio['nombre_completo'], 2);
+        $socio['nombre'] = $nombres[0];
+        $socio['apellido'] = $nombres[1] ?? '';
+        $socio['email'] = $socio['mail'];
+
+        $data['socio']     = $socio;
+        $data['historial'] = (new RegistroModel())->historialPorSocio((int) $id);
         return view('admin/socios/historial', $data);
     }
 }

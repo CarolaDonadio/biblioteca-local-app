@@ -1,5 +1,10 @@
 <?php ob_start(); ?>
 
+<div class="toolbar">
+  <span></span>
+  <a href="/admin/socios" class="btn btn--outline">&larr; Volver a socios</a>
+</div>
+
 <p style="color:var(--gris-texto);margin-top:-1em;"><?= esc($socio['apellido']) ?>, <?= esc($socio['nombre']) ?> — <?= esc($socio['email']) ?></p>
 
 <div class="kpi-grid" style="grid-template-columns:repeat(2,minmax(160px,1fr));max-width:420px;">
@@ -15,12 +20,11 @@
 
 <div class="tarjeta">
   <table>
-    <thead><tr><th>Libro</th><th>Ejemplar</th><th>Prestado</th><th>Vence</th><th>Devuelto</th><th>Estado</th></tr></thead>
+    <thead><tr><th>Libro</th><th>Prestado</th><th>Vence</th><th>Devuelto</th><th>Estado</th></tr></thead>
     <tbody>
       <?php foreach ($historial['prestamos'] as $p): ?>
         <tr>
           <td><?= esc($p['titulo']) ?></td>
-          <td class="codigo"><?= esc($p['codigo_inventario']) ?></td>
           <td><?= esc($p['fecha_prestamo']) ?></td>
           <td><?= esc($p['fecha_vencimiento']) ?></td>
           <td><?= esc($p['fecha_devolucion'] ?? '—') ?></td>
@@ -28,7 +32,7 @@
         </tr>
       <?php endforeach; ?>
       <?php if (empty($historial['prestamos'])): ?>
-        <tr><td colspan="6">Este socio todavía no registra préstamos.</td></tr>
+        <tr><td colspan="5">Este socio todavía no registra préstamos.</td></tr>
       <?php endif; ?>
     </tbody>
   </table>
