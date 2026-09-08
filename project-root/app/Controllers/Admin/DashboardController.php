@@ -3,7 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Models\PrestamoModel;
+use App\Models\RegistroModel;
 use App\Models\ReservaModel;
 use App\Models\EjemplarModel;
 use App\Models\NotificacionModel;
@@ -16,8 +16,8 @@ class DashboardController extends BaseController
         try {
             // Lógica original de tu compañero (Consultas a Modelos)
             $data = [
-                'prestamos_activos'         => (new PrestamoModel())->where('estado', 'activo')->countAllResults(),
-                'prestamos_vencidos'        => count((new PrestamoModel())->vencidos()),
+                'prestamos_activos'         => count((new RegistroModel())->activos()),
+                'prestamos_vencidos'        => count((new RegistroModel())->vencidos()),
                 'reservas_pendientes'       => (new ReservaModel())->whereIn('estado', ['pendiente', 'disponible_para_retiro'])->countAllResults(),
                 'ejemplares_por_estado'      => (new EjemplarModel())->reportePorEstado(),
                 'notificaciones_pendientes' => (new NotificacionModel())->whereIn('estado_entrega', ['pendiente', 'fallido'])->countAllResults(),

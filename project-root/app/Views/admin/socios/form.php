@@ -12,16 +12,16 @@
     <div class="campo">
       <div class="campo">
         <label for="nombre">Nombre completo</label>
-        <input type="text" id="nombre" name="nombre_completo" required value="<?= esc($socio['nombre_completo'] ?? old('nombre')) ?>">
+        <input type="text" id="nombre" name="nombre_completo" required value="<?= esc($socio['nombre_completo'] ?? old('nombre_completo')) ?>">
       </div>
     </div>
     <div class="campo">
       <label for="dni">DNI</label>
-      <input type="text" id="dni" name="dni" required value="<?= esc($socio['dni'] ?? old('dni')) ?>">
+      <input type="text" id="dni" name="dni" required value="<?= esc($socio['dni'] ?? old('dni')) ?>" <?= $editando ? 'disabled' : '' ?>>
     </div>
     <div class="campo">
       <label for="email">Email</label>
-      <input type="email" id="email" name="mail" required value="<?= esc($socio['mail'] ?? old('email')) ?>">
+      <input type="email" id="email" name="mail" required value="<?= esc($socio['mail'] ?? old('mail')) ?>">
     </div>
     <div class="campo">
       <label for="telefono">Teléfono</label>

@@ -25,8 +25,9 @@ class UsuarioModel extends Model
         'ultimo_login',
     ];
     protected $validationRules = [
+        'dni'             => 'required|is_unique[usuarios.dni]',
         'nombre_completo' => 'required|max_length[120]',
-        'mail'            => 'required|valid_email|is_unique[usuarios.mail,id,{id}]',
+        'mail'            => 'required|valid_email|is_unique[usuarios.mail]',
         'perfil'          => 'in_list[socio,bibliotecario]',
     ];
 
@@ -41,4 +42,5 @@ class UsuarioModel extends Model
 
         return null;
     }
+
 }
