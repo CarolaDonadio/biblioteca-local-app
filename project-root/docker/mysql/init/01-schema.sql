@@ -127,3 +127,17 @@ INSERT INTO libros (isbn, titulo, autor, editorial, anio, categoria, cantidad, s
 ('9788420658827', 'Fahrenheit 451', 'Ray Bradbury', 'Ballantine Books', 1953, 'Ciencia Ficción', 0, 'Un futuro donde los libros están prohibidos y los bomberos se dedican a quemarlos.', FALSE),
 ('9788437600895', 'Rayuela', 'Julio Cortázar', 'Editorial Sudamericana', 1963, 'Novela', 2, 'Una contranovela que puede leerse de múltiples maneras y secuencias.', TRUE),
 ('9789505112111', 'El Aleph', 'Jorge Luis Borges', 'Losada', 1949, 'Cuentos', 1, 'Colección de relatos donde destaca el punto que contiene todos los puntos del universo.', TRUE);
+
+CREATE TABLE promociones (
+  id INT NOT NULL AUTO_INCREMENT,
+  titulo VARCHAR(255) NOT NULL,
+  descripcion TEXT,
+  fecha_inicio DATE NOT NULL,
+  fecha_fin DATE NOT NULL,
+  imagen_url VARCHAR(255),
+  condiciones TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id)
+);
