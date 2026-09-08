@@ -112,5 +112,18 @@ INSERT INTO usuarios
 VALUES(31001002, 'socio', '2241001001', 'socio@biblioteca.local', '$2y$10$E8T7eUceDI3uy6YSUwfLeuVvfCBFFCiJ9Oe3pNPYi.t2by/BVGzoS',
  'socio', 'activo');
 
-  
-  
+
+-- =====================================================
+-- INSERTAR LIBROS
+-- =====================================================
+USE biblioteca_virtual;
+
+INSERT INTO libros (isbn, titulo, autor, editorial, anio, categoria, cantidad, sinopsis, disponible) VALUES
+('9780307474728', 'Cien Años de Soledad', 'Gabriel García Márquez', 'Sudamericana', 1967, 'Novela', 5, 'La historia de la familia Buendía en el pueblo ficticio de Macondo.', TRUE),
+('9780451524935', '1984', 'George Orwell', 'Secker & Warburg', 1949, 'Ciencia Ficción', 3, 'Una distopía clásica sobre la vigilancia estatal y la manipulación de la verdad.', TRUE),
+('9780156012195', 'El Principito', 'Antoine de Saint-Exupéry', 'Reynal & Hitchcock', 1943, 'Infantil / Fábula', 4, 'Un cuento poético acompañado de ilustraciones hechas por el propio autor.', TRUE),
+('9788437604947', 'Don Quijote de la Mancha', 'Miguel de Cervantes', 'Espasa-Calpe', 1605, 'Clásico', 2, 'Las aventuras de un hidalgo pobre que de tanto leer libros de caballerías se vuelve loco.', TRUE),
+('9789500700122', 'Ficciones', 'Jorge Luis Borges', 'Sur', 1944, 'Cuentos', 3, 'Una colección de cuentos que explotan laberintos, bibliotecas e infinitos.', TRUE),
+('9788420658827', 'Fahrenheit 451', 'Ray Bradbury', 'Ballantine Books', 1953, 'Ciencia Ficción', 0, 'Un futuro donde los libros están prohibidos y los bomberos se dedican a quemarlos.', FALSE),
+('9788437600895', 'Rayuela', 'Julio Cortázar', 'Editorial Sudamericana', 1963, 'Novela', 2, 'Una contranovela que puede leerse de múltiples maneras y secuencias.', TRUE),
+('9789505112111', 'El Aleph', 'Jorge Luis Borges', 'Losada', 1949, 'Cuentos', 1, 'Colección de relatos donde destaca el punto que contiene todos los puntos del universo.', TRUE);
