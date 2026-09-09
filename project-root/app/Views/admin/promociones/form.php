@@ -1,44 +1,255 @@
-<?php ob_start(); $editando = $promocion !== null; ?>
+<?php ob_start(); ?>
 
-<div class="tarjeta" style="padding:1.6em 1.8em;max-width:560px;">
-  <?php if (isset($errors)): ?>
-    <div class="alerta alerta--error"><?php foreach ($errors as $e) echo esc($e) . '<br>'; ?></div>
-  <?php endif; ?>
+<?php
+$esEdicion = !empty($promocion);
+$accion = $esEdicion
+    ? '/admin/promociones/' . $promocion['id'] . '/update'
+    : '/admin/promociones';
+?>
 
-  <form action="<?= $editando ? "/admin/promociones/{$promocion['id']}" : '/admin/promociones' ?>" method="post" enctype="multipart/form-data">
-    <?= csrf_field() ?>
-    <?php if ($editando): ?><input type="hidden" name="_method" value="PUT"><?php endif; ?>
+<div class="pub-contenido">
 
-    <div class="campo">
-      <label for="titulo">Título</label>
-      <input type="text" id="titulo" name="titulo" required value="<?= esc($promocion['titulo'] ?? old('titulo')) ?>">
-    </div>
-    <div class="campo">
-      <label for="descripcion">Descripción</label>
-      <textarea id="descripcion" name="descripcion" rows="3"><?= esc($promocion['descripcion'] ?? old('descripcion')) ?></textarea>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1em;">
-      <div class="campo">
-        <label for="fecha_inicio">Vigencia desde</label>
-        <input type="date" id="fecha_inicio" name="fecha_inicio" required value="<?= esc($promocion['fecha_inicio'] ?? old('fecha_inicio')) ?>">
-      </div>
-      <div class="campo">
-        <label for="fecha_fin">Vigencia hasta</label>
-        <input type="date" id="fecha_fin" name="fecha_fin" required value="<?= esc($promocion['fecha_fin'] ?? old('fecha_fin')) ?>">
-      </div>
-    </div>
-    <div class="campo">
-      <label for="imagen">Imagen promocional</label>
-      <input type="file" id="imagen" name="imagen">
-    </div>
-    <div class="campo">
-      <label><input type="checkbox" name="activo" <?= ($promocion['activo'] ?? true) ? 'checked' : '' ?> style="width:auto;display:inline;"> Activa</label>
-    </div>
+    <h1>
+        <?= $esEdicion ? 'Editar promoción' : 'Nueva promoción' ?>
+    </h1>
 
-    <button type="submit" class="btn"><?= $editando ? 'Guardar cambios' : 'Publicar promoción' ?></button>
-    <a href="/admin/promociones" class="btn btn--outline">Cancelar</a>
-  </form>
+    <?php if (session()->getFlashdata('errors')): ?>
+
+        <div class="alerta alerta--error">
+
+            <?php foreach ((array) session()->getFlashdata('errors') as $error): ?>
+
+                <p><?= esc($error) ?></p>
+
+            <?php endforeach; ?>
+
+        </div>
+
+    <?php endif; ?>
+
+
+    <form
+        action="<?= $accion ?>"
+        method="post"
+        enctype="multipart/form-data"
+        class="formulario"
+    >
+
+        <?= csrf_field() ?>
+
+
+        <?php if ($esEdicion): ?>
+
+            <input
+                type="hidden"
+                name="_method"
+                value="PUT"
+            >
+
+        <?php endif; ?>
+
+
+        <!-- TÍTULO -->
+
+        <div class="campo">
+
+            <label for="titulo">
+                Título de la promoción
+            </label>
+
+            <input
+                type="text"
+                id="titulo"
+                name="titulo"
+                value="<?= esc(old('titulo', $promocion['titulo'] ?? '')) ?>"
+                maxlength="255"
+                required
+            >
+
+        </div>
+
+
+        <!-- DESCRIPCIÓN -->
+
+        <div class="campo">
+
+            <label for="descripcion">
+                Descripción
+            </label>
+
+            <textarea
+                id="descripcion"
+                name="descripcion"
+                rows="5"
+            ><?= esc(old('descripcion', $promocion['descripcion'] ?? '')) ?></textarea>
+
+        </div>
+
+
+        <!-- FECHA DE INICIO -->
+
+        <div class="campo">
+
+            <label for="fecha_inicio">
+                Fecha de inicio
+            </label>
+
+            <input
+                type="date"
+                id="fecha_inicio"
+                name="fecha_inicio"
+                value="<?= esc(old('fecha_inicio', $promocion['fecha_inicio'] ?? '')) ?>"
+                required
+            >
+
+        </div>
+
+
+        <!-- FECHA DE FIN -->
+
+        <div class="campo">
+
+            <label for="fecha_fin">
+                Fecha de finalización
+            </label>
+
+            <input
+                type="date"
+                id="fecha_fin"
+                name="fecha_fin"
+                value="<?= esc(old('fecha_fin', $promocion['fecha_fin'] ?? '')) ?>"
+                required
+            >
+
+        </div>
+
+
+        <!-- IMAGEN -->
+
+        <div class="campo">
+
+            <label for="imagen">
+                Imagen promocional
+            </label>
+
+            <input
+                type="file"
+                id="imagen"
+                name="imagen"
+                accept="image/jpeg,image/png,image/webp"
+            >
+
+            <small>
+                Formatos permitidos: JPG, PNG o WEBP.
+            </small>
+
+        </div>
+
+
+        <!-- IMAGEN ACTUAL -->
+
+        <?php if ($esEdicion && !empty($promocion['imagen_url'])): ?>
+
+            <div class="campo">
+
+                <label>
+                    Imagen actual
+                </label>
+
+                <div>
+
+                    <img
+                        src="/<?= esc($promocion['imagen_url']) ?>"
+                        alt="<?= esc($promocion['titulo']) ?>"
+                        style="max-width:300px;border-radius:10px;"
+                    >
+
+                </div>
+
+            </div>
+
+        <?php endif; ?>
+
+
+        <!-- CONDICIONES -->
+
+        <div class="campo">
+
+            <label for="condiciones">
+                Condiciones de la promoción
+            </label>
+
+            <textarea
+                id="condiciones"
+                name="condiciones"
+                rows="5"
+                placeholder="Ejemplo: Promoción válida para socios activos."
+            ><?= esc(old('condiciones', $promocion['condiciones'] ?? '')) ?></textarea>
+
+        </div>
+
+
+        <!-- BOTONES -->
+
+        <div class="formulario__acciones">
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                <?= $esEdicion
+                    ? 'Guardar cambios'
+                    : 'Crear promoción'
+                ?>
+            </button>
+
+            <a
+                href="/admin/promociones"
+                class="btn btn--outline"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
 </div>
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const fechaInicio = document.getElementById('fecha_inicio');
+    const fechaFin = document.getElementById('fecha_fin');
+
+    function validarFechas() {
+
+        if (
+            fechaInicio.value &&
+            fechaFin.value &&
+            fechaFin.value < fechaInicio.value
+        ) {
+            fechaFin.setCustomValidity(
+                'La fecha de finalización no puede ser anterior a la fecha de inicio.'
+            );
+        } else {
+            fechaFin.setCustomValidity('');
+        }
+    }
+
+    fechaInicio.addEventListener('change', validarFechas);
+    fechaFin.addEventListener('change', validarFechas);
+
+});
+</script>
+
+
 <?php $contenido = ob_get_clean(); ?>
-<?= view('layouts/admin_layout', ['titulo' => $editando ? 'Editar promoción' : 'Nueva promoción', 'contenido' => $contenido]) ?>
+
+<?= view('layouts/admin_layout', [
+    'titulo' => $esEdicion
+        ? 'Editar promoción'
+        : 'Nueva promoción',
+    'contenido' => $contenido
+]) ?>
