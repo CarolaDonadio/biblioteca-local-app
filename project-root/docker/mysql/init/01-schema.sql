@@ -141,3 +141,22 @@ CREATE TABLE promociones (
 
   PRIMARY KEY (id)
 );
+
+-- =====================================================
+-- DATOS DE PRUEBA: REGISTROS (PRÉSTAMOS)
+-- =====================================================
+
+-- Préstamos asignados al usuario socio (DNI: 31001002)
+-- - 2 devueltos
+-- - 1 vencido (fechaVence anterior a la fecha actual y sin fechaDevolucion)
+-- - 1 en curso (fechaVence posterior a la fecha actual y sin fechaDevolucion)
+INSERT INTO registros (idlibro, dniUsuario, fechaPrestamo, fechaVence, fechaDevolucion) VALUES
+-- Préstamos devueltos
+(1, 31001002, DATE_SUB(CURRENT_DATE, INTERVAL 40 DAY), DATE_SUB(CURRENT_DATE, INTERVAL 25 DAY), DATE_SUB(CURRENT_DATE, INTERVAL 27 DAY)),
+(2, 31001002, DATE_SUB(CURRENT_DATE, INTERVAL 20 DAY), DATE_SUB(CURRENT_DATE, INTERVAL 5 DAY), DATE_SUB(CURRENT_DATE, INTERVAL 6 DAY)),
+
+-- Préstamo vencido (en mora / no devuelto)
+(3, 31001002, DATE_SUB(CURRENT_DATE, INTERVAL 25 DAY), DATE_SUB(CURRENT_DATE, INTERVAL 10 DAY), NULL),
+
+-- Préstamo en curso (activo / vigente)
+(4, 31001002, DATE_SUB(CURRENT_DATE, INTERVAL 2 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 13 DAY), NULL);
