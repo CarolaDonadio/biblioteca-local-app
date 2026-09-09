@@ -4,7 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\ReservaModel;
-use App\Models\PrestamoModel;
+use App\Models\RegistroModel;
 
 class ReservaController extends BaseController
 {
@@ -39,9 +39,9 @@ class ReservaController extends BaseController
     {
         $reserva = $this->reservas->find($id);
 
-        $prestamoModel = new PrestamoModel();
+        $registroModel = new RegistroModel();
         try {
-            $prestamoModel->registrarPrestamo($reserva['libro_id'], $reserva['socio_id'], session()->get('admin_id'));
+            $registroModel->registrarPrestamo($reserva['libro_id'], $reserva['socio_id'], session()->get('admin_id'));
             $this->reservas->completar((int) $id);
         } catch (\RuntimeException $e) {
             return redirect()->back()->with('error', $e->getMessage());

@@ -65,9 +65,9 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
     $routes->post('ejemplares/(:num)/marcar-danado', 'Admin\EjemplarController::marcarDanado/$1');
     $routes->get('inventario/reportes', 'Admin\EjemplarController::reportes');
 
-    // Socios
-    $routes->resource('socios', ['controller' => 'Admin\SocioController']);
+    // Socios (la ruta de historial debe ir antes del resource, que registra 'socios/(.*)' -> show)
     $routes->get('socios/(:num)/historial', 'Admin\SocioController::historial/$1');
+    $routes->resource('socios', ['controller' => 'Admin\SocioController']);
 
     // Préstamos y devoluciones
     $routes->get('prestamos', 'Admin\PrestamoController::index');

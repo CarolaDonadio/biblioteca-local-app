@@ -3,18 +3,18 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Models\PrestamoModel;
+use App\Models\RegistroModel;
 use App\Models\LibroModel;
 use App\Models\SocioModel;
 use App\Models\NotificacionModel;
 
 class PrestamoController extends BaseController
 {
-    protected PrestamoModel $prestamos;
+    protected RegistroModel $prestamos;
 
     public function __construct()
     {
-        $this->prestamos = new PrestamoModel();
+        $this->prestamos = new RegistroModel();
     }
 
     public function index()
