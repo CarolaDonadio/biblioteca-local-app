@@ -128,6 +128,45 @@ INSERT INTO libros (isbn, titulo, autor, editorial, anio, categoria, cantidad, s
 ('9788437600895', 'Rayuela', 'Julio Cortázar', 'Editorial Sudamericana', 1963, 'Novela', 2, 'Una contranovela que puede leerse de múltiples maneras y secuencias.', TRUE),
 ('9789505112111', 'El Aleph', 'Jorge Luis Borges', 'Losada', 1949, 'Cuentos', 1, 'Colección de relatos donde destaca el punto que contiene todos los puntos del universo.', TRUE);
 
+-- =====================================================
+-- TABLA: ejemplares (inventario físico de cada libro)
+-- =====================================================
+
+CREATE TABLE ejemplares (
+  id INT NOT NULL AUTO_INCREMENT,
+  libro_id INT NOT NULL,
+  codigo_inventario VARCHAR(50) NOT NULL,
+  ubicacion VARCHAR(100),
+  estado ENUM('disponible','prestado','reservado','perdido','danado','baja') NOT NULL DEFAULT 'disponible',
+  observaciones TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+
+  UNIQUE KEY uk_ejemplares_codigo (codigo_inventario),
+
+  CONSTRAINT fk_ejemplares_libro
+      FOREIGN KEY (libro_id)
+      REFERENCES libros(id)
+      ON UPDATE CASCADE
+      ON DELETE RESTRICT
+);
+
+-- Ejemplares de ejemplo, con distintos estados para poder ver
+-- el listado de inventario y el reporte funcionando de entrada.
+INSERT INTO ejemplares (libro_id, codigo_inventario, ubicacion, estado) VALUES
+(1, 'CAS-001', 'Estante A1', 'disponible'),
+(1, 'CAS-002', 'Estante A1', 'prestado'),
+(2, '1984-001', 'Estante B2', 'disponible'),
+(2, '1984-002', 'Estante B2', 'perdido'),
+(3, 'PRIN-001', 'Estante C1', 'disponible'),
+(4, 'QUIJ-001', 'Estante D3', 'danado'),
+(5, 'FICC-001', 'Estante A2', 'disponible'),
+(6, 'FAHR-001', 'Estante B1', 'baja'),
+(7, 'RAYU-001', 'Estante C2', 'reservado'),
+(8, 'ALEP-001', 'Estante A3', 'disponible');
+
 CREATE TABLE promociones (
   id INT NOT NULL AUTO_INCREMENT,
   titulo VARCHAR(255) NOT NULL,
