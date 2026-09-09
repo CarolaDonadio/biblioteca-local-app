@@ -6,33 +6,66 @@ use App\Controllers\BaseController;
 use App\Models\RegistroModel;
 use App\Models\LibroModel;
 use App\Models\SocioModel;
-use App\Models\NotificacionModel;
 
 class PrestamoController extends BaseController
 {
     protected RegistroModel $prestamos;
+    protected LibroModel $libros;
+    protected SocioModel $socios;
 
     public function __construct()
     {
         $this->prestamos = new RegistroModel();
+        $this->libros    = new LibroModel();
+        $this->socios    = new SocioModel();
     }
 
     public function index()
     {
-        $data['prestamos'] = $this->prestamos->activos();
-        $data['vencidos']  = $this->prestamos->vencidos();
-        return view('admin/prestamos/index', $data);
+        return view('admin/prestamos/index', [
+            'prestamos' => $this->prestamos->activos(),
+            'vencidos'  => $this->prestamos->vencidos(),
+        ]);
     }
 
     public function nuevo()
     {
-        $data['libros'] = (new LibroModel())->orderBy('titulo', 'ASC')->findAll();
-        $data['socios'] = (new SocioModel())->where('estado', 'activo')->orderBy('apellido', 'ASC')->findAll();
-        return view('admin/prestamos/nuevo', $data);
+        return view('admin/prestamos/nuevo', [
+            'libros' => $this->libros->conDisponibilidad(),
+            'socios' => $this->socios->activos(),
+        ]);
+    }
+
+    /**
+     * Devuelve en JSON los ejemplares libres de un libro (usado por prestamos.js).
+     */
+    public function disponibilidad($id)
+    {
+        $libro = $this->libros->find((int) $id);
+        if (! $libro) {
+            return $this->response->setStatusCode(404)->setJSON(['error' => 'Libro no encontrado.']);
+        }
+
+        return $this->response->setJSON([
+            'id'          => (int) $libro['id'],
+            'titulo'      => $libro['titulo'],
+            'cantidad'    => (int) $libro['cantidad'],
+            'disponibles' => $this->libros->disponiblesDe((int) $id),
+        ]);
     }
 
     public function registrar()
     {
+        $reglas = [
+            'libro_id' => 'required|is_natural_no_zero',
+            'socio_id' => 'required|is_natural_no_zero',
+        ];
+
+        if (! $this->validate($reglas)) {
+            return redirect()->back()->withInput()
+                ->with('error', 'Seleccioná un libro y un socio para registrar el préstamo.');
+        }
+
         $libroId = (int) $this->request->getPost('libro_id');
         $socioId = (int) $this->request->getPost('socio_id');
         $adminId = session()->get('admin_id');
@@ -54,7 +87,7 @@ class PrestamoController extends BaseController
             return redirect()->back()->with('error', $e->getMessage());
         }
 
-        return redirect()->to('/admin/prestamos')->with('mensaje', 'Devolución registrada. Se notificó al siguiente en la cola si correspondía.');
+        return redirect()->to('/admin/prestamos')->with('mensaje', 'Devolución registrada.');
     }
 
     public function renovar($id)
