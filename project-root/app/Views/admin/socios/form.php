@@ -5,41 +5,27 @@
     <div class="alerta alerta--error"><?php foreach ($errors as $e) echo esc($e) . '<br>'; ?></div>
   <?php endif; ?>
 
-  <form action="<?= $editando ? "/admin/socios/{$socio['id']}" : '/admin/socios' ?>" method="post">
+  <form action="<?= $editando ? "/admin/socios/{$socio['dni']}" : '/admin/socios' ?>" method="post">
     <?= csrf_field() ?>
     <?php if ($editando): ?><input type="hidden" name="_method" value="PUT"><?php endif; ?>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1em;">
+    <div class="campo">
       <div class="campo">
-        <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" name="nombre" required value="<?= esc($socio['nombre'] ?? old('nombre')) ?>">
-      </div>
-      <div class="campo">
-        <label for="apellido">Apellido</label>
-        <input type="text" id="apellido" name="apellido" required value="<?= esc($socio['apellido'] ?? old('apellido')) ?>">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" name="nombre_completo" required value="<?= esc($socio['nombre_completo'] ?? old('nombre_completo')) ?>">
       </div>
     </div>
     <div class="campo">
       <label for="dni">DNI</label>
-      <input type="text" id="dni" name="dni" required value="<?= esc($socio['dni'] ?? old('dni')) ?>">
+      <input type="text" id="dni" name="dni" required value="<?= esc($socio['dni'] ?? old('dni')) ?>" <?= $editando ? 'disabled' : '' ?>>
     </div>
     <div class="campo">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" required value="<?= esc($socio['email'] ?? old('email')) ?>">
+      <input type="email" id="email" name="mail" required value="<?= esc($socio['mail'] ?? old('mail')) ?>">
     </div>
     <div class="campo">
       <label for="telefono">Teléfono</label>
       <input type="text" id="telefono" name="telefono" value="<?= esc($socio['telefono'] ?? old('telefono')) ?>">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1em;">
-      <div class="campo">
-        <label for="telegram_chat_id">Telegram Chat ID</label>
-        <input type="text" id="telegram_chat_id" name="telegram_chat_id" value="<?= esc($socio['telegram_chat_id'] ?? old('telegram_chat_id')) ?>">
-      </div>
-      <div class="campo">
-        <label for="whatsapp_numero">WhatsApp</label>
-        <input type="text" id="whatsapp_numero" name="whatsapp_numero" value="<?= esc($socio['whatsapp_numero'] ?? old('whatsapp_numero')) ?>">
-      </div>
     </div>
     <?php if (! $editando): ?>
     <div class="campo">

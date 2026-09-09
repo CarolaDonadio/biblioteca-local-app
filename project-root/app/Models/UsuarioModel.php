@@ -25,9 +25,10 @@ class UsuarioModel extends Model
         'ultimo_login',
     ];
     protected $validationRules = [
+        'dni'             => 'required|is_unique[usuarios.dni]',
         'nombre_completo' => 'required|max_length[120]',
-        'mail'            => 'required|valid_email|is_unique[usuarios.mail,id,{id}]',
-        'perfil'          => 'in_list[superadmin,bibliotecario]',
+        'mail'            => 'required|valid_email|is_unique[usuarios.mail]',
+        'perfil'          => 'in_list[socio,bibliotecario]',
     ];
 
     public function verificarCredenciales(string $email, string $password): ?array
@@ -41,4 +42,5 @@ class UsuarioModel extends Model
 
         return null;
     }
+
 }

@@ -7,6 +7,7 @@ use CodeIgniter\Model;
 class PromocionModel extends Model
 {
     protected $table = 'promociones';
+
     protected $primaryKey = 'id';
 
     protected $allowedFields = [
@@ -19,6 +20,10 @@ class PromocionModel extends Model
     ];
 
     protected $useTimestamps = true;
+
+    protected $createdField = 'created_at';
+
+    protected $updatedField = 'updated_at';
 
     public function vigentes()
     {
