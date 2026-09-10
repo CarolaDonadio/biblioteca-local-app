@@ -1,30 +1,9 @@
 <?php ob_start(); ?>
 
-<?php 
-  // Fallback de datos simulados para maquetación si la BD aún no envía $prestamos
-  $lista_prestamos = $prestamos ?? [
-    [
-      'id'                => 1,
-      'apellido'          => 'Pérez',
-      'nombre'            => 'Juan',
-      'titulo'            => 'El Principito',
-      'codigo_inventario' => 'LIB-001-A',
-      'fecha_vencimiento' => '2026-09-01'
-    ],
-    [
-      'id'                => 2,
-      'apellido'          => 'Gómez',
-      'nombre'            => 'María',
-      'titulo'            => 'Rayuela',
-      'codigo_inventario' => 'LIB-042-C',
-      'fecha_vencimiento' => '2026-09-15'
-    ]
-  ];
-
-  // Fallback para la variable $vencidos
-  $vencidos_lista = $vencidos ?? array_filter($lista_prestamos, function($item) {
-    return $item['fecha_vencimiento'] < date('Y-m-d');
-  });
+<?php
+  $lista_prestamos = $prestamos ?? [];
+  $vencidos_lista  = $vencidos ?? [];
+  $hoy             = date('Y-m-d');
 ?>
 
 <div class="toolbar">
@@ -38,19 +17,21 @@
       <tr>
         <th>Socio</th>
         <th>Libro</th>
-        <th>Ejemplar</th>
+        <th>ISBN</th>
+        <th>Retiro</th>
         <th>Vence</th>
         <th>Estado</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <?php foreach ($lista_prestamos as $p): $vencido = $p['fecha_vencimiento'] < date('Y-m-d'); ?>
+      <?php foreach ($lista_prestamos as $p): $vencido = $p['fechaVence'] < $hoy; ?>
         <tr>
-          <td><?= esc($p['apellido']) ?>, <?= esc($p['nombre']) ?></td>
-          <td><?= esc($p['titulo']) ?></td>
-          <td class="codigo"><?= esc($p['codigo_inventario']) ?></td>
-          <td><?= esc($p['fecha_vencimiento']) ?></td>
+          <td><?= esc($p['socio_nombre'] ?? 'Socio eliminado') ?> <small style="color:var(--gris-texto);">(<?= esc($p['dniUsuario']) ?>)</small></td>
+          <td><?= esc($p['titulo'] ?? 'Libro eliminado') ?></td>
+          <td class="codigo"><?= esc($p['isbn'] ?? '—') ?></td>
+          <td><?= esc(date('d/m/Y', strtotime($p['fechaPrestamo']))) ?></td>
+          <td><?= esc(date('d/m/Y', strtotime($p['fechaVence']))) ?></td>
           <td>
             <span class="sello sello--<?= $vencido ? 'vencido' : 'disponible' ?>">
               <?= $vencido ? 'vencido' : 'en curso' ?>
@@ -71,7 +52,7 @@
 
       <?php if (empty($lista_prestamos)): ?>
         <tr>
-          <td colspan="6" style="text-align:center;padding:1.5em;">No hay préstamos activos.</td>
+          <td colspan="7" style="text-align:center;padding:1.5em;">No hay préstamos activos.</td>
         </tr>
       <?php endif; ?>
     </tbody>
