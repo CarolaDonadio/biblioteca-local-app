@@ -13,8 +13,8 @@
           <td>#<?= (int) $r['posicion_cola'] ?></td>
           <td><?= esc($r['fecha_reserva']) ?></td>
           <td>
-            <span class="sello sello--<?= $r['estado'] === 'disponible_para_retiro' ? 'reservado' : 'pendiente' ?>">
-              <?= $r['estado'] === 'disponible_para_retiro' ? 'listo para retirar' : 'en cola' ?>
+            <span class="sello sello--<?= $r['estado'] === 'confirmada' ? 'reservado' : ($r['estado'] === 'cancelada' ? 'vencido' : 'pendiente') ?>">
+              <?= esc(ucfirst($r['estado'])) ?>
             </span>
           </td>
           <td style="text-align:right;white-space:nowrap;">
@@ -23,16 +23,20 @@
                 <?= csrf_field() ?>
                 <button class="btn btn--outline btn--chico" type="submit">Confirmar</button>
               </form>
-            <?php else: ?>
-              <form action="/admin/reservas/<?= $r['id'] ?>/completar" method="post" style="display:inline;" data-confirmar="¿El socio retira el ejemplar ahora? Se registrará el préstamo.">
+              <form action="/admin/reservas/<?= $r['id'] ?>/cancelar" method="post" style="display:inline;" data-confirmar="¿Cancelar esta reserva?">
+                <?= csrf_field() ?>
+                <button class="btn btn--peligro btn--chico" type="submit">Cancelar</button>
+              </form>
+            <?php elseif ($r['estado'] === 'confirmada'): ?>
+              <form action="/admin/reservas/<?= $r['id'] ?>/completar" method="post" style="display:inline;" data-confirmar="¿Confirmar que el socio retiró el libro? La reserva se marcará como completada.">
                 <?= csrf_field() ?>
                 <button class="btn btn--chico" type="submit">Marcar retirado</button>
               </form>
+              <form action="/admin/reservas/<?= $r['id'] ?>/cancelar" method="post" style="display:inline;" data-confirmar="¿Cancelar esta reserva?">
+                <?= csrf_field() ?>
+                <button class="btn btn--peligro btn--chico" type="submit">Cancelar</button>
+              </form>
             <?php endif; ?>
-            <form action="/admin/reservas/<?= $r['id'] ?>/cancelar" method="post" style="display:inline;" data-confirmar="¿Cancelar esta reserva?">
-              <?= csrf_field() ?>
-              <button class="btn btn--peligro btn--chico" type="submit">Cancelar</button>
-            </form>
           </td>
         </tr>
       <?php endforeach; ?>
