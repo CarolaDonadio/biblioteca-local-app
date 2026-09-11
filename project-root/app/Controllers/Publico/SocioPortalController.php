@@ -103,7 +103,57 @@ class SocioPortalController extends BaseController
     {
         return view('publico/socio_registro');
     }
+    public function guardarRegistro()
+{
+    $dni      = $this->request->getPost('dni');
+    $nombre   = trim((string) $this->request->getPost('nombre'));
+    $apellido = trim((string) $this->request->getPost('apellido'));
+    $email    = trim((string) $this->request->getPost('email'));
+    $telefono = trim((string) $this->request->getPost('telefono'));
+    $password = (string) $this->request->getPost('password');
 
+    if (! $dni || ! $nombre || ! $apellido || ! $email || ! $password) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'Completá todos los campos obligatorios.');
+    }
+
+    $existente = $this->usuarioModel
+        ->groupStart()
+            ->where('dni', $dni)
+            ->orWhere('mail', $email)
+        ->groupEnd()
+        ->first();
+
+    if ($existente) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'Ya existe un usuario con ese DNI o email.');
+    }
+
+    $datos = [
+        'dni'             => $dni,
+        'nombre_completo' => trim($nombre . ' ' . $apellido),
+        'telefono'        => $telefono,
+        'mail'            => $email,
+        'password_hash'   => password_hash($password, PASSWORD_DEFAULT),
+        'perfil'          => 'socio',
+        'estado'          => 'activo',
+    ];
+
+    if (! $this->usuarioModel->insert($datos)) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'No se pudo crear la cuenta.');
+    }
+
+    return redirect()
+        ->to('/socio/login')
+        ->with('mensaje', 'Cuenta creada correctamente. Ya podés iniciar sesión.');
+}
     public function logout()
     {
         session()->destroy();
