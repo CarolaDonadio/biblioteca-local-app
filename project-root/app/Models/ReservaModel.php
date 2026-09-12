@@ -28,6 +28,42 @@ class ReservaModel extends Model
         'estado'   => 'required|in_list[pendiente,confirmada,cancelada,completada]',
     ];
 
+    public function solicitar(int $libroId, int $socioId): int
+    {
+        $libro = (new LibroModel())->find($libroId);
+        if (! $libro) {
+            throw new \RuntimeException('El libro seleccionado no existe.');
+        }
+
+        $socio = (new SocioModel())->where('dni', $socioId)->where('perfil', 'socio')->first();
+        if (! $socio || $socio['estado'] !== 'activo') {
+            throw new \RuntimeException('El socio no está habilitado para reservar libros.');
+        }
+
+        if ($this->existeActivaParaSocio($libroId, $socioId)) {
+            throw new \RuntimeException('Ya tenés una reserva activa para este libro.');
+        }
+
+        if (! $this->insert([
+            'libro_id'       => $libroId,
+            'socio_id'       => $socioId,
+            'estado'         => 'pendiente',
+            'fecha_solicitud' => date('Y-m-d H:i:s'),
+        ])) {
+            throw new \RuntimeException('No se pudo registrar la reserva.');
+        }
+
+        return (int) $this->getInsertID();
+    }
+
+    private function existeActivaParaSocio(int $libroId, int $socioId): bool
+    {
+        return $this->where('libro_id', $libroId)
+            ->where('socio_id', $socioId)
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->countAllResults() > 0;
+    }
+
     /**
      * Obtiene reservas activas junto con la información del socio y del libro.
      *
@@ -138,12 +174,31 @@ class ReservaModel extends Model
             throw new \RuntimeException('Solo se pueden completar reservas confirmadas.');
         }
 
-        if (! $this->update($id, [
-            'estado'          => 'completada',
-            'fecha_completada' => date('Y-m-d H:i:s'),
-            'procesada_por'   => $adminId,
-        ])) {
-            throw new \RuntimeException('No se pudo completar la reserva.');
+        $this->db->transStart();
+
+        try {
+            (new RegistroModel())->registrarPrestamo(
+                (int) $reserva['libro_id'],
+                (int) $reserva['socio_id'],
+                $adminId
+            );
+
+            if (! $this->update($id, [
+                'estado'           => 'completada',
+                'fecha_completada' => date('Y-m-d H:i:s'),
+                'procesada_por'    => $adminId,
+            ])) {
+                throw new \RuntimeException('No se pudo completar la reserva.');
+            }
+        } catch (\Throwable $e) {
+            $this->db->transRollback();
+            throw $e;
+        }
+
+        $this->db->transComplete();
+
+        if ($this->db->transStatus() === false) {
+            throw new \RuntimeException('No se pudo registrar el retiro del libro.');
         }
 
         return true;

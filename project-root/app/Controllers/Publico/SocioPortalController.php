@@ -5,16 +5,19 @@ namespace App\Controllers\Publico;
 use App\Controllers\BaseController;
 use App\Models\UsuarioModel;
 use App\Models\RegistroModel;
+use App\Models\ReservaModel;
 
 class SocioPortalController extends BaseController
 {
     protected UsuarioModel $usuarioModel;
     protected RegistroModel $registroModel;
+    protected ReservaModel $reservaModel;
 
     public function __construct()
     {
         $this->usuarioModel = new UsuarioModel();
         $this->registroModel = new RegistroModel();
+        $this->reservaModel = new ReservaModel();
     }
 
     public function login()
@@ -77,6 +80,19 @@ class SocioPortalController extends BaseController
         ];
 
         return view('publico/socio_home', $data);
+    }
+
+    public function reservar($id)
+    {
+        $socioDni = (int) session()->get('socio_dni');
+
+        try {
+            $this->reservaModel->solicitar((int) $id, $socioDni);
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
+        return redirect()->to('/socio/home')->with('mensaje', 'Reserva registrada correctamente.');
     }
 
     public function actualizarPerfil()

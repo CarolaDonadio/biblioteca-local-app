@@ -61,7 +61,7 @@
 
       <!-- Botón de Acción -->
       <div>
-        <?php if (session('socio_id')): ?>
+        <?php if (session('socio_dni')): ?>
           <form action="<?= base_url('socio/reservar/' . $libro['id']) ?>" method="post">
             <?= csrf_field() ?>
             <button type="submit" class="btn" style="width:100%;">Reservar este libro</button>
