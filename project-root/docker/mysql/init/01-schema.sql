@@ -223,3 +223,4 @@ INSERT INTO registros (idlibro, dniUsuario, fechaPrestamo, fechaVence, fechaDevo
 
 -- Préstamo en curso (activo / vigente)
 (4, 31001002, DATE_SUB(CURRENT_DATE, INTERVAL 2 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 13 DAY), NULL);
+

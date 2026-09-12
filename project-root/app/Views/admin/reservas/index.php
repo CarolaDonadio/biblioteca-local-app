@@ -9,7 +9,7 @@
       <?php foreach ($reservas as $r): ?>
         <tr>
           <td><?= esc($r['titulo']) ?></td>
-          <td><?= esc($r['apellido']) ?>, <?= esc($r['nombre']) ?></td>
+          <td><?= esc($r['socio_nombre'] ?? 'Socio no encontrado') ?></td>
           <td>#<?= (int) $r['posicion_cola'] ?></td>
           <td><?= esc($r['fecha_reserva']) ?></td>
           <td>
