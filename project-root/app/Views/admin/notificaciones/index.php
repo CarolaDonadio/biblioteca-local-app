@@ -11,7 +11,7 @@
     <tbody>
       <?php foreach ($notificaciones as $n): ?>
         <tr>
-          <td><?= esc($n['apellido']) ?>, <?= esc($n['nombre']) ?></td>
+          <td><?= esc($n['nombre_completo'] ?? 'Usuario eliminado') ?></td>
           <td class="mono"><?= esc($n['canal']) ?></td>
           <td><?= esc($n['tipo']) ?></td>
           <td style="max-width:280px;"><?= esc($n['mensaje']) ?></td>

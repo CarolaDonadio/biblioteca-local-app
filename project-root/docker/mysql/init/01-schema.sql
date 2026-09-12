@@ -34,6 +34,31 @@ CREATE TABLE usuarios (
 );
 
 -- =====================================================
+-- TABLA: notificaciones
+-- =====================================================
+
+CREATE TABLE notificaciones (
+  id INT NOT NULL AUTO_INCREMENT,
+  dniUsuario INT NOT NULL,
+  canal ENUM('telegram', 'whatsapp', 'email') NOT NULL,
+  tipo VARCHAR(80) NOT NULL,
+  mensaje TEXT NOT NULL,
+  estado_entrega ENUM('pendiente', 'enviado', 'fallido') NOT NULL DEFAULT 'pendiente',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_notificaciones_usuario_estado (dniUsuario, estado_entrega),
+  KEY idx_notificaciones_estado_fecha (estado_entrega, created_at),
+
+  CONSTRAINT fk_notificaciones_usuario
+      FOREIGN KEY (dniUsuario)
+      REFERENCES usuarios(dni)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE
+);
+
+-- =====================================================
 -- TABLA: libros
 -- =====================================================
 

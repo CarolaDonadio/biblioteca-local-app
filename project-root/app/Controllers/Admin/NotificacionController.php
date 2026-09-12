@@ -17,8 +17,8 @@ class NotificacionController extends BaseController
     public function index()
     {
         $data['notificaciones'] = $this->notificaciones
-            ->select('notificaciones.*, socios.nombre, socios.apellido')
-            ->join('socios', 'socios.id = notificaciones.socio_id')
+            ->select('notificaciones.*, usuarios.nombre_completo')
+            ->join('usuarios', 'usuarios.dni = notificaciones.dniUsuario', 'left')
             ->orderBy('notificaciones.id', 'DESC')
             ->findAll(100);
 
@@ -27,7 +27,10 @@ class NotificacionController extends BaseController
 
     public function reenviar($id)
     {
-        $this->notificaciones->reintentar((int) $id);
+        if (! $this->notificaciones->reintentar((int) $id)) {
+            return redirect()->back()->with('error', 'No se encontró la notificación.');
+        }
+
         return redirect()->back()->with('mensaje', 'Notificación reenviada.');
     }
 
