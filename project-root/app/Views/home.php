@@ -15,7 +15,7 @@
                 <span class="brand-copy"><strong>Biblioteca Domingo Sarmiento</strong><small>Chascomús · Buenos Aires</small></span>
             </a>
             <nav class="main-nav" aria-label="Navegación principal">
-                <a href="#la-biblioteca">La biblioteca</a><a href="#servicios">Servicios</a><a href="#agenda">Agenda</a><a href="<?= base_url('catalogo') ?>">Catálogo</a><a href="<?= base_url('socio/login') ?>" class="nav-button">Mi cuenta</a>
+                <a href="#la-biblioteca">La biblioteca</a><a href="#servicios">Servicios</a><a href="#agenda">Agenda</a><a href="<?= base_url('catalogo') ?>">Catálogo</a><a href="<?= base_url('socio/login') ?>" class="nav-button">Mi cuenta</a><a href="<?= base_url('admin/login') ?>" class="nav-button">Administración</a>
             </nav>
         </div>
     </header>
