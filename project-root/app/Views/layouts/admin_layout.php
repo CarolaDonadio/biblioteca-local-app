@@ -19,7 +19,6 @@
 
       <div class="admin-nav__grupo">Catálogo</div>
       <li><a href="/admin/libros">Libros y multimedia</a></li>
-      <li><a href="/admin/ejemplares">Inventario / ejemplares</a></li>
 
       <div class="admin-nav__grupo">Comunidad</div>
       <li><a href="/admin/socios">Socios</a></li>
