@@ -88,6 +88,9 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
     // Gestión de promociones
     $routes->resource('promociones', ['controller' => 'Admin\PromocionController']);
 
+    // Gestión de donaciones
+    $routes->resource('donaciones', ['controller' => 'Admin\DonacionController']);
+
     // Roles / usuarios administradores
     $routes->resource('usuarios', ['controller' => 'Admin\UsuarioAdminController']);
 });

@@ -234,6 +234,24 @@ INSERT INTO ejemplares (libro_id, codigo_inventario, ubicacion, estado) VALUES
 (7, 'RAYU-001', 'Estante C2', 'reservado'),
 (8, 'ALEP-001', 'Estante A3', 'disponible');
 
+CREATE TABLE donaciones (
+  id INT NOT NULL AUTO_INCREMENT,
+  donante VARCHAR(150) NOT NULL,
+  tipo VARCHAR(30) NOT NULL,
+  descripcion TEXT NOT NULL,
+  cantidad INT NOT NULL DEFAULT 1,
+  fecha_donacion DATE NOT NULL,
+  estado ENUM('recibida', 'pendiente', 'rechazada') NOT NULL DEFAULT 'recibida',
+  observaciones TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_donaciones_estado_fecha (estado, fecha_donacion),
+
+  CONSTRAINT chk_donaciones_cantidad CHECK (cantidad > 0)
+);
+
 CREATE TABLE promociones (
   id INT NOT NULL AUTO_INCREMENT,
   titulo VARCHAR(255) NOT NULL,
