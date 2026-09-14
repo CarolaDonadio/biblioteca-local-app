@@ -161,6 +161,8 @@ $accion = $esEdicion
                     <img
                         src="/<?= esc($promocion['imagen_url']) ?>"
                         alt="<?= esc($promocion['titulo']) ?>"
+                        loading="lazy"
+                        decoding="async"
                         style="max-width:300px;border-radius:10px;"
                     >
 
