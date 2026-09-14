@@ -29,36 +29,5 @@
   </div>
 </div>
 
-<!-- Tabla de Inventario por Estado -->
-<div class="tarjeta" style="padding:1.3em 1.5em;margin-top:1.5em;">
-  <h3>Inventario por estado</h3>
-  <table class="tabla" style="width:100%;border-collapse:collapse;margin-top:0.8em;">
-    <thead>
-      <tr style="border-bottom:2px solid var(--gris-borde, #e5e7eb);text-align:left;">
-        <th style="padding:.6em;">Estado</th>
-        <th style="padding:.6em;">Cantidad</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php 
-        $estados = $ejemplares_por_estado ?? [
-          ['estado' => 'disponible', 'cantidad' => 245],
-          ['estado' => 'prestado', 'cantidad' => 14],
-          ['estado' => 'reparacion', 'cantidad' => 3],
-          ['estado' => 'extraviado', 'cantidad' => 1]
-        ];
-      ?>
-      <?php foreach ($estados as $fila): ?>
-        <tr style="border-bottom:1px solid var(--gris-borde, #e5e7eb);">
-          <td style="padding:.6em;">
-            <span class="sello sello--<?= esc($fila['estado']) ?>"><?= esc(ucfirst($fila['estado'])) ?></span>
-          </td>
-          <td style="padding:.6em;"><?= (int) $fila['cantidad'] ?></td>
-        </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
-</div>
-
 <?php $contenido = ob_get_clean(); ?>
 <?= view('layouts/admin_layout', ['titulo' => 'Dashboard', 'contenido' => $contenido]) ?>

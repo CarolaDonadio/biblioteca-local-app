@@ -195,6 +195,63 @@ INSERT INTO libros (isbn, titulo, autor, editorial, anio, categoria, cantidad, s
 ('9788420412146', 'Momo', 'Michael Ende', 'Alfaguara', 1973, 'Infantil / Fantasía', 4, 'Una niña se enfrenta a los hombres grises que roban el tiempo de las personas.', TRUE),
 ('9789875668383', 'El túnel', 'Ernesto Sabato', 'Seix Barral', 1948, 'Novela', 2, 'Un pintor relata la obsesión que lo lleva a buscar una explicación para un crimen.', TRUE);
 
+-- =====================================================
+-- TABLA: ejemplares (inventario físico de cada libro)
+-- =====================================================
+
+CREATE TABLE ejemplares (
+  id INT NOT NULL AUTO_INCREMENT,
+  libro_id INT NOT NULL,
+  codigo_inventario VARCHAR(50) NOT NULL,
+  ubicacion VARCHAR(100),
+  estado ENUM('disponible','prestado','reservado','perdido','danado','baja') NOT NULL DEFAULT 'disponible',
+  observaciones TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+
+  UNIQUE KEY uk_ejemplares_codigo (codigo_inventario),
+
+  CONSTRAINT fk_ejemplares_libro
+      FOREIGN KEY (libro_id)
+      REFERENCES libros(id)
+      ON UPDATE CASCADE
+      ON DELETE RESTRICT
+);
+
+-- Ejemplares de ejemplo, con distintos estados para poder ver
+-- el listado de inventario y el reporte funcionando de entrada.
+INSERT INTO ejemplares (libro_id, codigo_inventario, ubicacion, estado) VALUES
+(1, 'CAS-001', 'Estante A1', 'disponible'),
+(1, 'CAS-002', 'Estante A1', 'prestado'),
+(2, '1984-001', 'Estante B2', 'disponible'),
+(2, '1984-002', 'Estante B2', 'perdido'),
+(3, 'PRIN-001', 'Estante C1', 'disponible'),
+(4, 'QUIJ-001', 'Estante D3', 'danado'),
+(5, 'FICC-001', 'Estante A2', 'disponible'),
+(6, 'FAHR-001', 'Estante B1', 'baja'),
+(7, 'RAYU-001', 'Estante C2', 'reservado'),
+(8, 'ALEP-001', 'Estante A3', 'disponible');
+
+CREATE TABLE donaciones (
+  id INT NOT NULL AUTO_INCREMENT,
+  donante VARCHAR(150) NOT NULL,
+  tipo VARCHAR(30) NOT NULL,
+  descripcion TEXT NOT NULL,
+  cantidad INT NOT NULL DEFAULT 1,
+  fecha_donacion DATE NOT NULL,
+  estado ENUM('recibida', 'pendiente', 'rechazada') NOT NULL DEFAULT 'recibida',
+  observaciones TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_donaciones_estado_fecha (estado, fecha_donacion),
+
+  CONSTRAINT chk_donaciones_cantidad CHECK (cantidad > 0)
+);
+
 CREATE TABLE promociones (
   id INT NOT NULL AUTO_INCREMENT,
   titulo VARCHAR(255) NOT NULL,

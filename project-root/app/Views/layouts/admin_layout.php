@@ -19,7 +19,6 @@
 
       <div class="admin-nav__grupo">Catálogo</div>
       <li><a href="/admin/libros">Libros y multimedia</a></li>
-      <li><a href="/admin/ejemplares">Inventario / ejemplares</a></li>
 
       <div class="admin-nav__grupo">Comunidad</div>
       <li><a href="/admin/socios">Socios</a></li>
@@ -29,6 +28,7 @@
       <div class="admin-nav__grupo">Comunicación</div>
       <li><a href="/admin/notificaciones">Notificaciones</a></li>
       <li><a href="/admin/promociones">Promociones</a></li>
+      <li><a href="/admin/donaciones">Donaciones</a></li>
 
       <?php if ((session('admin_rol') ?? '') === 'superadmin'): ?>
       <div class="admin-nav__grupo">Sistema</div>
