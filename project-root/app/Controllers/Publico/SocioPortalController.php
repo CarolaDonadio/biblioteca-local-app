@@ -5,16 +5,19 @@ namespace App\Controllers\Publico;
 use App\Controllers\BaseController;
 use App\Models\UsuarioModel;
 use App\Models\RegistroModel;
+use App\Models\ReservaModel;
 
 class SocioPortalController extends BaseController
 {
     protected UsuarioModel $usuarioModel;
     protected RegistroModel $registroModel;
+    protected ReservaModel $reservaModel;
 
     public function __construct()
     {
         $this->usuarioModel = new UsuarioModel();
         $this->registroModel = new RegistroModel();
+        $this->reservaModel = new ReservaModel();
     }
 
     public function login()
@@ -79,6 +82,19 @@ class SocioPortalController extends BaseController
         return view('publico/socio_home', $data);
     }
 
+    public function reservar($id)
+    {
+        $socioDni = (int) session()->get('socio_dni');
+
+        try {
+            $this->reservaModel->solicitar((int) $id, $socioDni);
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
+        return redirect()->to('/socio/home')->with('mensaje', 'Reserva registrada correctamente.');
+    }
+
     public function actualizarPerfil()
     {
         $socio_dni = session()->get('socio_dni');
@@ -103,7 +119,57 @@ class SocioPortalController extends BaseController
     {
         return view('publico/socio_registro');
     }
+    public function guardarRegistro()
+{
+    $dni      = $this->request->getPost('dni');
+    $nombre   = trim((string) $this->request->getPost('nombre'));
+    $apellido = trim((string) $this->request->getPost('apellido'));
+    $email    = trim((string) $this->request->getPost('email'));
+    $telefono = trim((string) $this->request->getPost('telefono'));
+    $password = (string) $this->request->getPost('password');
 
+    if (! $dni || ! $nombre || ! $apellido || ! $email || ! $password) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'Completá todos los campos obligatorios.');
+    }
+
+    $existente = $this->usuarioModel
+        ->groupStart()
+            ->where('dni', $dni)
+            ->orWhere('mail', $email)
+        ->groupEnd()
+        ->first();
+
+    if ($existente) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'Ya existe un usuario con ese DNI o email.');
+    }
+
+    $datos = [
+        'dni'             => $dni,
+        'nombre_completo' => trim($nombre . ' ' . $apellido),
+        'telefono'        => $telefono,
+        'mail'            => $email,
+        'password_hash'   => password_hash($password, PASSWORD_DEFAULT),
+        'perfil'          => 'socio',
+        'estado'          => 'activo',
+    ];
+
+    if (! $this->usuarioModel->insert($datos)) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'No se pudo crear la cuenta.');
+    }
+
+    return redirect()
+        ->to('/socio/login')
+        ->with('mensaje', 'Cuenta creada correctamente. Ya podés iniciar sesión.');
+}
     public function logout()
     {
         session()->destroy();

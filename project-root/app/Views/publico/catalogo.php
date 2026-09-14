@@ -3,82 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo Público - Mi Biblioteca Virtual</title>
-    <link rel="stylesheet" href="<?= base_url('assets/css/home.css') ?>">
+    <meta name="description" content="Explorá el catálogo de la Biblioteca Domingo Sarmiento de Chascomús.">
+    <title>Catálogo | Biblioteca Domingo Sarmiento</title>
+    <link rel="stylesheet" href="<?= base_url('assets/css/catalogo.css') ?>">
 </head>
 <body>
-
-    <header>
-        <a href="<?= base_url() ?>" class="logo">📚 Biblioteca Virtual</a>
-        <nav>
-            <a href="<?= base_url('catalogo') ?>">Catálogo</a>
-            <a href="<?= base_url('promociones') ?>">Promociones</a>
-            <a href="<?= base_url('socio/login') ?>">Portal Socios</a>
-            <a href="<?= base_url('admin/login') ?>">Administración</a>
-        </nav>
+    <header class="catalog-header">
+        <div class="catalog-header__inner">
+            <a href="<?= base_url() ?>" class="catalog-brand" aria-label="Volver al inicio">
+                <span class="catalog-brand__mark">DS</span>
+                <span><strong>Biblioteca Domingo Sarmiento</strong><small>Chascomús · Catálogo</small></span>
+            </a>
+            <nav class="catalog-nav" aria-label="Navegación principal">
+                <a href="<?= base_url() ?>">Inicio</a>
+                <a href="<?= base_url('promociones') ?>">Novedades</a>
+                <a href="<?= base_url('socio/login') ?>" class="catalog-nav__account">Mi cuenta</a>
+            </nav>
+        </div>
     </header>
 
-    <main class="container">
-        <h2 class="section-title">Catálogo de la Biblioteca</h2>
-
-        <!-- Barra de búsqueda -->
-        <section style="margin-bottom: 2rem;">
-            <form action="<?= base_url('catalogo') ?>" method="get" class="search-box">
-                <input type="text" name="q" value="<?= esc($termino) ?>" placeholder="Buscar por título, autor o ISBN...">
-                <button type="submit">Buscar</button>
-            </form>
+    <main>
+        <section class="catalog-intro">
+            <div class="catalog-wrap">
+                <p class="catalog-kicker">Biblioteca Domingo Sarmiento</p>
+                <h1>Encontrá tu próxima historia.</h1>
+                <p>Explorá los libros disponibles en nuestra biblioteca y descubrí nuevas lecturas para compartir.</p>
+                <form action="<?= base_url('catalogo') ?>" method="get" class="catalog-search">
+                    <label for="catalog-search">Buscar en el catálogo</label>
+                    <div class="catalog-search__row">
+                        <span aria-hidden="true">⌕</span>
+                        <input id="catalog-search" type="search" name="q" value="<?= esc($termino) ?>" placeholder="Título, autor o ISBN...">
+                        <button type="submit">Buscar</button>
+                    </div>
+                </form>
+            </div>
         </section>
 
-        <!-- Grid de Libros -->
-        <div class="grid">
-            <?php if (!empty($libros) && is_array($libros)): ?>
-                <?php foreach ($libros as $libro): ?>
-                    <article class="card">
-                        <div>
-                            <div class="cover">
-                                <?php if (!empty($libro['portada_url'])): ?>
-                                    <img src="<?= base_url('uploads/' . $libro['portada_url']) ?>" 
-                                         alt="<?= esc($libro['titulo']) ?>" 
-                                         loading="lazy" 
-                                         width="100%" 
-                                         height="100%" 
-                                         style="object-fit: cover; border-radius: 8px;">
-                                <?php else: ?>
-                                    📖
-                                <?php endif; ?>
-                            </div>
-
-                            <h3><?= esc($libro['titulo']) ?></h3>
-                            <p><strong>Autor:</strong> <?= esc($libro['autor']) ?></p>
-                            
-                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
-                                <span class="badge"><?= esc($libro['categoria'] ?? 'General') ?></span>
-                                
-                                <?php if ($libro['disponible'] && $libro['cantidad'] > 0): ?>
-                                    <span class="badge" style="background: #dcfce7; color: #166534;">Disponible (<?= $libro['cantidad'] ?>)</span>
-                                <?php else: ?>
-                                    <span class="badge" style="background: #fee2e2; color: #991b1b;">Agotado</span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <a href="<?= base_url('catalogo/libro/' . $libro['id']) ?>" class="btn-card" style="text-align: center; text-decoration: none; display: block;">
-                            Ver detalle
-                        </a>
-                    </article>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
-                    <p style="font-size: 1.2rem; color: #666;">No se encontraron libros que coincidan con la búsqueda "<strong><?= esc($termino) ?></strong>".</p>
-                    <a href="<?= base_url('catalogo') ?>" style="color: #2563eb; text-decoration: underline;">Ver todo el catálogo</a>
+        <section class="catalog-results catalog-wrap">
+            <div class="results-heading">
+                <div>
+                    <p class="catalog-kicker">Colección</p>
+                    <h2><?= $termino !== '' ? 'Resultados de búsqueda' : 'Todos los ejemplares' ?></h2>
                 </div>
+                <?php if (!empty($libros) && is_array($libros)): ?>
+                    <span class="results-count"><?= count($libros) ?> <?= count($libros) === 1 ? 'título' : 'títulos' ?></span>
+                <?php endif; ?>
+            </div>
+
+            <?php if ($termino !== ''): ?>
+                <div class="active-search">Mostrando resultados para <strong>“<?= esc($termino) ?>”</strong><a href="<?= base_url('catalogo') ?>">Limpiar búsqueda</a></div>
             <?php endif; ?>
-        </div>
+
+            <?php if (!empty($libros) && is_array($libros)): ?>
+                <div class="book-grid">
+                    <?php foreach ($libros as $libro): ?>
+                        <?php $estaDisponible = !empty($libro['disponible']) && (int) ($libro['cantidad'] ?? 0) > 0; ?>
+                        <article class="book-card">
+                            <a href="<?= base_url('catalogo/libro/' . $libro['id']) ?>" class="book-cover" aria-label="Ver detalle de <?= esc($libro['titulo']) ?>">
+                                <?php if (!empty($libro['portada_url'])): ?>
+                                    <img src="<?= base_url('uploads/' . $libro['portada_url']) ?>" alt="Portada de <?= esc($libro['titulo']) ?>" loading="lazy">
+                                <?php else: ?>
+                                    <span class="book-cover__placeholder"><span>DS</span><small>Biblioteca<br>Domingo Sarmiento</small></span>
+                                <?php endif; ?>
+                                <span class="book-cover__label"><?= $estaDisponible ? 'Disponible' : 'No disponible' ?></span>
+                            </a>
+                            <div class="book-info">
+                                <p class="book-category"><?= esc($libro['categoria'] ?? 'Colección general') ?></p>
+                                <h3><a href="<?= base_url('catalogo/libro/' . $libro['id']) ?>"><?= esc($libro['titulo']) ?></a></h3>
+                                <p class="book-author"><?= esc($libro['autor'] ?? 'Autor no registrado') ?></p>
+                                <a href="<?= base_url('catalogo/libro/' . $libro['id']) ?>" class="book-link">Ver detalle <span aria-hidden="true">→</span></a>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="empty-state"><span class="empty-state__mark">⌕</span><h2>No encontramos ese libro</h2><p>Probá con otro título, autor o ISBN. También podés explorar todo el catálogo.</p><a href="<?= base_url('catalogo') ?>" class="catalog-button">Ver todos los libros</a></div>
+            <?php endif; ?>
+        </section>
     </main>
 
-    <footer>
-        <p>&copy; <?= date('Y') ?> Biblioteca Virtual · Maquetación Front-End</p>
-    </footer>
-
+    <footer class="catalog-footer"><div class="catalog-wrap"><div><strong>Biblioteca Domingo Sarmiento</strong><span>Lectura, cultura y comunidad en Chascomús.</span></div><div><span>¿Ya sos parte?</span><a href="<?= base_url('socio/login') ?>">Ingresá a tu cuenta →</a></div><small>© <?= date('Y') ?> Biblioteca Domingo Sarmiento</small></div></footer>
 </body>
 </html>

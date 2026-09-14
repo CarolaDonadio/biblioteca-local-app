@@ -30,12 +30,12 @@ $routes->get('socio/logout', 'Publico\SocioPortalController::logout');
 $routes->group('socio', ['filter' => 'socioAuth'], static function ($routes) {
     $routes->get('home', 'Publico\SocioPortalController::home');
     $routes->post('actualizarPerfil', 'Publico\SocioPortalController::actualizarPerfil');
+    $routes->post('reservar/(:num)', 'Publico\SocioPortalController::reservar/$1');
 });
 
 $routes->group('socio/panel', ['filter' => 'socioAuth'], static function ($routes) {
     $routes->get('/', 'Publico\SocioPortalController::panel');
     $routes->get('prestamos', 'Publico\SocioPortalController::misPrestamos');
-    $routes->post('reservar/(:num)', 'Publico\SocioPortalController::reservar/$1');
     $routes->post('renovar/(:num)', 'Publico\SocioPortalController::renovar/$1');
     $routes->post('sugerir', 'Publico\SocioPortalController::sugerirLibro');
 });

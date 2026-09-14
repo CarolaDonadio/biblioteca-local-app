@@ -18,6 +18,20 @@ class NotificacionModel extends Model
         'dniUsuario',
         'tipo',
         'mensaje',
-        'estado',
+        'canal',
+        'estado_entrega',
     ];
+
+    public function reintentar(int $id): bool
+    {
+        $notificacion = $this->find($id);
+
+        if (! $notificacion) {
+            return false;
+        }
+
+        return $this->update($id, [
+            'estado_entrega' => 'pendiente',
+        ]);
+    }
 }

@@ -3,181 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca Virtual</title>
+    <meta name="description" content="Biblioteca Domingo Sarmiento de Chascomús: libros, cultura y comunidad.">
+    <title>Biblioteca Domingo Sarmiento | Chascomús</title>
     <link rel="stylesheet" href="<?= base_url('assets/css/home.css') ?>">
 </head>
 <body>
-
-    <header>
-        <a href="<?= base_url() ?>" class="logo">📚 Biblioteca Virtual</a>
-        <nav>
-            <a href="<?= base_url('catalogo') ?>">Catálogo</a>
-            <a href="<?= base_url('promociones') ?>">Promociones</a>
-            <a href="<?= base_url('socio/login') ?>">Portal Socios</a>
-            <a href="<?= base_url('admin/login') ?>">Administración</a>
-        </nav>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="<?= base_url() ?>" class="brand" aria-label="Inicio - Biblioteca Domingo Sarmiento">
+                <span class="brand-mark">DS</span>
+                <span class="brand-copy"><strong>Biblioteca Domingo Sarmiento</strong><small>Chascomús · Buenos Aires</small></span>
+            </a>
+            <nav class="main-nav" aria-label="Navegación principal">
+                <a href="#la-biblioteca">La biblioteca</a><a href="#servicios">Servicios</a><a href="#agenda">Agenda</a><a href="<?= base_url('catalogo') ?>">Catálogo</a><a href="<?= base_url('socio/login') ?>" class="nav-button">Mi cuenta</a>
+            </nav>
+        </div>
     </header>
 
-    <section class="hero">
-        <h1>Tu biblioteca, donde sea que estés</h1>
-        <p>Explora nuestro catálogo en línea, reserva ejemplares y gestiona tu cuenta de socio fácilmente.</p>
-        
-        <form action="<?= base_url('catalogo') ?>" method="get" class="search-box">
-            <input type="text" name="q" placeholder="Buscar por título, autor o ISBN...">
-            <button type="submit">Buscar</button>
-        </form>
-    </section>
-
-    <main class="container">
-
-        <!-- 1. BIENVENIDA E INFORMACIÓN RÁPIDA -->
-        <section class="info-section">
-            <h2 class="section-title">Bienvenido a nuestra comunidad</h2>
-            <p class="info-desc">
-                Un espacio dedicado al aprendizaje, la cultura y el encuentro. Ofrecemos préstamo de libros físicos, acceso a recursos digitales, puestos de lectura y actividades gratuitas durante todo el año.
-            </p>
-            <div class="info-grid">
-                <div class="info-box">
-                    <span class="icon">🕒</span>
-                    <h3>Horarios</h3>
-                    <p><small>Lunes a Viernes: 08:00 - 20:00 hs<br>Sábados: 09:00 - 13:00 hs</small></p>
-                </div>
-                <div class="info-box">
-                    <span class="icon">📍</span>
-                    <h3>Ubicación</h3>
-                    <p><small>Av. Principal 1234, Centro<br>Ciudad, Provincia</small></p>
-                </div>
-                <div class="info-box">
-                    <span class="icon">💳</span>
-                    <h3>Hazte Socio</h3>
-                    <p><small>Accede a préstamos a domicilio, reservas online y material exclusivo.</small></p>
-                </div>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <p class="eyebrow">Una biblioteca popular para toda la comunidad</p>
+                <h1>Historias que nos encuentran en <em>Chascomús</em></h1>
+                <p class="hero-lead">Un espacio de lectura, aprendizaje y encuentro. Descubrí nuestro catálogo, asociate y participá de las propuestas culturales de la Biblioteca Domingo Sarmiento.</p>
+                <div class="hero-actions"><a href="<?= base_url('catalogo') ?>" class="button button-primary">Explorar el catálogo <span aria-hidden="true">→</span></a><a href="<?= base_url('socio/registro') ?>" class="button button-light">Quiero asociarme</a></div>
+                <form action="<?= base_url('catalogo') ?>" method="get" class="catalog-search"><label for="home-search">Buscar un libro</label><div class="search-row"><input id="home-search" type="search" name="q" placeholder="Título, autor o ISBN..."><button type="submit">Buscar</button></div></form>
             </div>
+            <div class="hero-photo" role="img" aria-label="Interior cálido de una biblioteca con estanterías de libros"></div>
         </section>
 
-        <!-- 2. LIBROS DESTACADOS -->
-        <h2 class="section-title">Libros Destacados</h2>
-        
-        <div class="grid" id="grid-libros">
-            <article class="card">
-                <div>
-                    <div class="cover">📖</div>
-                    <h3>El Principito</h3>
-                    <p>Antoine de Saint-Exupéry</p>
-                    <span class="badge">Disponible</span>
-                </div>
-                <a href="<?= base_url('catalogo') ?>" class="btn-card">Ver detalle</a>
-            </article>
+        <section class="welcome section-wrap" id="la-biblioteca"><div class="section-kicker">Nuestra biblioteca</div><div class="welcome-grid"><div><h2>Un lugar para volver, una comunidad para compartir.</h2></div><div class="welcome-copy"><p>La Biblioteca Domingo Sarmiento es un espacio cultural abierto a vecinos, estudiantes, lectores y familias de Chascomús. Ponemos los libros al alcance de todos y acompañamos cada búsqueda con atención cercana.</p><p>Además del préstamo y la consulta de ejemplares, impulsamos actividades que hacen de la lectura una experiencia colectiva.</p><a href="#servicios" class="text-link">Conocé lo que ofrecemos <span aria-hidden="true">↗</span></a></div></div></section>
 
-            <article class="card">
-                <div>
-                    <div class="cover">📚</div>
-                    <h3>Cien Años de Soledad</h3>
-                    <p>Gabriel García Márquez</p>
-                    <span class="badge">Disponible</span>
-                </div>
-                <a href="<?= base_url('catalogo') ?>" class="btn-card">Ver detalle</a>
-            </article>
+        <section class="services-band" id="servicios"><div class="section-wrap"><div class="section-heading"><div><div class="section-kicker">A tu alcance</div><h2>Todo lo que podés hacer en la biblioteca</h2></div><p>Recursos y acompañamiento para estudiar, leer, investigar y encontrarnos.</p></div><div class="service-grid">
+            <article class="service-item"><span class="service-number">01</span><h3>Encontrar tu próxima lectura</h3><p>Buscá por título, autor o ISBN en nuestro catálogo online.</p><a href="<?= base_url('catalogo') ?>">Ir al catálogo →</a></article>
+            <article class="service-item"><span class="service-number">02</span><h3>Asociarte a la biblioteca</h3><p>Formá parte de la comunidad y accedé al préstamo de ejemplares.</p><a href="<?= base_url('socio/registro') ?>">Quiero asociarme →</a></article>
+            <article class="service-item"><span class="service-number">03</span><h3>Reservar y administrar préstamos</h3><p>Ingresá a tu cuenta para revisar tus préstamos y reservas.</p><a href="<?= base_url('socio/login') ?>">Ingresar a mi cuenta →</a></article>
+            <article class="service-item"><span class="service-number">04</span><h3>Participar de la agenda cultural</h3><p>Compartimos encuentros, talleres y propuestas para todas las edades.</p><a href="#agenda">Ver agenda →</a></article>
+        </div></div></section>
 
-            <article class="card">
-                <div>
-                    <div class="cover">📕</div>
-                    <h3>1984</h3>
-                    <p>George Orwell</p>
-                    <span class="badge">Disponible</span>
-                </div>
-                <a href="<?= base_url('catalogo') ?>" class="btn-card">Ver detalle</a>
-            </article>
-        </div>
+        <section class="agenda section-wrap" id="agenda"><div class="section-heading"><div><div class="section-kicker">Para hacer comunidad</div><h2>Agenda de la biblioteca</h2></div><a href="<?= base_url('promociones') ?>" class="text-link">Ver todas las novedades <span aria-hidden="true">↗</span></a></div><div class="event-grid">
+            <article class="event-card"><div class="event-date"><strong>Club</strong><span>de lectura</span></div><div><p class="event-type">Encuentro literario</p><h3>Leer, conversar, descubrir</h3><p>Un espacio para compartir lecturas y miradas con otros lectores.</p></div></article>
+            <article class="event-card"><div class="event-date event-date--gold"><strong>Para</strong><span>infancias</span></div><div><p class="event-type">Actividad cultural</p><h3>Historias para crecer</h3><p>Lecturas y propuestas para que chicos y chicas se acerquen a los libros.</p></div></article>
+            <article class="event-card"><div class="event-date event-date--blue"><strong>Taller</strong><span>abierto</span></div><div><p class="event-type">Aprendizaje</p><h3>Crear con palabras</h3><p>Propuestas para escribir, imaginar y encontrarnos alrededor de la cultura.</p></div></article>
+        </div><p class="agenda-note">La agenda y las fechas se actualizan periódicamente. Consultá las novedades antes de acercarte.</p></section>
 
-        <!-- 3. PRÓXIMOS EVENTOS -->
-        <h2 class="section-title section-title--spaced">Agenda de Eventos</h2>
-        <div class="grid">
-            <article class="card card--evento">
-                <div>
-                    <span class="event-date">15 de Septiembre · 18:00 hs</span>
-                    <h3>Club de Lectura: Clásicos Latinoamericanos</h3>
-                    <p>Debate abierto sobre «Rayuela» de Julio Cortázar. Coordinado por el equipo de literatura.</p>
-                </div>
-                <button class="btn-card btn-inscribir" data-evento="Club de Lectura">Inscribirme</button>
-            </article>
-
-            <article class="card card--evento">
-                <div>
-                    <span class="event-date">22 de Septiembre · 16:00 hs</span>
-                    <h3>Taller de Encuadernación Artesanal</h3>
-                    <p>Aprende técnicas básicas para reparar y conservar tus propios libros. Incluye materiales.</p>
-                </div>
-                <button class="btn-card btn-inscribir" data-evento="Taller de Encuadernación">Inscribirme</button>
-            </article>
-
-            <article class="card card--evento">
-                <div>
-                    <span class="event-date">30 de Septiembre · 17:30 hs</span>
-                    <h3>Hora del Cuento Infantil</h3>
-                    <p>Lecturas dramatizadas y actividades lúdicas para niños de 5 a 10 años. Entrada libre.</p>
-                </div>
-                <a href="<?= base_url('socio/login') ?>" class="btn-card">Ver más</a>
-            </article>
-        </div>
-
-        <!-- 4. EQUIPO DE LA BIBLIOTECA -->
-        <h2 class="section-title section-title--spaced">Nuestro Equipo</h2>
-        <div class="grid">
-            <article class="card card--team">
-                <div class="team-avatar">👩‍💼</div>
-                <h3>Dra. Laura Giménez</h3>
-                <p><strong>Directora de la Biblioteca</strong></p>
-                <p><small>Especialista en gestión de archivos y patrimonio cultural.</small></p>
-            </article>
-
-            <article class="card card--team">
-                <div class="team-avatar">👨‍🔬</div>
-                <h3>Lic. Martín Rossi</h3>
-                <p><strong>Bibliotecario General</strong></p>
-                <p><small>Encargado del área de catálogo, consultas e investigación.</small></p>
-            </article>
-
-            <article class="card card--team">
-                <div class="team-avatar">👩‍💻</div>
-                <h3>Sofía Benítez</h3>
-                <p><strong>Coordinadora de Servicios Digitales</strong></p>
-                <p><small>Soporte a socios, biblioteca virtual y recursos multimedia.</small></p>
-            </article>
-        </div>
-
+        <section class="visit section-wrap"><div class="visit-photo" role="img" aria-label="Persona leyendo un libro junto a una ventana"></div><div class="visit-content"><div class="section-kicker">Te esperamos</div><h2>La biblioteca también sucede cuando abrimos la puerta.</h2><p>Acercate a conocernos, consultá disponibilidad y encontrá el modo de participar que mejor se adapte a vos.</p><div class="visit-details"><div><strong>Ubicación</strong><span>Chascomús, Provincia de Buenos Aires</span></div><div><strong>Consultas</strong><span>En la biblioteca o a través de nuestros canales oficiales</span></div></div><a href="<?= base_url('socio/registro') ?>" class="button button-dark">Sumarme a la comunidad <span aria-hidden="true">→</span></a></div></section>
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-col">
-                <h4>📚 Biblioteca Virtual</h4>
-                <p><small>Fomentando la lectura y el acceso libre a la información desde nuestro espacio institucional.</small></p>
-            </div>
-            <div class="footer-col">
-                <h4>Enlaces Rápidos</h4>
-                <ul>
-                    <li><a href="<?= base_url('catalogo') ?>">Buscar en Catálogo</a></li>
-                    <li><a href="<?= base_url('promociones') ?>">Promociones</a></li>
-                    <li><a href="<?= base_url('socio/registro') ?>">Hazte Socio</a></li>
-                    <li><a href="<?= base_url('admin/login') ?>">Acceso Staff</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Contacto</h4>
-                <ul>
-                    <li>📧 contacto@biblioteca.edu.ar</li>
-                    <li>📞 (011) 4567-8900</li>
-                    <li>📍 Av. Principal 1234, Centro</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; <?= date('Y') ?> Biblioteca Virtual · Desarrollado en CodeIgniter 4</p>
-        </div>
-    </footer>
-
-    <!-- Carga del archivo JavaScript personalizado -->
-    <script src="<?= base_url('assets/js/home.js') ?>"></script>
-</body>
-</html>
+    <footer class="site-footer"><div class="footer-main section-wrap"><div><a href="<?= base_url() ?>" class="footer-brand">Biblioteca<br><em>Domingo Sarmiento</em></a><p>Lectura, cultura y comunidad<br>en Chascomús.</p></div><div><h3>Explorá</h3><a href="<?= base_url('catalogo') ?>">Catálogo</a><a href="<?= base_url('promociones') ?>">Novedades</a><a href="<?= base_url('socio/registro') ?>">Asociarme</a></div><div><h3>Accesos</h3><a href="<?= base_url('socio/login') ?>">Mi cuenta</a><a href="<?= base_url('admin/login') ?>">Administración</a></div><div><h3>Encontranos</h3><p>Chascomús, Buenos Aires<br>Argentina</p><a href="#la-biblioteca">Conocé la biblioteca →</a></div></div><div class="footer-bottom"><span>© <?= date('Y') ?> Biblioteca Domingo Sarmiento</span><span>Un espacio público para leer y encontrarnos.</span></div></footer>
++</body>
++</html>

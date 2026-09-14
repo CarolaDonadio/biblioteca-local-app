@@ -34,6 +34,31 @@ CREATE TABLE usuarios (
 );
 
 -- =====================================================
+-- TABLA: notificaciones
+-- =====================================================
+
+CREATE TABLE notificaciones (
+  id INT NOT NULL AUTO_INCREMENT,
+  dniUsuario INT NOT NULL,
+  canal ENUM('telegram', 'whatsapp', 'email') NOT NULL,
+  tipo VARCHAR(80) NOT NULL,
+  mensaje TEXT NOT NULL,
+  estado_entrega ENUM('pendiente', 'enviado', 'fallido') NOT NULL DEFAULT 'pendiente',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_notificaciones_usuario_estado (dniUsuario, estado_entrega),
+  KEY idx_notificaciones_estado_fecha (estado_entrega, created_at),
+
+  CONSTRAINT fk_notificaciones_usuario
+      FOREIGN KEY (dniUsuario)
+      REFERENCES usuarios(dni)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE
+);
+
+-- =====================================================
 -- TABLA: libros
 -- =====================================================
 
@@ -82,6 +107,44 @@ CREATE TABLE registros (
       REFERENCES usuarios(dni)
       ON UPDATE CASCADE
       ON DELETE RESTRICT
+);
+
+-- =====================================================
+-- TABLA: reservas
+-- =====================================================
+
+CREATE TABLE reservas (
+  id INT NOT NULL AUTO_INCREMENT,
+  libro_id INT NOT NULL,
+  socio_id INT NOT NULL,
+  fecha_solicitud DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  estado ENUM('pendiente', 'confirmada', 'cancelada', 'completada') NOT NULL DEFAULT 'pendiente',
+  fecha_confirmacion DATETIME NULL,
+  fecha_cancelacion DATETIME NULL,
+  fecha_completada DATETIME NULL,
+  procesada_por INT NULL,
+
+  PRIMARY KEY (id),
+  KEY idx_reservas_socio_libro_estado (socio_id, libro_id, estado),
+  KEY idx_reservas_estado_fecha (estado, fecha_solicitud),
+
+  CONSTRAINT fk_reservas_libro
+      FOREIGN KEY (libro_id)
+      REFERENCES libros(id)
+      ON UPDATE CASCADE
+      ON DELETE RESTRICT,
+
+  CONSTRAINT fk_reservas_socio
+      FOREIGN KEY (socio_id)
+      REFERENCES usuarios(dni)
+      ON UPDATE CASCADE
+      ON DELETE RESTRICT,
+
+  CONSTRAINT fk_reservas_procesada_por
+      FOREIGN KEY (procesada_por)
+      REFERENCES usuarios(dni)
+      ON UPDATE CASCADE
+      ON DELETE SET NULL
 );
 
 -- =====================================================
@@ -199,3 +262,4 @@ INSERT INTO registros (idlibro, dniUsuario, fechaPrestamo, fechaVence, fechaDevo
 
 -- Préstamo en curso (activo / vigente)
 (4, 31001002, DATE_SUB(CURRENT_DATE, INTERVAL 2 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 13 DAY), NULL);
+
