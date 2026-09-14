@@ -43,4 +43,15 @@ class UsuarioModel extends Model
         return null;
     }
 
+    public function verificarCredencialesAdmin(string $email, string $password): ?array
+    {
+        $usuario = $this->where('mail', $email)->where('estado', 'activo')->where('perfil', 'bibliotecario')->first();
+
+        if ($usuario && password_verify($password, $usuario['password_hash'])) {
+            $this->update($usuario['dni'], ['ultimo_login' => date('Y-m-d H:i:s')]);
+            return $usuario;
+        }
+
+        return null;
+    }
 }

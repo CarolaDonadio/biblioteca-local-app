@@ -21,7 +21,7 @@ class AuthController extends BaseController
         $password = $this->request->getPost('password');
 
         $model   = new UsuarioModel();
-        $usuario = $model->verificarCredenciales($email, $password);
+        $usuario = $model->verificarCredencialesAdmin($email, $password);
 
         if (! $usuario) {
             return redirect()->back()->withInput()->with('error', 'Credenciales inválidas.');
