@@ -112,3 +112,32 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--oro-cinta);
 }
 .campo { margin-bottom: 1.1em; }
+
+/* --- Combobox: buscador + selección en un solo campo --- */
+.combobox { position: relative; }
+.combobox__lista {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: .25em 0;
+  list-style: none;
+  background: #fff;
+  border: 1px solid var(--papel-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  max-height: 14em;
+  overflow-y: auto;
+}
+.combobox__opcion {
+  padding: .5em .75em;
+  font-size: .88rem;
+  cursor: pointer;
+}
+.combobox__opcion:hover,
+.combobox__opcion.is-activa { background: var(--papel); }
+.combobox__opcion.is-deshabilitada { color: var(--gris-texto); cursor: not-allowed; text-decoration: line-through; }
+.combobox__vacio { padding: .5em .75em; font-size: .85rem; color: var(--gris-texto); }
+
