@@ -189,7 +189,11 @@ INSERT INTO libros (isbn, titulo, autor, editorial, anio, categoria, cantidad, s
 ('9789500700122', 'Ficciones', 'Jorge Luis Borges', 'Sur', 1944, 'Cuentos', 3, 'Una colección de cuentos que explotan laberintos, bibliotecas e infinitos.', TRUE),
 ('9788420658827', 'Fahrenheit 451', 'Ray Bradbury', 'Ballantine Books', 1953, 'Ciencia Ficción', 0, 'Un futuro donde los libros están prohibidos y los bomberos se dedican a quemarlos.', FALSE),
 ('9788437600895', 'Rayuela', 'Julio Cortázar', 'Editorial Sudamericana', 1963, 'Novela', 2, 'Una contranovela que puede leerse de múltiples maneras y secuencias.', TRUE),
-('9789505112111', 'El Aleph', 'Jorge Luis Borges', 'Losada', 1949, 'Cuentos', 1, 'Colección de relatos donde destaca el punto que contiene todos los puntos del universo.', TRUE);
+('9789505112111', 'El Aleph', 'Jorge Luis Borges', 'Losada', 1949, 'Cuentos', 1, 'Colección de relatos donde destaca el punto que contiene todos los puntos del universo.', TRUE),
+('9788491050294', 'La sombra del viento', 'Carlos Ruiz Zafón', 'Planeta', 2001, 'Novela', 3, 'Un joven descubre un libro misterioso que lo conduce a investigar la vida de su autor.', TRUE),
+('9789871138750', 'Los peligros de fumar en la cama', 'Mariana Enriquez', 'Anagrama', 2009, 'Cuentos', 2, 'Relatos inquietantes sobre la vida cotidiana y sus zonas más oscuras.', TRUE),
+('9788420412146', 'Momo', 'Michael Ende', 'Alfaguara', 1973, 'Infantil / Fantasía', 4, 'Una niña se enfrenta a los hombres grises que roban el tiempo de las personas.', TRUE),
+('9789875668383', 'El túnel', 'Ernesto Sabato', 'Seix Barral', 1948, 'Novela', 2, 'Un pintor relata la obsesión que lo lleva a buscar una explicación para un crimen.', TRUE);
 
 -- =====================================================
 -- TABLA: ejemplares (inventario físico de cada libro)
@@ -243,6 +247,42 @@ CREATE TABLE promociones (
 
   PRIMARY KEY (id)
 );
+
+-- =====================================================
+-- DATOS DE PRUEBA: PROMOCIONES
+-- =====================================================
+
+INSERT INTO promociones (titulo, descripcion, fecha_inicio, fecha_fin, imagen_url, condiciones) VALUES
+('Mes de la literatura argentina', 'Selección de autores argentinos con recomendaciones para todos los públicos.', DATE_SUB(CURRENT_DATE, INTERVAL 10 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 20 DAY), '/assets/img/promociones/literatura-argentina.jpg', 'Válida para préstamos de libros de autores argentinos.'),
+('Vacaciones en familia', 'Historias infantiles y fantásticas para compartir durante las vacaciones.', DATE_SUB(CURRENT_DATE, INTERVAL 5 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 45 DAY), '/assets/img/promociones/vacaciones-familia.jpg', 'Incluye ejemplares de la categoría Infantil / Fantasía.'),
+('Clásicos imprescindibles', 'Una selección de obras clásicas para volver a leer o descubrir.', DATE_ADD(CURRENT_DATE, INTERVAL 5 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 60 DAY), '/assets/img/promociones/clasicos.jpg', 'Promoción sujeta a disponibilidad de ejemplares.');
+
+-- =====================================================
+-- DATOS DE PRUEBA: NOTIFICACIONES
+-- =====================================================
+
+INSERT INTO notificaciones (dniUsuario, canal, tipo, mensaje, estado_entrega, created_at) VALUES
+(31001002, 'email', 'vencimiento_proximo', 'Recordatorio: tu préstamo vence dentro de tres días.', 'enviado', DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 2 DAY)),
+(31001002, 'whatsapp', 'prestamo_vencido', 'Tu préstamo se encuentra vencido. Comunícate con la biblioteca para regularizarlo.', 'pendiente', DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY)),
+(31001001, 'email', 'reserva_nueva', 'Se registró una nueva reserva pendiente para gestionar.', 'enviado', CURRENT_TIMESTAMP);
+
+-- =====================================================
+-- DATOS DE PRUEBA: RESERVAS
+-- =====================================================
+
+INSERT INTO reservas (libro_id, socio_id, fecha_solicitud, estado, fecha_confirmacion, fecha_completada, procesada_por) VALUES
+((SELECT id FROM libros WHERE isbn = '9788420658827'), 31001002, DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 12 DAY), 'pendiente', NULL, NULL, NULL),
+((SELECT id FROM libros WHERE isbn = '9789871138750'), 31001002, DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 20 DAY), 'confirmada', DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 18 DAY), NULL, 31001001),
+((SELECT id FROM libros WHERE isbn = '9788491050294'), 31001002, DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 45 DAY), 'completada', DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 43 DAY), DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 30 DAY), 31001001);
+
+-- =====================================================
+-- DATOS DE PRUEBA: PAGOS
+-- =====================================================
+
+INSERT INTO pagos (dniUsuario, fecha) VALUES
+(31001002, DATE_SUB(CURRENT_DATE, INTERVAL 90 DAY)),
+(31001002, DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)),
+(31001002, CURRENT_DATE);
 
 -- =====================================================
 -- DATOS DE PRUEBA: REGISTROS (PRÉSTAMOS)
