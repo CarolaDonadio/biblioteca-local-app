@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\UsuarioModel;
 use App\Models\RegistroModel;
 use App\Models\ReservaModel;
+use App\Models\RecomendacionModel;
 
 class SocioPortalController extends BaseController
 {
@@ -93,6 +94,28 @@ class SocioPortalController extends BaseController
         }
 
         return redirect()->to('/socio/home')->with('mensaje', 'Reserva registrada correctamente.');
+    }
+
+    public function recomendarLibro($id)
+    {
+        $libroId = (int) $id;
+        $socioId = (int) session()->get('socio_dni');
+        $libro = (new LibroModel())->find($libroId);
+
+        if (! $libro) {
+            return redirect()->back()->with('error', 'El libro seleccionado no existe.');
+        }
+
+        $recomendaciones = new RecomendacionModel();
+        if ($recomendaciones->yaRecomendo($socioId, $libroId)) {
+            return redirect()->back()->with('error', 'Ya recomendaste este libro.');
+        }
+
+        if (! $recomendaciones->insert(['socio_id' => $socioId, 'libro_id' => $libroId])) {
+            return redirect()->back()->with('error', 'No se pudo registrar la recomendación.');
+        }
+
+        return redirect()->back()->with('mensaje', 'Recomendación registrada correctamente.');
     }
 
     public function actualizarPerfil()

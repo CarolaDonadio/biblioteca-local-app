@@ -29,5 +29,26 @@
   </div>
 </div>
 
+<section class="tarjeta" style="padding:1.4em 1.6em;">
+  <h2>Top 5 libros más recomendados</h2>
+  <?php if (!empty($top_recomendados)): ?>
+    <table>
+      <thead><tr><th>Puesto</th><th>Título</th><th>Autor</th><th>Recomendaciones</th></tr></thead>
+      <tbody>
+        <?php foreach ($top_recomendados as $puesto => $libro): ?>
+          <tr>
+            <td><?= $puesto + 1 ?>.</td>
+            <td><?= esc($libro['titulo']) ?></td>
+            <td><?= esc($libro['autor']) ?></td>
+            <td><?= (int) $libro['cantidad_recomendaciones'] ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  <?php else: ?>
+    <p style="color:var(--gris-texto);">Todavía no hay libros recomendados.</p>
+  <?php endif; ?>
+</section>
+
 <?php $contenido = ob_get_clean(); ?>
 <?= view('layouts/admin_layout', ['titulo' => 'Dashboard', 'contenido' => $contenido]) ?>

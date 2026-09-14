@@ -4,6 +4,7 @@ namespace App\Controllers\Publico;
 
 use App\Controllers\BaseController;
 use App\Models\LibroModel;
+use App\Models\RecomendacionModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 
 class CatalogoController extends BaseController
@@ -18,6 +19,9 @@ class CatalogoController extends BaseController
         $data['libros']    = $libroModel->buscarLibros($termino, $categoria);
         $data['termino']   = $termino;
         $data['categoria'] = $categoria;
+        $data['libros_recomendados'] = session()->get('socio_dni')
+            ? (new RecomendacionModel())->idsRecomendadosPorSocio((int) session()->get('socio_dni'))
+            : [];
 
         return view('publico/catalogo', $data);
     }

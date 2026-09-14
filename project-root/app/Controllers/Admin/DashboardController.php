@@ -8,6 +8,7 @@ use App\Models\ReservaModel;
 use App\Models\EjemplarModel;
 use App\Models\NotificacionModel;
 use App\Models\SocioModel;
+use App\Models\RecomendacionModel;
 
 class DashboardController extends BaseController
 {
@@ -22,6 +23,7 @@ class DashboardController extends BaseController
                 'ejemplares_por_estado'      => (new EjemplarModel())->reportePorEstado(),
                 'notificaciones_pendientes' => (new NotificacionModel())->whereIn('estado_entrega', ['pendiente', 'fallido'])->countAllResults(),
                 'socios_activos'            => (new SocioModel())->where('estado', 'activo')->countAllResults(),
+                'top_recomendados'          => (new RecomendacionModel())->topCinco(),
             ];
         } catch (\Throwable $e) {
             // Fallback de respaldo con datos mock si la BD aún no está lista o conectada
@@ -31,6 +33,7 @@ class DashboardController extends BaseController
                 'reservas_pendientes'       => 5,
                 'notificaciones_pendientes' => 2,
                 'socios_activos'            => 128,
+                'top_recomendados'          => [],
                 'ejemplares_por_estado'      => [
                     ['estado' => 'disponible', 'cantidad' => 245],
                     ['estado' => 'prestado',   'cantidad' => 14],
