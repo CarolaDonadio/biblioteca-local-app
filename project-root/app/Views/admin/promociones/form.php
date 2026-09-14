@@ -3,7 +3,7 @@
 <?php
 $esEdicion = !empty($promocion);
 $accion = $esEdicion
-    ? '/admin/promociones/' . $promocion['id'] . '/update'
+    ? '/admin/promociones/' . $promocion['id']
     : '/admin/promociones';
 ?>
 
