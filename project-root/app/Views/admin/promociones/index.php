@@ -63,7 +63,7 @@
                         </a>
 
                         <form
-                            action="/admin/promociones/<?= $p['id'] ?>/delete"
+                            action="/admin/promociones/<?= $p['id'] ?>"
                             method="post"
                             style="display:inline;"
                             data-confirmar="¿Eliminar esta promoción?"

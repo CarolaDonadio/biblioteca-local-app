@@ -1,8 +1,8 @@
 /**
  * Módulo de optimización visual con Lazy Load (requisito MVP).
- * Carga diferida de portadas: las imágenes se marcan con
- * <img class="lazy" data-src="...">  y solo se cargan cuando
- * entran en el viewport, evitando lentitud en catálogos largos.
+ * Carga diferida de portadas e imágenes promocionales: las imágenes
+ * se marcan con <img class="lazy" data-src="..."> y solo se cargan
+ * cuando entran en el viewport, evitando lentitud en listados largos.
  */
 (function () {
   'use strict';

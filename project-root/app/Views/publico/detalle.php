@@ -36,7 +36,7 @@
             <div class="detail-cover-area">
                 <div class="detail-cover">
                     <?php if (!empty($libro['portada_url'])): ?>
-                        <img src="<?= base_url('uploads/' . $libro['portada_url']) ?>" alt="Portada de <?= esc($libro['titulo']) ?>">
+                        <img src="<?= base_url('uploads/' . $libro['portada_url']) ?>" alt="Portada de <?= esc($libro['titulo']) ?>" loading="eager" decoding="async" fetchpriority="high">
                     <?php else: ?>
                         <div class="detail-cover__placeholder"><span>DS</span><small>Biblioteca<br>Domingo Sarmiento</small></div>
                     <?php endif; ?>

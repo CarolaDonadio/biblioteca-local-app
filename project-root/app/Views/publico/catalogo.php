@@ -61,7 +61,7 @@
                         <article class="book-card">
                             <a href="<?= base_url('catalogo/libro/' . $libro['id']) ?>" class="book-cover" aria-label="Ver detalle de <?= esc($libro['titulo']) ?>">
                                 <?php if (!empty($libro['portada_url'])): ?>
-                                    <img src="<?= base_url('uploads/' . $libro['portada_url']) ?>" alt="Portada de <?= esc($libro['titulo']) ?>" loading="lazy">
+                                    <img src="<?= base_url('uploads/' . $libro['portada_url']) ?>" alt="Portada de <?= esc($libro['titulo']) ?>" loading="lazy" decoding="async">
                                 <?php else: ?>
                                     <span class="book-cover__placeholder"><span>DS</span><small>Biblioteca<br>Domingo Sarmiento</small></span>
                                 <?php endif; ?>

@@ -2,7 +2,7 @@
   <?php foreach ($libros as $libro): ?>
     <a href="/catalogo/libro/<?= $libro['id'] ?>" class="ficha-libro">
       <?php if (! empty($libro['portada_url'])): ?>
-        <img class="lazy ficha-libro__portada" data-src="/<?= esc($libro['portada_url']) ?>" alt="Portada de <?= esc($libro['titulo']) ?>">
+        <img class="lazy ficha-libro__portada" data-src="/<?= esc($libro['portada_url']) ?>" alt="Portada de <?= esc($libro['titulo']) ?>" loading="lazy" decoding="async">
       <?php else: ?>
         <div class="ficha-libro__portada">sin portada</div>
       <?php endif; ?>
