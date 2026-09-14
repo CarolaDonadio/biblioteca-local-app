@@ -73,4 +73,13 @@ class LibroModel extends Model
 
         return max(0, (int) $libro['cantidad'] - $prestados);
     }
+
+    /**
+     * Cuenta los libros que tienen al menos un ejemplar en stock.
+     */
+    public function disponibles(): int
+    {
+        return (int) $this->where('cantidad >', 0)
+            ->countAllResults();
+    }
 }

@@ -8,21 +8,21 @@
   </div>
 
   <div class="tarjeta kpi">
-    <div class="kpi__valor" style="color:var(--sello-rojo)"><?= (int) ($prestamos_vencidos ?? 3) ?></div>
+    <div class="kpi__valor" style="color:var(--sello-rojo)"><?= (int) ($prestamos_vencidos ?? 0) ?></div>
     <div class="kpi__etiqueta">Préstamos vencidos</div>
   </div>
 
   <div class="tarjeta kpi">
-    <div class="kpi__valor" style="color:var(--oro-cinta)"><?= (int) ($reservas_pendientes ?? 5) ?></div>
+    <div class="kpi__valor" style="color:var(--oro-cinta)"><?= (int) ($reservas_pendientes ?? 0) ?></div>
     <div class="kpi__etiqueta">Reservas en cola</div>
   </div>
 
   <div class="tarjeta kpi">
-    <div class="kpi__valor"><?= (int) ($socios_activos ?? 128) ?></div>
+    <div class="kpi__valor"><?= (int) ($socios_activos ?? 0) ?></div>
     <div class="kpi__etiqueta">Socios activos</div>
   </div>
 
-  <?php $notif = (int) ($notificaciones_pendientes ?? 2); ?>
+  <?php $notif = (int) ($notificaciones_pendientes ?? 0); ?>
   <div class="tarjeta kpi">
     <div class="kpi__valor" style="color:<?= $notif > 0 ? 'var(--sello-rojo)' : 'var(--verde-tejo)' ?>"><?= $notif ?></div>
     <div class="kpi__etiqueta">Notificaciones pendientes</div>
@@ -41,12 +41,7 @@
     </thead>
     <tbody>
       <?php 
-        $estados = $ejemplares_por_estado ?? [
-          ['estado' => 'disponible', 'cantidad' => 245],
-          ['estado' => 'prestado', 'cantidad' => 14],
-          ['estado' => 'reparacion', 'cantidad' => 3],
-          ['estado' => 'extraviado', 'cantidad' => 1]
-        ];
+        $estados = $ejemplares_por_estado ?? [];
       ?>
       <?php foreach ($estados as $fila): ?>
         <tr style="border-bottom:1px solid var(--gris-borde, #e5e7eb);">

@@ -70,17 +70,24 @@ class ReservaModel extends Model
      * La posición se calcula por libro entre las reservas pendientes y
      * confirmadas, sin imponer una restricción UNIQUE histórica.
      */
-    public function pendientesConDatos(): array
+    /**
+     * Obtiene las reservas pendientes o confirmadas para el panel de control.
+     */
+    public function pendientes(): array
     {
-        $reservas = $this->select(
+        return $this->select(
                 'reservas.*, libros.titulo, usuarios.nombre_completo AS socio_nombre'
             )
-            ->join('libros', 'libros.id = reservas.libro_id')
-            ->join('usuarios', 'usuarios.dni = reservas.socio_id')
+            ->join('libros', 'libros.id = reservas.libro_id', 'left')
+            ->join('usuarios', 'usuarios.dni = reservas.socio_id', 'left')
             ->whereIn('reservas.estado', ['pendiente', 'confirmada'])
-            ->orderBy('reservas.libro_id', 'ASC')
             ->orderBy('reservas.fecha_solicitud', 'ASC')
             ->findAll();
+    }
+
+    public function pendientesConDatos(): array
+    {
+        $reservas = $this->pendientes();
 
         $posiciones = [];
 
