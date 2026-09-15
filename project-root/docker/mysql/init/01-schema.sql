@@ -297,9 +297,9 @@ CREATE TABLE promociones (
 -- =====================================================
 
 INSERT INTO promociones (titulo, descripcion, fecha_inicio, fecha_fin, imagen_url, condiciones) VALUES
-('Mes de la literatura argentina', 'Selección de autores argentinos con recomendaciones para todos los públicos.', DATE_SUB(CURRENT_DATE, INTERVAL 10 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 20 DAY), '/assets/img/promociones/literatura-argentina.jpg', 'Válida para préstamos de libros de autores argentinos.'),
-('Vacaciones en familia', 'Historias infantiles y fantásticas para compartir durante las vacaciones.', DATE_SUB(CURRENT_DATE, INTERVAL 5 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 45 DAY), '/assets/img/promociones/vacaciones-familia.jpg', 'Incluye ejemplares de la categoría Infantil / Fantasía.'),
-('Clásicos imprescindibles', 'Una selección de obras clásicas para volver a leer o descubrir.', DATE_ADD(CURRENT_DATE, INTERVAL 5 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 60 DAY), '/assets/img/promociones/clasicos.jpg', 'Promoción sujeta a disponibilidad de ejemplares.');
+('Mes de la literatura argentina', 'Selección de autores argentinos con recomendaciones para todos los públicos.', DATE_SUB(CURRENT_DATE, INTERVAL 10 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 20 DAY), 'assets/img/promociones/literatura-argentina.jpg', 'Válida para préstamos de libros de autores argentinos.'),
+('Vacaciones en familia', 'Historias infantiles y fantásticas para compartir durante las vacaciones.', DATE_SUB(CURRENT_DATE, INTERVAL 5 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 45 DAY), 'assets/img/promociones/vacaciones-familia.jpg', 'Incluye ejemplares de la categoría Infantil / Fantasía.'),
+('Clásicos imprescindibles', 'Una selección de obras clásicas para volver a leer o descubrir.', DATE_ADD(CURRENT_DATE, INTERVAL 5 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 60 DAY), 'assets/img/promociones/clasicos.jpg', 'Promoción sujeta a disponibilidad de ejemplares.');
 
 -- =====================================================
 -- DATOS DE PRUEBA: NOTIFICACIONES
