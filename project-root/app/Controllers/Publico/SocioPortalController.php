@@ -112,6 +112,10 @@ class SocioPortalController extends BaseController
         }
 
         if (! $recomendaciones->insert(['socio_id' => $socioId, 'libro_id' => $libroId])) {
+            if ($recomendaciones->yaRecomendo($socioId, $libroId)) {
+                return redirect()->back()->with('error', 'Ya recomendaste este libro.');
+            }
+
             return redirect()->back()->with('error', 'No se pudo registrar la recomendación.');
         }
 
