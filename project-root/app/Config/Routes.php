@@ -23,8 +23,6 @@ $routes->get('promociones', 'Publico\PromocionPublicaController::index');
 
 $routes->get('socio/login', 'Publico\SocioPortalController::login');
 $routes->post('socio/login', 'Publico\SocioPortalController::autenticar');
-$routes->get('socio/registro', 'Publico\SocioPortalController::registro');
-$routes->post('socio/registro', 'Publico\SocioPortalController::guardarRegistro');
 $routes->get('socio/logout', 'Publico\SocioPortalController::logout');
 
 $routes->group('socio', ['filter' => 'socioAuth'], static function ($routes) {

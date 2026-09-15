@@ -73,13 +73,6 @@
           Ingresar
         </a>
 
-        <a
-          href="<?= site_url('socio/registro') ?>"
-          class="pub-nav__destacado"
-        >
-          Asociarme
-        </a>
-
       <?php endif; ?>
 
     </nav>

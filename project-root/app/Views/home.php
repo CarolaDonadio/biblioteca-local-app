@@ -25,7 +25,7 @@
             <div class="hero-content">
                 <p class="eyebrow">Una biblioteca popular para toda la comunidad</p>
                 <h1>Historias que nos encuentran en <em>Chascomús</em></h1>
-                <p class="hero-lead">Un espacio de lectura, aprendizaje y encuentro. Descubrí nuestro catálogo, asociate y participá de las propuestas culturales de la Biblioteca Domingo Sarmiento.</p>
+                <p class="hero-lead">Un espacio de lectura, aprendizaje y encuentro. Descubrí nuestro catálogo y participá de las propuestas culturales de la Biblioteca Domingo Sarmiento.</p>
                 <div class="hero-actions"><a href="<?= base_url('catalogo') ?>" class="button button-primary">Explorar el catálogo <span aria-hidden="true">→</span></a></div>
                 <form action="<?= base_url('catalogo') ?>" method="get" class="catalog-search"><label for="home-search">Buscar un libro</label><div class="search-row"><input id="home-search" type="search" name="q" placeholder="Título, autor o ISBN..."><button type="submit">Buscar</button></div></form>
             </div>
