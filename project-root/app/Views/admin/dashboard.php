@@ -29,5 +29,27 @@
   </div>
 </div>
 
+<section class="tarjeta" style="padding:1.4em 1.6em;max-width:560px;">
+  <h2>Inventario por estado</h2>
+  <?php if (!empty($ejemplares_por_estado)): ?>
+    <?php $totalEjemplares = 0; ?>
+    <table>
+      <thead><tr><th>Estado</th><th>Cantidad</th></tr></thead>
+      <tbody>
+        <?php foreach ($ejemplares_por_estado as $fila): ?>
+          <?php $totalEjemplares += (int) $fila['cantidad']; ?>
+          <tr>
+            <td><span class="sello sello--<?= esc($fila['estado']) ?>"><?= esc($fila['estado']) ?></span></td>
+            <td><?= (int) $fila['cantidad'] ?></td>
+          </tr>
+        <?php endforeach; ?>
+        <tr><td><strong>Total</strong></td><td><strong><?= $totalEjemplares ?></strong></td></tr>
+      </tbody>
+    </table>
+  <?php else: ?>
+    <p style="color:var(--gris-texto);">Todavía no hay ejemplares registrados.</p>
+  <?php endif; ?>
+</section>
+
 <?php $contenido = ob_get_clean(); ?>
 <?= view('layouts/admin_layout', ['titulo' => 'Dashboard', 'contenido' => $contenido]) ?>
