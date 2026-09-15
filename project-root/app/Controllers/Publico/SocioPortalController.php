@@ -7,6 +7,7 @@ use App\Models\UsuarioModel;
 use App\Models\RegistroModel;
 use App\Models\ReservaModel;
 use App\Models\RecomendacionModel;
+use App\Models\LibroModel;
 
 class SocioPortalController extends BaseController
 {
@@ -81,6 +82,92 @@ class SocioPortalController extends BaseController
         ];
 
         return view('publico/socio_home', $data);
+    }
+
+    public function panel()
+    {
+        $socioDni = (int) session()->get('socio_dni');
+        $socio = $this->usuarioModel->find($socioDni);
+
+        if (! $socio) {
+            session()->destroy();
+            return redirect()->to('/socio/login')->with('error', 'Usuario no encontrado.');
+        }
+
+        $nombre = explode(' ', trim((string) $socio['nombre_completo']), 2);
+        $socio['nombre'] = $nombre[0] ?? '';
+        $historial = $this->registroModel->historialPorSocio($socioDni);
+
+        return view('publico/socio_panel', [
+            'socio'    => $socio,
+            'historial' => $historial,
+        ]);
+    }
+
+    public function misPrestamos()
+    {
+        $socioDni = (int) session()->get('socio_dni');
+        $historial = $this->registroModel->historialPorSocio($socioDni);
+
+        return view('publico/socio_prestamos', [
+            'prestamos' => $historial['prestamos'],
+        ]);
+    }
+
+    public function renovar($id)
+    {
+        $registro = $this->registroModel->find((int) $id);
+        $socioDni = (int) session()->get('socio_dni');
+
+        if (! $registro || (int) $registro['dniUsuario'] !== $socioDni) {
+            return redirect()->back()->with('error', 'El préstamo no pertenece a tu cuenta.');
+        }
+
+        try {
+            $this->registroModel->renovar((int) $id);
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
+        return redirect()->to('/socio/panel/prestamos')->with('mensaje', 'Préstamo renovado correctamente.');
+    }
+
+    public function sugerirLibro()
+    {
+        $titulo = trim((string) $this->request->getPost('titulo_sugerido'));
+        $autor = trim((string) $this->request->getPost('autor_sugerido'));
+
+        if ($titulo === '') {
+            return redirect()->back()->withInput()->with('error', 'Ingresá el título del libro.');
+        }
+
+        $libros = new LibroModel();
+        $consulta = $libros->where('titulo', $titulo);
+
+        if ($autor !== '') {
+            $consulta->where('autor', $autor);
+        }
+
+        $libro = $consulta->first();
+        if (! $libro) {
+            return redirect()->back()->withInput()->with('error', 'El libro no está en el catálogo. Podés recomendar libros existentes desde el catálogo.');
+        }
+
+        $socioId = (int) session()->get('socio_dni');
+        $recomendaciones = new RecomendacionModel();
+
+        if ($recomendaciones->yaRecomendo($socioId, (int) $libro['id'])) {
+            return redirect()->to('/socio/panel')->with('error', 'Ya recomendaste este libro.');
+        }
+
+        if (! $recomendaciones->insert([
+            'socio_id' => $socioId,
+            'libro_id' => (int) $libro['id'],
+        ])) {
+            return redirect()->to('/socio/panel')->with('error', 'No se pudo registrar la recomendación.');
+        }
+
+        return redirect()->to('/socio/panel')->with('mensaje', 'Recomendación registrada correctamente.');
     }
 
     public function reservar($id)
