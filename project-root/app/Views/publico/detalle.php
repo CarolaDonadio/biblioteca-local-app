@@ -73,7 +73,7 @@
                         <small>La reserva quedará asociada a tu cuenta de socio.</small>
                     <?php else: ?>
                         <a href="<?= base_url('socio/login') ?>" class="detail-button">Ingresá para reservar <span aria-hidden="true">→</span></a>
-                        <small>¿Todavía no sos socio? <a href="<?= base_url('socio/registro') ?>">Asociate a la biblioteca</a>.</small>
+                        <small>Las cuentas de socio son gestionadas por la biblioteca.</small>
                     <?php endif; ?>
                 </div>
             </article>
