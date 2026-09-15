@@ -3,7 +3,9 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Libraries\TelegramService;
 use App\Models\NotificacionModel;
+use RuntimeException;
 
 class NotificacionController extends BaseController
 {
@@ -32,6 +34,28 @@ class NotificacionController extends BaseController
         }
 
         return redirect()->back()->with('mensaje', 'Notificación reenviada.');
+    }
+
+    public function enviarTelegram()
+    {
+        $mensaje = trim((string) $this->request->getPost('mensaje'));
+
+        if ($mensaje === '') {
+            return redirect()->to('/admin/notificaciones')->with('error', 'El mensaje no puede estar vacío.');
+        }
+
+        if (mb_strlen($mensaje) > 4096) {
+            return redirect()->to('/admin/notificaciones')->with('error', 'El mensaje supera el límite permitido.');
+        }
+
+        try {
+            $telegramService = new TelegramService();
+            $telegramService->enviarMensaje($mensaje);
+        } catch (RuntimeException $exception) {
+            return redirect()->to('/admin/notificaciones')->with('error', 'No se pudo enviar el mensaje.');
+        }
+
+        return redirect()->to('/admin/notificaciones')->with('mensaje', 'Mensaje enviado correctamente.');
     }
 
     /** Configuración de credenciales/canales (tokens se guardan en .env, esto solo activa/desactiva canales) */
