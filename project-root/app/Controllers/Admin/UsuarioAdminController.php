@@ -3,11 +3,10 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Models\UsuarioAdminModel;
+use App\Models\UsuarioModel;
 
 /**
- * Gestión de roles y accesos administrativos.
- * Solo un 'superadmin' puede crear/editar otros usuarios administradores.
+ * Gestión de usuarios administrativos (perfil 'bibliotecario').
  */
 class UsuarioAdminController extends BaseController
 {
@@ -18,32 +17,22 @@ class UsuarioAdminController extends BaseController
         $this->usuarios = new UsuarioModel();
     }
 
-    private function requerirSuperadmin()
-    {
-        if (session()->get('admin_rol') !== 'superadmin') {
-            return redirect()->to('/admin')->with('error', 'No tenés permisos para gestionar usuarios administrativos.');
-        }
-        return null;
-    }
-
     public function index()
     {
-        if ($redir = $this->requerirSuperadmin()) return $redir;
-        $data['usuarios'] = $this->usuarios->orderBy('nombre', 'ASC')->findAll();
+        $data['usuarios'] = $this->usuarios->where('perfil', 'bibliotecario')->orderBy('nombre_completo', 'ASC')->findAll();
         return view('admin/usuarios/index', $data);
     }
 
     public function new()
     {
-        if ($redir = $this->requerirSuperadmin()) return $redir;
         return view('admin/usuarios/form', ['usuario' => null]);
     }
 
     public function create()
     {
-        if ($redir = $this->requerirSuperadmin()) return $redir;
-
-        $data = $this->request->getPost(['nombre', 'email', 'rol']);
+        $data = $this->request->getPost(['nombre_completo', 'mail', 'telefono']);
+        $data['perfil'] = 'bibliotecario';
+        $data['estado'] = 'activo';
         $data['password_hash'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
 
         if (! $this->usuarios->save($data)) {
@@ -55,29 +44,47 @@ class UsuarioAdminController extends BaseController
 
     public function edit($id = null)
     {
-        if ($redir = $this->requerirSuperadmin()) return $redir;
         return view('admin/usuarios/form', ['usuario' => $this->usuarios->find($id)]);
     }
 
     public function update($id = null)
     {
-        if ($redir = $this->requerirSuperadmin()) return $redir;
+        $data = $this->request->getPost(['nombre_completo', 'mail', 'telefono', 'estado']);
 
-        $data = $this->request->getPost(['nombre', 'email', 'rol']);
-        $data['activo'] = $this->request->getPost('activo') ? 1 : 0;
+        // is_unique[usuarios.mail] rechazaría el propio email si no se excluye el id actual
+        $usuarioConEmail = $this->usuarios->where('mail', $data['mail'])->where('dni !=', $id)->first();
+        if ($usuarioConEmail) {
+            return view('admin/usuarios/form', [
+                'usuario' => $this->usuarios->find($id),
+                'errors'  => ['mail' => 'Este email ya está registrado en otro usuario.'],
+            ]);
+        }
 
         $password = $this->request->getPost('password');
         if ($password) {
             $data['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
         }
 
-        $this->usuarios->update($id, $data);
+        if (! $this->usuarios->skipValidation()->update($id, $data)) {
+            return view('admin/usuarios/form', [
+                'usuario' => $this->usuarios->find($id),
+                'errors'  => $this->usuarios->errors(),
+            ]);
+        }
+
         return redirect()->to('/admin/usuarios')->with('mensaje', 'Usuario actualizado.');
     }
 
     public function delete($id = null)
     {
-        if ($redir = $this->requerirSuperadmin()) return $redir;
+        if ((string) $id === (string) session()->get('admin_id')) {
+            return redirect()->to('/admin/usuarios')->with('error', 'No podés eliminar tu propio usuario.');
+        }
+
+        if ($this->usuarios->where('perfil', 'bibliotecario')->countAllResults() <= 1) {
+            return redirect()->to('/admin/usuarios')->with('error', 'Debe quedar al menos un administrador.');
+        }
+
         $this->usuarios->delete($id);
         return redirect()->to('/admin/usuarios')->with('mensaje', 'Usuario eliminado.');
     }

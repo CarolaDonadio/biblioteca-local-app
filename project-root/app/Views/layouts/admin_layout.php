@@ -30,7 +30,7 @@
       <li><a href="/admin/promociones">Promociones</a></li>
       <li><a href="/admin/donaciones">Donaciones</a></li>
 
-      <?php if ((session('admin_rol') ?? '') === 'superadmin'): ?>
+      <?php if ((session('admin_rol') ?? '') === 'bibliotecario'): ?>
       <div class="admin-nav__grupo">Sistema</div>
       <li><a href="/admin/usuarios">Usuarios administrativos</a></li>
       <?php endif; ?>
