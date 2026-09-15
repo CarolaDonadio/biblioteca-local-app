@@ -75,7 +75,6 @@
           </div>
           <button type="submit" class="button button-primary member-submit">Ingresar <span aria-hidden="true">→</span></button>
         </form>
-        <p class="member-register">¿Todavía no tenés cuenta? <a href="<?= base_url('socio/registro') ?>">Asociate acá</a></p>
         <a href="<?= base_url() ?>" class="member-back">← Volver a la página de inicio</a>
       </div>
     </section>
