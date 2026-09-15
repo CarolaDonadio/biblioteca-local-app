@@ -3,6 +3,7 @@
 namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
+use CodeIgniter\Database\RawSql;
 
 class CreateRecomendacionesTable extends Migration
 {
@@ -25,7 +26,7 @@ class CreateRecomendacionesTable extends Migration
             'created_at' => [
                 'type'    => 'DATETIME',
                 'null'    => false,
-                'default' => date('Y-m-d H:i:s'),
+                'default' => new RawSql('CURRENT_TIMESTAMP'),
             ],
         ]);
 
