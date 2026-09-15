@@ -33,14 +33,4 @@ class RecomendacionModel extends Model
             ->where('libro_id', $libroId)
             ->countAllResults() > 0;
     }
-
-    public function topCinco(): array
-    {
-        return $this->select('libros.id, libros.titulo, libros.autor, COUNT(recomendaciones.id) AS cantidad_recomendaciones')
-            ->join('libros', 'libros.id = recomendaciones.libro_id')
-            ->groupBy('libros.id, libros.titulo, libros.autor')
-            ->orderBy('cantidad_recomendaciones', 'DESC')
-            ->orderBy('libros.titulo', 'ASC')
-            ->findAll(5);
-    }
 }
