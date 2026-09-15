@@ -159,7 +159,7 @@ $accion = $esEdicion
                 <div>
 
                     <img
-                        src="/<?= esc($promocion['imagen_url']) ?>"
+                        src="<?= base_url(ltrim($promocion['imagen_url'], '/')) ?>"
                         alt="<?= esc($promocion['titulo']) ?>"
                         loading="lazy"
                         decoding="async"

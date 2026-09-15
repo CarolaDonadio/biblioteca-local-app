@@ -6,7 +6,7 @@
     <?php foreach ($promociones as $p): ?>
       <div class="tarjeta" style="padding:1.2em;">
         <?php if (! empty($p['imagen_url'])): ?>
-          <img class="lazy" data-src="/<?= esc($p['imagen_url']) ?>" alt="<?= esc($p['titulo']) ?>" loading="lazy" decoding="async" style="width:100%;border-radius:var(--radio);margin-bottom:.7em;">
+          <img class="lazy" data-src="<?= base_url(ltrim($p['imagen_url'], '/')) ?>" alt="<?= esc($p['titulo']) ?>" loading="lazy" decoding="async" style="width:100%;border-radius:var(--radio);margin-bottom:.7em;">
         <?php endif; ?>
         <span class="sello sello--promocion">vigente hasta <?= esc($p['fecha_fin']) ?></span>
         <h3><?= esc($p['titulo']) ?></h3>
