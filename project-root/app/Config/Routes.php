@@ -82,6 +82,7 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
     // Notificaciones automatizadas
     $routes->get('notificaciones', 'Admin\NotificacionController::index');
     $routes->post('notificaciones/reenviar/(:num)', 'Admin\NotificacionController::reenviar/$1');
+    $routes->post('notificaciones/telegram/test', 'Admin\NotificacionController::enviarTelegram');
     $routes->get('notificaciones/configuracion', 'Admin\NotificacionController::configuracion');
     $routes->post('notificaciones/configuracion', 'Admin\NotificacionController::guardarConfiguracion');
 

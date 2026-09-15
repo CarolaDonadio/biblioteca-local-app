@@ -6,6 +6,17 @@
 </div>
 
 <div class="tarjeta">
+  <h2>Prueba de Telegram</h2>
+  <p>Enviá un mensaje de prueba al canal de Telegram configurado.</p>
+  <form action="<?= site_url('admin/notificaciones/telegram/test') ?>" method="post">
+    <?= csrf_field() ?>
+    <label for="mensaje">Mensaje de prueba</label>
+    <textarea id="mensaje" name="mensaje" rows="3" maxlength="4096" required></textarea>
+    <button class="btn" type="submit">Enviar a Telegram</button>
+  </form>
+</div>
+
+<div class="tarjeta">
   <table>
     <thead><tr><th>Socio</th><th>Canal</th><th>Tipo</th><th>Mensaje</th><th>Estado</th><th></th></tr></thead>
     <tbody>
