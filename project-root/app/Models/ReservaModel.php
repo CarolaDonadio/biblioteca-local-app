@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Libraries\AutomaticNotificationService;
 use CodeIgniter\Model;
 
 class ReservaModel extends Model
@@ -53,7 +54,13 @@ class ReservaModel extends Model
             throw new \RuntimeException('No se pudo registrar la reserva.');
         }
 
-        return (int) $this->getInsertID();
+        $id = (int) $this->getInsertID();
+        $mensaje = 'Se registró una reserva para «' . $libro['titulo'] . '».';
+        $notificaciones = new AutomaticNotificationService();
+        $notificaciones->notifyUser($socioId, 'reserva_solicitada', $mensaje);
+        $notificaciones->notifyProfile('bibliotecario', 'reserva_nueva', $mensaje);
+
+        return $id;
     }
 
     private function existeActivaParaSocio(int $libroId, int $socioId): bool
@@ -136,6 +143,13 @@ class ReservaModel extends Model
             throw new \RuntimeException('No se pudo confirmar la reserva.');
         }
 
+        $libro = (new LibroModel())->find((int) $reserva['libro_id']);
+        (new AutomaticNotificationService())->notifyUser(
+            (int) $reserva['socio_id'],
+            'reserva_confirmada',
+            'Tu reserva de «' . ($libro['titulo'] ?? 'el libro solicitado') . '» fue confirmada.'
+        );
+
         return true;
     }
 
@@ -159,6 +173,13 @@ class ReservaModel extends Model
             throw new \RuntimeException('No se pudo cancelar la reserva.');
         }
 
+        $libro = (new LibroModel())->find((int) $reserva['libro_id']);
+        (new AutomaticNotificationService())->notifyUser(
+            (int) $reserva['socio_id'],
+            'reserva_cancelada',
+            'Tu reserva de «' . ($libro['titulo'] ?? 'el libro solicitado') . '» fue cancelada.'
+        );
+
         return true;
     }
 
@@ -180,7 +201,8 @@ class ReservaModel extends Model
             (new RegistroModel())->registrarPrestamo(
                 (int) $reserva['libro_id'],
                 (int) $reserva['socio_id'],
-                $adminId
+                $adminId,
+                false
             );
 
             if (! $this->update($id, [
@@ -200,6 +222,14 @@ class ReservaModel extends Model
         if ($this->db->transStatus() === false) {
             throw new \RuntimeException('No se pudo registrar el retiro del libro.');
         }
+
+        $libro = (new LibroModel())->find((int) $reserva['libro_id']);
+        (new AutomaticNotificationService())->notifyUser(
+            (int) $reserva['socio_id'],
+            'reserva_completada',
+            'Se registró el retiro de «' . ($libro['titulo'] ?? 'el libro reservado') . '». '
+                . 'La fecha de vencimiento es ' . date('d/m/Y', strtotime('+' . RegistroModel::DIAS_PRESTAMO . ' days')) . '.'
+        );
 
         return true;
     }

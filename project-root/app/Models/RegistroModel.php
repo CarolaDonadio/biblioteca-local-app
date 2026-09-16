@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Libraries\AutomaticNotificationService;
 use CodeIgniter\Model;
 
 class RegistroModel extends Model
@@ -66,7 +67,7 @@ class RegistroModel extends Model
     /**
      * Registra un nuevo préstamo asignando un ejemplar del libro al socio.
      */
-    public function registrarPrestamo($idLibro, $dniUsuario, $adminId = null)
+    public function registrarPrestamo($idLibro, $dniUsuario, $adminId = null, bool $notificar = true)
     {
         $idLibro    = (int) $idLibro;
         $dniUsuario = (int) $dniUsuario;
@@ -112,6 +113,15 @@ class RegistroModel extends Model
         $id = $this->getInsertID();
         $this->sincronizarDisponibilidad($idLibro);
 
+        if ($notificar) {
+            (new AutomaticNotificationService())->notifyUser(
+                $dniUsuario,
+                'prestamo_creado',
+                'Se registró el préstamo de «' . $libro['titulo'] . '». '
+                    . 'La fecha de vencimiento es ' . date('d/m/Y', strtotime('+' . self::DIAS_PRESTAMO . ' days')) . '.'
+            );
+        }
+
         return $id;
     }
 
@@ -134,6 +144,13 @@ class RegistroModel extends Model
         }
 
         $this->sincronizarDisponibilidad((int) $registro['idlibro']);
+
+        $libro = (new LibroModel())->find((int) $registro['idlibro']);
+        (new AutomaticNotificationService())->notifyUser(
+            (int) $registro['dniUsuario'],
+            'devolucion_registrada',
+            'Se registró la devolución de «' . ($libro['titulo'] ?? 'tu libro') . '».'
+        );
 
         return true;
     }
@@ -173,6 +190,14 @@ class RegistroModel extends Model
         if (!$this->update($id, ['fechaVence' => $nuevaFechaVence])) {
             throw new \RuntimeException('No se pudo renovar el préstamo.');
         }
+
+        $libro = (new LibroModel())->find((int) $registro['idlibro']);
+        (new AutomaticNotificationService())->notifyUser(
+            (int) $registro['dniUsuario'],
+            'prestamo_renovado',
+            'Se renovó el préstamo de «' . ($libro['titulo'] ?? 'tu libro') . '». '
+                . 'La nueva fecha de vencimiento es ' . date('d/m/Y', strtotime($nuevaFechaVence)) . '.'
+        );
 
         return true;
     }

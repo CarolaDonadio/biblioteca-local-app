@@ -3,6 +3,7 @@
 namespace App\Controllers\Publico;
 
 use App\Controllers\BaseController;
+use App\Libraries\AutomaticNotificationService;
 use App\Models\UsuarioModel;
 use App\Models\RegistroModel;
 use App\Models\ReservaModel;
@@ -167,6 +168,12 @@ class SocioPortalController extends BaseController
             return redirect()->to('/socio/panel')->with('error', 'No se pudo registrar la recomendación.');
         }
 
+        (new AutomaticNotificationService())->notifyProfile(
+            'bibliotecario',
+            'sugerencia_nueva',
+            'El socio ' . session()->get('socio_nombre') . ' recomendó el libro «' . $libro['titulo'] . '».'
+        );
+
         return redirect()->to('/socio/panel')->with('mensaje', 'Recomendación registrada correctamente.');
     }
 
@@ -205,6 +212,12 @@ class SocioPortalController extends BaseController
 
             return redirect()->back()->with('error', 'No se pudo registrar la recomendación.');
         }
+
+        (new AutomaticNotificationService())->notifyProfile(
+            'bibliotecario',
+            'sugerencia_nueva',
+            'El socio ' . session()->get('socio_nombre') . ' recomendó el libro «' . $libro['titulo'] . '».'
+        );
 
         return redirect()->back()->with('mensaje', 'Recomendación registrada correctamente.');
     }
