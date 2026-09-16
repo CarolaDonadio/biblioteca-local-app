@@ -40,6 +40,29 @@
             <article class="service-item"><span class="service-number">04</span><h3>Participar de la agenda cultural</h3><p>Compartimos encuentros, talleres y propuestas para todas las edades.</p><a href="#agenda">Ver agenda →</a></article>
         </div></div></section>
 
+        <section class="agenda section-wrap" id="promociones"><div class="section-heading"><div><div class="section-kicker">Novedades</div><h2>Promociones vigentes</h2></div><a href="<?= base_url('promociones') ?>" class="text-link">Ver todas <span aria-hidden="true">↗</span></a></div>
+            <?php if (! empty($promociones)): ?>
+                <div class="event-grid">
+                    <?php
+                    $imagenesPromociones = [
+                        'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80',
+                        'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&w=500&q=80',
+                        'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=500&q=80',
+                    ];
+                    ?>
+                    <?php foreach ($promociones as $indice => $promocion): ?>
+                        <article class="event-card">
+                            <?php $imagenRespaldo = $imagenesPromociones[$indice % count($imagenesPromociones)]; ?>
+                            <img class="promotion-image" src="<?= ! empty($promocion['imagen_url']) ? base_url(ltrim($promocion['imagen_url'], '/')) : $imagenRespaldo ?>" alt="<?= esc($promocion['titulo']) ?>" loading="lazy" decoding="async" style="width:90px;height:90px;object-fit:cover;border-radius:2px;" onerror="this.onerror=null;this.src='<?= $imagenRespaldo ?>';">
+                            <div><p class="event-type">Vigente hasta <?= esc($promocion['fecha_fin']) ?></p><h3><?= esc($promocion['titulo']) ?></h3><p><?= esc($promocion['descripcion']) ?></p></div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <p class="agenda-note">No hay promociones vigentes en este momento.</p>
+            <?php endif; ?>
+        </section>
+
         <section class="agenda section-wrap" id="agenda"><div class="section-heading"><div><div class="section-kicker">Para hacer comunidad</div><h2>Agenda de la biblioteca</h2></div><a href="<?= base_url('promociones') ?>" class="text-link">Ver todas las novedades <span aria-hidden="true">↗</span></a></div><div class="event-grid">
             <article class="event-card"><div class="event-date"><strong>Club</strong><span>de lectura</span></div><div><p class="event-type">Encuentro literario</p><h3>Leer, conversar, descubrir</h3><p>Un espacio para compartir lecturas y miradas con otros lectores.</p></div></article>
             <article class="event-card"><div class="event-date event-date--gold"><strong>Para</strong><span>infancias</span></div><div><p class="event-type">Actividad cultural</p><h3>Historias para crecer</h3><p>Lecturas y propuestas para que chicos y chicas se acerquen a los libros.</p></div></article>
