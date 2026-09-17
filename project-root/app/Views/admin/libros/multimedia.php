@@ -28,7 +28,7 @@
       <?php foreach ($multimedia as $item): ?>
         <tr>
           <td><span class="sello sello--promocion"><?= esc($item['tipo']) ?></span></td>
-          <td><a href="/<?= esc($item['archivo_url']) ?>" target="_blank">ver archivo</a></td>
+          <td><a href="<?= site_url('admin/multimedia/' . $item['id'] . '/ver') ?>" target="_blank">ver archivo</a></td>
           <td><?= $item['tamano_kb'] ? esc($item['tamano_kb']) . ' KB' : '—' ?></td>
           <td>
             <form action="/admin/multimedia/<?= $item['id'] ?>/eliminar" method="post" data-confirmar="¿Eliminar este archivo?">

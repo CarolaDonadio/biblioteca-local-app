@@ -20,34 +20,7 @@
       </tr>
     </thead>
     <tbody>
-      <?php 
-        // Fallback de respaldo para visualizar en maquetación si la BD aún no devuelve $libros
-        $lista_libros = $libros ?? [
-          [
-            'id' => 1,
-            'isbn' => '978-9875666870',
-            'titulo' => 'El Principito',
-            'autor' => 'Antoine de Saint-Exupéry',
-            'categoria' => 'Clásicos'
-          ],
-          [
-            'id' => 2,
-            'isbn' => '978-9500700120',
-            'titulo' => 'Rayuela',
-            'autor' => 'Julio Cortázar',
-            'categoria' => 'Ficción'
-          ],
-          [
-            'id' => 3,
-            'isbn' => '978-8420658766',
-            'titulo' => 'Ficciones',
-            'autor' => 'Jorge Luis Borges',
-            'categoria' => 'Ficción'
-          ]
-        ];
-      ?>
-
-      <?php foreach ($lista_libros as $libro): ?>
+      <?php foreach ($libros ?? [] as $libro): ?>
         <tr>
           <td class="isbn"><?= esc($libro['isbn']) ?></td>
           <td><strong><?= esc($libro['titulo']) ?></strong></td>
@@ -65,7 +38,7 @@
         </tr>
       <?php endforeach; ?>
 
-      <?php if (empty($lista_libros)): ?>
+      <?php if (empty($libros)): ?>
         <tr>
           <td colspan="5" style="text-align:center;padding:1.5em;">No se encontraron libros.</td>
         </tr>

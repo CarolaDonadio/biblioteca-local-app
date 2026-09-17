@@ -54,11 +54,18 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
     $routes->get('libros/(:num)/multimedia', 'Admin\LibroController::multimedia/$1');
     $routes->post('libros/(:num)/multimedia', 'Admin\LibroController::subirMultimedia/$1');
     $routes->post('multimedia/(:num)/eliminar', 'Admin\LibroController::eliminarMultimedia/$1');
+    $routes->get('multimedia/(:num)/ver', 'Admin\LibroController::verMultimedia/$1');
 
     // Gestión del catálogo (libros)
     $routes->resource('libros', ['controller' => 'Admin\LibroController']);
 
-    // Inventario / ejemplares deshabilitado en este proyecto
+    // Inventario / ejemplares
+    $routes->get('ejemplares/reportes', 'Admin\EjemplarController::reportes');
+    $routes->post('ejemplares/(:num)/marcar-perdido', 'Admin\EjemplarController::marcarPerdido/$1');
+    $routes->post('ejemplares/(:num)/marcar-danado', 'Admin\EjemplarController::marcarDanado/$1');
+    $routes->resource('ejemplares', [
+        'controller' => 'Admin\EjemplarController',
+    ]);
 
     // Socios (la ruta de historial debe ir antes del resource, que registra 'socios/(.*)' -> show)
     $routes->get('socios/(:num)/historial', 'Admin\SocioController::historial/$1');
