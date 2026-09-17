@@ -45,14 +45,43 @@ class EjemplarModel extends Model
     }
 
     /**
+     * Normaliza el resumen de inventario para siempre devolver el catálogo
+     * completo de estados, incluso cuando algunos no tienen registros.
+     */
+    public static function normalizarReportePorEstado(array $filas): array
+    {
+        $estados = ['disponible', 'prestado', 'reservado', 'perdido', 'danado', 'baja'];
+        $cantidadPorEstado = [];
+
+        foreach ($filas as $fila) {
+            $estado = strtolower((string) ($fila['estado'] ?? ''));
+            if (in_array($estado, $estados, true)) {
+                $cantidadPorEstado[$estado] = (int) ($fila['cantidad'] ?? 0);
+            }
+        }
+
+        $resultado = [];
+        foreach ($estados as $estado) {
+            $resultado[] = [
+                'estado' => $estado,
+                'cantidad' => $cantidadPorEstado[$estado] ?? 0,
+            ];
+        }
+
+        return $resultado;
+    }
+
+    /**
      * Reporte básico de inventario: cantidad de ejemplares por estado.
      */
     public function reportePorEstado(): array
     {
-        return $this->select('estado, COUNT(*) as cantidad')
-                     ->groupBy('estado')
-                     ->orderBy('estado', 'ASC')
-                     ->findAll();
+        $filas = $this->select('estado, COUNT(*) as cantidad')
+                      ->groupBy('estado')
+                      ->orderBy('estado', 'ASC')
+                      ->findAll();
+
+        return self::normalizarReportePorEstado($filas);
     }
 
     /**
