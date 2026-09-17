@@ -10,9 +10,15 @@
   function cargarImagen(img) {
     const src = img.getAttribute('data-src');
     if (!src) return;
+
+    const fallBack = img.getAttribute('data-fallback');
     img.src = src;
     img.removeAttribute('data-src');
     img.classList.add('cargada');
+
+    if (fallBack) {
+      img.dataset.fallback = fallBack;
+    }
   }
 
   function iniciar() {
@@ -39,5 +45,5 @@
   document.addEventListener('DOMContentLoaded', iniciar);
 
   // Re-escanea después de resultados cargados por AJAX (buscador del catálogo).
-  window.BibliotecaLazyLoad = { rescan: iniciar };
+  window.BibliotecaLazyLoad = { rescan: iniciar, cargarImagen };
 })();

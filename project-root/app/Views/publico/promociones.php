@@ -56,7 +56,16 @@ $imagenesRespaldo = [
             <?php $imagenRespaldo = $imagenesRespaldo[$indice % count($imagenesRespaldo)]; ?>
             <article class="promocion-card">
               <div class="promocion-card__imagen">
-                <img src="<?= ! empty($p['imagen_url']) ? base_url(ltrim($p['imagen_url'], '/')) : $imagenRespaldo ?>" alt="<?= esc($p['titulo']) ?>" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='<?= $imagenRespaldo ?>';">
+                <img
+                  class="lazy"
+                  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+                  data-src="<?= ! empty($p['imagen_url']) ? base_url(ltrim($p['imagen_url'], '/')) : $imagenRespaldo ?>"
+                  data-fallback="<?= esc($imagenRespaldo) ?>"
+                  alt="<?= esc($p['titulo']) ?>"
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.onerror=null;this.src=this.dataset.fallback || this.src;"
+                >
                 <span class="promocion-card__numero">0<?= $indice + 1 ?></span>
               </div>
               <div class="promocion-card__contenido">

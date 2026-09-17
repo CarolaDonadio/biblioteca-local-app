@@ -53,7 +53,17 @@
                     <?php foreach ($promociones as $indice => $promocion): ?>
                         <article class="event-card">
                             <?php $imagenRespaldo = $imagenesPromociones[$indice % count($imagenesPromociones)]; ?>
-                            <img class="promotion-image" src="<?= ! empty($promocion['imagen_url']) ? base_url(ltrim($promocion['imagen_url'], '/')) : $imagenRespaldo ?>" alt="<?= esc($promocion['titulo']) ?>" loading="lazy" decoding="async" style="width:90px;height:90px;object-fit:cover;border-radius:2px;" onerror="this.onerror=null;this.src='<?= $imagenRespaldo ?>';">
+                            <img
+                                class="lazy promotion-image"
+                                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+                                data-src="<?= ! empty($promocion['imagen_url']) ? base_url(ltrim($promocion['imagen_url'], '/')) : $imagenRespaldo ?>"
+                                data-fallback="<?= esc($imagenRespaldo) ?>"
+                                alt="<?= esc($promocion['titulo']) ?>"
+                                loading="lazy"
+                                decoding="async"
+                                style="width:90px;height:90px;object-fit:cover;border-radius:2px;"
+                                onerror="this.onerror=null;this.src=this.dataset.fallback || this.src;"
+                            >
                             <div><p class="event-type">Vigente hasta <?= esc($promocion['fecha_fin']) ?></p><h3><?= esc($promocion['titulo']) ?></h3><p><?= esc($promocion['descripcion']) ?></p></div>
                         </article>
                     <?php endforeach; ?>
