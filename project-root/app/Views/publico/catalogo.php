@@ -58,7 +58,6 @@
                 <div class="book-grid">
                     <?php foreach ($libros as $libro): ?>
                         <?php $estaDisponible = !empty($libro['disponible']) && (int) ($libro['cantidad'] ?? 0) > 0; ?>
-                        <?php $yaRecomendado = in_array((int) $libro['id'], $libros_recomendados ?? [], true); ?>
                         <article class="book-card">
                             <a href="<?= base_url('catalogo/libro/' . $libro['id']) ?>" class="book-cover" aria-label="Ver detalle de <?= esc($libro['titulo']) ?>">
                                 <?php if (!empty($libro['portada_url'])): ?>
@@ -79,16 +78,6 @@
                                 <p class="book-category"><?= esc($libro['categoria'] ?? 'Colección general') ?></p>
                                 <h3><a href="<?= base_url('catalogo/libro/' . $libro['id']) ?>"><?= esc($libro['titulo']) ?></a></h3>
                                 <p class="book-author"><?= esc($libro['autor'] ?? 'Autor no registrado') ?></p>
-                                <?php if (session('socio_dni')): ?>
-                                    <?php if ($yaRecomendado): ?>
-                                        <span class="book-recommendation book-recommendation--done">Ya recomendado</span>
-                                    <?php else: ?>
-                                        <form action="<?= base_url('socio/recomendar/' . $libro['id']) ?>" method="post" class="book-recommendation-form">
-                                            <?= csrf_field() ?>
-                                            <button type="submit" class="book-recommendation">Recomendar libro</button>
-                                        </form>
-                                    <?php endif; ?>
-                                <?php endif; ?>
                                 <a href="<?= base_url('catalogo/libro/' . $libro['id']) ?>" class="book-link">Ver detalle <span aria-hidden="true">→</span></a>
                             </div>
                         </article>
