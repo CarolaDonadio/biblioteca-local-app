@@ -58,7 +58,7 @@ code, .mono, .isbn, .codigo { font-family: var(--font-mono); letter-spacing: .01
 }
 .sello--disponible { color: var(--verde-tejo); }
 .sello--prestado, .sello--pendiente { color: var(--tinta-suave); }
-.sello--vencido, .sello--perdido, .sello--danado, .sello--fallido { color: var(--sello-rojo); }
+.sello--vencido, .sello--perdido, .sello--danado, .sello--fallido, .sello--baja { color: var(--sello-rojo); }
 .sello--reservado, .sello--promocion { color: var(--oro-cinta); }
 
 .btn {
