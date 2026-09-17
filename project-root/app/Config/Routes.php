@@ -54,6 +54,7 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
     $routes->get('libros/(:num)/multimedia', 'Admin\LibroController::multimedia/$1');
     $routes->post('libros/(:num)/multimedia', 'Admin\LibroController::subirMultimedia/$1');
     $routes->post('multimedia/(:num)/eliminar', 'Admin\LibroController::eliminarMultimedia/$1');
+    $routes->get('multimedia/(:num)/ver', 'Admin\LibroController::verMultimedia/$1');
 
     // Gestión del catálogo (libros)
     $routes->resource('libros', ['controller' => 'Admin\LibroController']);

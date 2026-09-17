@@ -173,4 +173,45 @@ class LibroController extends BaseController
 
         return redirect()->to("/admin/libros/{$libroId}/multimedia")->with('mensaje', 'Archivo eliminado.');
     }
+
+    public function verMultimedia(int $multimediaId)
+    {
+        $registro = (new MultimediaModel())->find($multimediaId);
+
+        if (! $registro || ! isset($registro['archivo_url'])) {
+            return $this->response->setStatusCode(404)->setBody('Archivo no encontrado.');
+        }
+
+        $relativePath = (string) $registro['archivo_url'];
+        $allowedPrefix = 'uploads/multimedia/';
+
+        if (
+            ! str_starts_with($relativePath, $allowedPrefix)
+            || str_contains($relativePath, "\0")
+            || str_contains($relativePath, '..')
+        ) {
+            return $this->response->setStatusCode(404)->setBody('Archivo no encontrado.');
+        }
+
+        $directory = realpath(WRITEPATH . 'uploads/multimedia');
+        $filePath  = realpath(WRITEPATH . $relativePath);
+
+        if (
+            $directory === false
+            || $filePath === false
+            || ! is_file($filePath)
+            || ! str_starts_with($filePath, $directory . DIRECTORY_SEPARATOR)
+        ) {
+            return $this->response->setStatusCode(404)->setBody('Archivo no encontrado.');
+        }
+
+        $mimeType = mime_content_type($filePath) ?: 'application/octet-stream';
+        $fileName = preg_replace('/[^A-Za-z0-9._-]/', '_', basename($filePath));
+
+        return $this->response
+            ->setHeader('Content-Type', $mimeType)
+            ->setHeader('Content-Length', (string) filesize($filePath))
+            ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
+            ->setBody((string) file_get_contents($filePath));
+    }
 }

@@ -82,6 +82,29 @@ CREATE TABLE libros (
       CHECK (cantidad >= 0)
 );
 
+-- =====================================================
+-- TABLA: multimedia (material digital asociado a libros)
+-- =====================================================
+
+CREATE TABLE multimedia (
+  id INT NOT NULL AUTO_INCREMENT,
+  libro_id INT NOT NULL,
+  tipo ENUM('pdf', 'audiolibro') NOT NULL,
+  archivo_url VARCHAR(255) NOT NULL,
+  tamano_kb INT UNSIGNED NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_multimedia_libro (libro_id),
+
+  CONSTRAINT fk_multimedia_libro
+      FOREIGN KEY (libro_id)
+      REFERENCES libros(id)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE
+);
+
     -- =====================================================
     -- TABLA: recomendaciones
     -- =====================================================
@@ -346,4 +369,3 @@ INSERT INTO registros (idlibro, dniUsuario, fechaPrestamo, fechaVence, fechaDevo
 
 -- Préstamo en curso (activo / vigente)
 (4, 31001002, DATE_SUB(CURRENT_DATE, INTERVAL 2 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 13 DAY), NULL);
-
