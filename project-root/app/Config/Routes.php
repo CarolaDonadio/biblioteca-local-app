@@ -35,6 +35,7 @@ $routes->group('socio', ['filter' => 'socioAuth'], static function ($routes) {
 $routes->group('socio/panel', ['filter' => 'socioAuth'], static function ($routes) {
     $routes->get('/', 'Publico\SocioPortalController::panel');
     $routes->get('prestamos', 'Publico\SocioPortalController::misPrestamos');
+    $routes->get('reservas', 'Publico\SocioPortalController::misReservas');
     $routes->post('renovar/(:num)', 'Publico\SocioPortalController::renovar/$1');
     $routes->post('sugerir', 'Publico\SocioPortalController::sugerirLibro');
 });
@@ -81,6 +82,7 @@ $routes->group('admin', ['filter' => 'adminAuth'], static function ($routes) {
 
     // Motor de reservas (sincrónico)
     $routes->get('reservas', 'Admin\ReservaController::index');
+    $routes->post('reservas', 'Admin\ReservaController::crear');
     $routes->post('reservas/(:num)/confirmar', 'Admin\ReservaController::confirmar/$1');
     $routes->post('reservas/(:num)/cancelar', 'Admin\ReservaController::cancelar/$1');
     $routes->post('reservas/(:num)/completar', 'Admin\ReservaController::completar/$1');

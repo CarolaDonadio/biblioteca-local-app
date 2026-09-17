@@ -98,10 +98,12 @@ class SocioPortalController extends BaseController
         $nombre = explode(' ', trim((string) $socio['nombre_completo']), 2);
         $socio['nombre'] = $nombre[0] ?? '';
         $historial = $this->registroModel->historialPorSocio($socioDni);
+        $reservas = $this->reservaModel->reservasPorSocio($socioDni);
 
         return view('publico/socio_panel', [
-            'socio'    => $socio,
+            'socio'     => $socio,
             'historial' => $historial,
+            'reservas'  => $reservas,
         ]);
     }
 
@@ -112,6 +114,15 @@ class SocioPortalController extends BaseController
 
         return view('publico/socio_prestamos', [
             'prestamos' => $historial['prestamos'],
+        ]);
+    }
+
+    public function misReservas()
+    {
+        $socioDni = (int) session()->get('socio_dni');
+
+        return view('publico/socio_reservas', [
+            'reservas' => $this->reservaModel->reservasPorSocio($socioDni),
         ]);
     }
 

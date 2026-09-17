@@ -106,6 +106,16 @@ class ReservaModel extends Model
         return $reservas;
     }
 
+    public function reservasPorSocio(int $socioId): array
+    {
+        return $this->select('reservas.*, libros.titulo, libros.autor')
+            ->join('libros', 'libros.id = reservas.libro_id', 'left')
+            ->where('reservas.socio_id', $socioId)
+            ->whereIn('reservas.estado', ['pendiente', 'confirmada', 'cancelada', 'completada'])
+            ->orderBy('reservas.fecha_solicitud', 'DESC')
+            ->findAll();
+    }
+
     public function existeActiva(int $libroId, int $socioId, ?int $exceptoId = null): bool
     {
         $builder = $this->where('libro_id', $libroId)

@@ -19,7 +19,7 @@ class DashboardController extends BaseController
             $data = [
                 'prestamos_activos'         => count((new RegistroModel())->activos()),
                 'prestamos_vencidos'        => count((new RegistroModel())->vencidos()),
-                'reservas_pendientes'       => (new ReservaModel())->whereIn('estado', ['pendiente', 'disponible_para_retiro'])->countAllResults(),
+                'reservas_pendientes'       => (new ReservaModel())->whereIn('estado', ['pendiente', 'confirmada'])->countAllResults(),
                 'ejemplares_por_estado'      => (new EjemplarModel())->reportePorEstado(),
                 'notificaciones_pendientes' => (new NotificacionModel())->whereIn('estado_entrega', ['pendiente', 'fallido'])->countAllResults(),
                 'socios_activos'            => (new SocioModel())->where('estado', 'activo')->countAllResults(),

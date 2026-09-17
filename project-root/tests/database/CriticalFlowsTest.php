@@ -82,6 +82,20 @@ final class CriticalFlowsTest extends CIUnitTestCase
         $this->assertSame(1, (new LibroModel())->disponiblesDe(1));
     }
 
+    public function testSocioReservationHistoryIsAvailableForItsPanel(): void
+    {
+        $model = new ReservaModel();
+        $id = $model->solicitar(1, 31001002);
+
+        $this->assertGreaterThan(0, $id);
+
+        $historial = $model->reservasPorSocio(31001002);
+
+        $this->assertNotEmpty($historial);
+        $this->assertSame('pendiente', $historial[0]['estado']);
+        $this->assertSame('Libro crítico', $historial[0]['titulo']);
+    }
+
     public function testNotificationRetryReturnsPendingState(): void
     {
         $id = $this->db->table('notificaciones')->insert([
