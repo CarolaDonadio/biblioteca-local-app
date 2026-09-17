@@ -29,25 +29,37 @@
   </div>
 </div>
 
-<section class="tarjeta" style="padding:1.4em 1.6em;max-width:560px;">
-  <h2>Inventario por estado</h2>
+<section class="tarjeta inventario-panel">
+  <div class="inventario-panel__header">
+    <div>
+      <h2>Inventario por estado</h2>
+      <p>Resumen del stock actual</p>
+    </div>
+    <?php $totalEjemplares = array_sum(array_map(fn($fila) => (int) ($fila['cantidad'] ?? 0), $ejemplares_por_estado ?? [])); ?>
+    <div class="inventario-panel__total">
+      <span>Total</span>
+      <strong><?= $totalEjemplares ?></strong>
+    </div>
+  </div>
+
   <?php if (!empty($ejemplares_por_estado)): ?>
-    <?php $totalEjemplares = 0; ?>
-    <table>
-      <thead><tr><th>Estado</th><th>Cantidad</th></tr></thead>
-      <tbody>
-        <?php foreach ($ejemplares_por_estado as $fila): ?>
-          <?php $totalEjemplares += (int) $fila['cantidad']; ?>
-          <tr>
-            <td><span class="sello sello--<?= esc($fila['estado']) ?>"><?= esc($fila['estado']) ?></span></td>
-            <td><?= (int) $fila['cantidad'] ?></td>
-          </tr>
-        <?php endforeach; ?>
-        <tr><td><strong>Total</strong></td><td><strong><?= $totalEjemplares ?></strong></td></tr>
-      </tbody>
-    </table>
+    <div class="inventario-panel__lista">
+      <?php foreach ($ejemplares_por_estado as $fila): ?>
+        <?php $cantidad = (int) ($fila['cantidad'] ?? 0); ?>
+        <?php $porcentaje = $totalEjemplares > 0 ? round(($cantidad / $totalEjemplares) * 100) : 0; ?>
+        <div class="inventario-panel__item">
+          <div class="inventario-panel__meta">
+            <span class="sello sello--<?= esc($fila['estado']) ?>"><?= esc($fila['estado']) ?></span>
+            <strong><?= $cantidad ?></strong>
+          </div>
+          <div class="inventario-panel__barra" aria-label="<?= esc($fila['estado']) ?>: <?= $cantidad ?> ejemplares">
+            <span style="width: <?= $porcentaje ?>%"></span>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
   <?php else: ?>
-    <p style="color:var(--gris-texto);">Todavía no hay ejemplares registrados.</p>
+    <p style="color:var(--gris-texto); margin:0;">Todavía no hay ejemplares registrados.</p>
   <?php endif; ?>
 </section>
 

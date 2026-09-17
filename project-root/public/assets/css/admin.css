@@ -41,12 +41,69 @@
 .kpi__valor { font-family: var(--font-display); font-size: 2rem; }
 .kpi__etiqueta { font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--gris-texto); }
 
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1em; margin-bottom: 2em; }
-.kpi { padding: 1.1em 1.3em; }
-.kpi__valor { font-family: var(--font-display); font-size: 2rem; }
-.kpi__etiqueta { font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--gris-texto); }
+.inventario-panel {
+  max-width: 560px;
+  padding: 1.4em 1.6em;
+  margin-bottom: 2em;
+}
+.inventario-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1em;
+  margin-bottom: 1.1em;
+}
+.inventario-panel__header h2 { margin-bottom: .15em; }
+.inventario-panel__header p {
+  margin: 0;
+  font-size: .82rem;
+  color: var(--gris-texto);
+}
+.inventario-panel__total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 72px;
+  text-align: right;
+}
+.inventario-panel__total span {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--gris-texto);
+}
+.inventario-panel__total strong {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  line-height: 1;
+}
+.inventario-panel__lista { display: grid; gap: .9em; }
+.inventario-panel__item { display: grid; gap: .45em; }
+.inventario-panel__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .8em;
+}
+.inventario-panel__meta strong { font-size: .98rem; }
+.inventario-panel__barra {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--papel);
+  border: 1px solid var(--papel-borde);
+}
+.inventario-panel__barra span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--tinta-suave), var(--verde-tejo));
+}
 
 .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1em; margin-bottom: 1.2em; flex-wrap: wrap; }
+.toolbar form { display: flex; gap: .5em; }
 .toolbar form { display: flex; gap: .5em; }
 
 .login-box {
