@@ -7,10 +7,10 @@
 
 <div class="tarjeta">
   <h2>Prueba de Telegram</h2>
-  <p>Enviá un mensaje de prueba al canal de Telegram configurado.</p>
+  <p>Enviá una notificación global al grupo o canal de Telegram configurado.</p>
   <form action="<?= site_url('admin/notificaciones/telegram/test') ?>" method="post">
     <?= csrf_field() ?>
-    <label for="mensaje">Mensaje de prueba</label>
+    <label for="mensaje">Mensaje global</label>
     <textarea id="mensaje" name="mensaje" rows="3" maxlength="4096" required></textarea>
     <button class="btn" type="submit">Enviar a Telegram</button>
   </form>
@@ -22,7 +22,7 @@
     <tbody>
       <?php foreach ($notificaciones as $n): ?>
         <tr>
-          <td><?= esc($n['nombre_completo'] ?? 'Usuario eliminado') ?></td>
+          <td><?= esc($n['nombre_completo'] ?? 'Global') ?></td>
           <td class="mono"><?= esc($n['canal']) ?></td>
           <td><?= esc($n['tipo']) ?></td>
           <td style="max-width:280px;"><?= esc($n['mensaje']) ?></td>

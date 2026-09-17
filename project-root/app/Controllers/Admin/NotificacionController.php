@@ -51,11 +51,24 @@ class NotificacionController extends BaseController
         try {
             $telegramService = new TelegramService();
             $telegramService->enviarMensaje($mensaje);
+            $estadoEntrega = 'enviado';
         } catch (RuntimeException $exception) {
-            return redirect()->to('/admin/notificaciones')->with('error', 'No se pudo enviar el mensaje.');
+            $estadoEntrega = 'fallido';
         }
 
-        return redirect()->to('/admin/notificaciones')->with('mensaje', 'Mensaje enviado correctamente.');
+        $this->notificaciones->insert([
+            'dniUsuario'     => null,
+            'canal'          => 'telegram',
+            'tipo'           => 'global',
+            'mensaje'        => $mensaje,
+            'estado_entrega' => $estadoEntrega,
+        ]);
+
+        if ($estadoEntrega === 'enviado') {
+            return redirect()->to('/admin/notificaciones')->with('mensaje', 'Mensaje global enviado correctamente.');
+        }
+
+        return redirect()->to('/admin/notificaciones')->with('error', 'No se pudo enviar la notificación global.');
     }
 
     /** Configuración de credenciales/canales (tokens se guardan en .env, esto solo activa/desactiva canales) */
