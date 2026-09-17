@@ -1,7 +1,7 @@
 <?php ob_start(); ?>
 
 <div class="toolbar">
-  <a href="/admin/inventario/reportes" class="btn btn--outline">Ver reportes</a>
+  <a href="<?= site_url('admin/ejemplares/reportes') ?>" class="btn btn--outline">Ver reportes</a>
   <a href="/admin/ejemplares/new" class="btn">+ Nuevo ejemplar</a>
 </div>
 
