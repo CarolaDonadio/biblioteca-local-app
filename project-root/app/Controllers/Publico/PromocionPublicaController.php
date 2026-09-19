@@ -10,7 +10,7 @@ class PromocionPublicaController extends BaseController
     public function index()
     {
         $data['promociones'] =
-            (new PromocionModel())->vigentes();
+            (new PromocionModel())->todas();
 
         return view('publico/promociones', $data);
     }

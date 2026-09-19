@@ -56,10 +56,11 @@ $imagenesRespaldo = [
             <?php $imagenRespaldo = $imagenesRespaldo[$indice % count($imagenesRespaldo)]; ?>
             <article class="promocion-card">
               <div class="promocion-card__imagen">
+                <?php $imagenPromocion = ! empty($p['imagen_url']) ? (preg_match('/^https?:\/\//i', $p['imagen_url']) ? $p['imagen_url'] : base_url(ltrim($p['imagen_url'], '/'))) : $imagenRespaldo; ?>
                 <img
                   class="lazy"
-                  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
-                  data-src="<?= ! empty($p['imagen_url']) ? base_url(ltrim($p['imagen_url'], '/')) : $imagenRespaldo ?>"
+                  src="<?= esc($imagenPromocion) ?>"
+                  data-src="<?= esc($imagenPromocion) ?>"
                   data-fallback="<?= esc($imagenRespaldo) ?>"
                   alt="<?= esc($p['titulo']) ?>"
                   loading="lazy"

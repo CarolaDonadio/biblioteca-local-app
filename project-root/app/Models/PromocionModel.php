@@ -25,11 +25,20 @@ class PromocionModel extends Model
 
     protected $updatedField = 'updated_at';
 
-    public function vigentes()
+    public function vigentes($limit = null)
     {
-        return $this->where('fecha_inicio <=', date('Y-m-d'))
-                    ->where('fecha_fin >=', date('Y-m-d'))
-                    ->orderBy('fecha_fin', 'ASC')
-                    ->findAll();
+        $query = $this->where('fecha_inicio <=', date('Y-m-d'))
+                      ->where('fecha_fin >=', date('Y-m-d'))
+                      ->orderBy('fecha_fin', 'ASC');
+
+        return $limit ? $query->findAll($limit) : $query->findAll();
+    }
+
+    public function todas($limit = null)
+    {
+        $query = $this->orderBy('fecha_inicio', 'DESC')
+                      ->orderBy('id', 'DESC');
+
+        return $limit ? $query->findAll($limit) : $query->findAll();
     }
 }

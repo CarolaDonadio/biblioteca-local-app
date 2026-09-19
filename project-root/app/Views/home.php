@@ -14,7 +14,10 @@
                 <span class="brand-mark">DS</span>
                 <span class="brand-copy"><strong>Biblioteca Domingo Sarmiento</strong><small>Chascomús · Buenos Aires</small></span>
             </a>
-            <nav class="main-nav" aria-label="Navegación principal">
+            <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" data-nav-toggle>
+                <span></span><span></span><span></span>
+            </button>
+            <nav class="main-nav" id="mainNav" aria-label="Navegación principal">
                 <a href="#la-biblioteca">La biblioteca</a><a href="#servicios">Servicios</a><a href="#agenda">Agenda</a><a href="<?= base_url('catalogo') ?>">Catálogo</a><a href="<?= base_url('socio/login') ?>" class="nav-button">Mi cuenta</a><a href="<?= base_url('admin/login') ?>" class="nav-button">Administración</a>
             </nav>
         </div>
@@ -50,13 +53,14 @@
                         'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=500&q=80',
                     ];
                     ?>
-                    <?php foreach ($promociones as $indice => $promocion): ?>
+                    <?php foreach (array_slice($promociones, 0, 3) as $indice => $promocion): ?>
                         <article class="event-card">
                             <?php $imagenRespaldo = $imagenesPromociones[$indice % count($imagenesPromociones)]; ?>
+                            <?php $imagenPromocion = ! empty($promocion['imagen_url']) ? (preg_match('/^https?:\/\//i', $promocion['imagen_url']) ? $promocion['imagen_url'] : base_url(ltrim($promocion['imagen_url'], '/'))) : $imagenRespaldo; ?>
                             <img
                                 class="lazy promotion-image"
-                                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
-                                data-src="<?= ! empty($promocion['imagen_url']) ? base_url(ltrim($promocion['imagen_url'], '/')) : $imagenRespaldo ?>"
+                                src="<?= esc($imagenPromocion) ?>"
+                                data-src="<?= esc($imagenPromocion) ?>"
                                 data-fallback="<?= esc($imagenRespaldo) ?>"
                                 alt="<?= esc($promocion['titulo']) ?>"
                                 loading="lazy"
@@ -83,5 +87,30 @@
     </main>
 
     <footer class="site-footer"><div class="footer-main section-wrap"><div><a href="<?= base_url() ?>" class="footer-brand">Biblioteca<br><em>Domingo Sarmiento</em></a><p>Lectura, cultura y comunidad<br>en Chascomús.</p></div><div><h3>Explorá</h3><a href="<?= base_url('catalogo') ?>">Catálogo</a><a href="<?= base_url('promociones') ?>">Novedades</a></div><div><h3>Accesos</h3><a href="<?= base_url('socio/login') ?>">Mi cuenta</a><a href="<?= base_url('admin/login') ?>">Administración</a></div><div><h3>Encontranos</h3><p>Chascomús, Buenos Aires<br>Argentina</p><a href="#la-biblioteca">Conocé la biblioteca →</a></div></div><div class="footer-bottom"><span>© <?= date('Y') ?> Biblioteca Domingo Sarmiento</span><span>Un espacio público para leer y encontrarnos.</span></div></footer>
-+</body>
-+</html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.querySelector('[data-nav-toggle]');
+        const nav = document.getElementById('mainNav');
+
+        if (!toggle || !nav) return;
+
+        toggle.addEventListener('click', function () {
+            const isOpen = nav.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', String(isOpen));
+            toggle.classList.toggle('is-open', isOpen);
+        });
+
+        nav.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (window.innerWidth <= 760) {
+                    nav.classList.remove('is-open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                    toggle.classList.remove('is-open');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

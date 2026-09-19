@@ -7,7 +7,7 @@ class Inicio extends BaseController
     public function index(): string
     {
         return view('home', [
-            'promociones' => (new PromocionModel())->vigentes(),
+            'promociones' => (new PromocionModel())->vigentes(3),
         ]);
     }
 }

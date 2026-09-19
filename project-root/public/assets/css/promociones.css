@@ -110,10 +110,13 @@
 .promociones-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 22px;
 }
 
 .promocion-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   overflow: hidden;
   background: #fff;
   border: 1px solid #dfe2dc;
@@ -154,6 +157,9 @@
 }
 
 .promocion-card__contenido {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   min-height: 190px;
   padding: 23px 23px 26px;
 }
@@ -188,6 +194,12 @@
   }
 }
 
+@media (max-width: 640px) {
+  .promociones-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 560px) {
   .promociones-hero {
     grid-template-columns: 1fr;
@@ -214,5 +226,9 @@
 
   .promociones-grid {
     grid-template-columns: 1fr;
+  }
+
+  .promocion-card__contenido {
+    min-height: auto;
   }
 }
