@@ -57,6 +57,7 @@
   </main>
 </div>
 <script src="/assets/js/admin/panel.js"></script>
+<script src="/assets/js/admin/konami.js"></script>
 <?= $js_extra ?? '' ?>
 </body>
 </html>
