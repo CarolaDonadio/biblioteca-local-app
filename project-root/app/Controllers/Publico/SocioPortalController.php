@@ -3,6 +3,7 @@
 namespace App\Controllers\Publico;
 
 use App\Controllers\BaseController;
+use App\Models\NotificacionModel;
 use App\Models\UsuarioModel;
 use App\Models\RegistroModel;
 use App\Models\ReservaModel;
@@ -74,9 +75,10 @@ class SocioPortalController extends BaseController
             ->findAll();
 
         $data = [
-            'socio'     => $socio,
-            'registros' => $registros,
-            'titulo'    => 'Mi cuenta',
+            'socio'           => $socio,
+            'registros'       => $registros,
+            'notificaciones'  => (new NotificacionModel())->porUsuario((int) $socio_dni),
+            'titulo'          => 'Mi cuenta',
         ];
 
         return view('publico/socio_home', $data);
@@ -96,11 +98,13 @@ class SocioPortalController extends BaseController
         $socio['nombre'] = $nombre[0] ?? '';
         $historial = $this->registroModel->historialPorSocio($socioDni);
         $reservas = $this->reservaModel->reservasPorSocio($socioDni);
+        $notificaciones = (new NotificacionModel())->porUsuario($socioDni);
 
         return view('publico/socio_panel', [
-            'socio'     => $socio,
-            'historial' => $historial,
-            'reservas'  => $reservas,
+            'socio'           => $socio,
+            'historial'       => $historial,
+            'reservas'        => $reservas,
+            'notificaciones'  => $notificaciones,
         ]);
     }
 

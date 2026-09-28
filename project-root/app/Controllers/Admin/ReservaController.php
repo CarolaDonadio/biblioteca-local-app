@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\LibroModel;
+use App\Models\NotificacionModel;
 use App\Models\ReservaModel;
 use App\Models\SocioModel;
 
@@ -26,6 +27,11 @@ class ReservaController extends BaseController
         $data['reservas'] = $this->reservas->pendientesConDatos();
         $data['libros'] = $this->libros->conDisponibilidad();
         $data['socios'] = $this->socios->activos();
+        $data['notificaciones'] = (new NotificacionModel())->porUsuario(
+            (int) session()->get('admin_id'),
+            ['reserva_nueva']
+        );
+
         return view('admin/reservas/index', $data);
     }
 

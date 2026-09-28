@@ -22,16 +22,16 @@ class NotificacionModel extends Model
         'estado_entrega',
     ];
 
-    public function reintentar(int $id): bool
+    public function porUsuario(int $dniUsuario, array $tipos = [], int $limite = 50): array
     {
-        $notificacion = $this->find($id);
+        $consulta = $this->where('dniUsuario', $dniUsuario)
+            ->where('canal', 'sistema')
+            ->orderBy('created_at', 'DESC');
 
-        if (! $notificacion) {
-            return false;
+        if ($tipos !== []) {
+            $consulta->whereIn('tipo', $tipos);
         }
 
-        return $this->update($id, [
-            'estado_entrega' => 'pendiente',
-        ]);
+        return $consulta->findAll($limite);
     }
 }

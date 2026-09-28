@@ -40,7 +40,7 @@ CREATE TABLE usuarios (
 CREATE TABLE notificaciones (
   id INT NOT NULL AUTO_INCREMENT,
   dniUsuario INT NULL,
-  canal ENUM('telegram', 'whatsapp', 'email') NOT NULL,
+  canal ENUM('sistema', 'telegram', 'whatsapp', 'email') NOT NULL,
   tipo VARCHAR(80) NOT NULL,
   mensaje TEXT NOT NULL,
   estado_entrega ENUM('pendiente', 'enviado', 'fallido') NOT NULL DEFAULT 'pendiente',

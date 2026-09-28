@@ -3,6 +3,24 @@
 <div class="pub-contenido">
   <h1>Hola, <?= esc($socio['nombre']) ?></h1>
 
+  <div class="tarjeta" style="padding:1.4em 1.6em;max-width:760px;margin-bottom:1.5em;">
+    <h3>Avisos de tu cuenta</h3>
+    <?php if (! empty($notificaciones)): ?>
+      <ul style="margin-bottom:0;">
+        <?php foreach ($notificaciones as $notificacion): ?>
+          <li>
+            <?= esc($notificacion['mensaje']) ?>
+            <span style="color:var(--gris-texto);font-size:.85rem;">
+              — <?= esc($notificacion['created_at']) ?>
+            </span>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    <?php else: ?>
+      <p style="color:var(--gris-texto);margin-bottom:0;">No hay avisos recientes.</p>
+    <?php endif; ?>
+  </div>
+
   <div class="kpi-grid socio-summary-grid">
     <div class="tarjeta kpi">
       <div class="kpi__valor"><?= (int) $historial['total_prestamos'] ?></div>

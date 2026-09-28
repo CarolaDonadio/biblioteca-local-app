@@ -9,31 +9,16 @@ use RuntimeException;
 
 class NotificacionController extends BaseController
 {
-    protected NotificacionModel $notificaciones;
-
-    public function __construct()
-    {
-        $this->notificaciones = new NotificacionModel();
-    }
-
     public function index()
     {
-        $data['notificaciones'] = $this->notificaciones
+        $data['notificaciones'] = (new NotificacionModel())
             ->select('notificaciones.*, usuarios.nombre_completo')
             ->join('usuarios', 'usuarios.dni = notificaciones.dniUsuario', 'left')
+            ->where('notificaciones.canal', 'sistema')
             ->orderBy('notificaciones.id', 'DESC')
             ->findAll(100);
 
         return view('admin/notificaciones/index', $data);
-    }
-
-    public function reenviar($id)
-    {
-        if (! $this->notificaciones->reintentar((int) $id)) {
-            return redirect()->back()->with('error', 'No se encontró la notificación.');
-        }
-
-        return redirect()->back()->with('mensaje', 'Notificación reenviada.');
     }
 
     public function enviarTelegram()
@@ -51,24 +36,11 @@ class NotificacionController extends BaseController
         try {
             $telegramService = new TelegramService();
             $telegramService->enviarMensaje($mensaje);
-            $estadoEntrega = 'enviado';
         } catch (RuntimeException $exception) {
-            $estadoEntrega = 'fallido';
+            return redirect()->to('/admin/notificaciones')->with('error', 'No se pudo enviar la notificación global.');
         }
 
-        $this->notificaciones->insert([
-            'dniUsuario'     => null,
-            'canal'          => 'telegram',
-            'tipo'           => 'global',
-            'mensaje'        => $mensaje,
-            'estado_entrega' => $estadoEntrega,
-        ]);
-
-        if ($estadoEntrega === 'enviado') {
-            return redirect()->to('/admin/notificaciones')->with('mensaje', 'Mensaje global enviado correctamente.');
-        }
-
-        return redirect()->to('/admin/notificaciones')->with('error', 'No se pudo enviar la notificación global.');
+        return redirect()->to('/admin/notificaciones')->with('mensaje', 'Mensaje global enviado correctamente.');
     }
 
     /** Configuración de credenciales/canales (tokens se guardan en .env, esto solo activa/desactiva canales) */
