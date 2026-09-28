@@ -179,6 +179,9 @@
 .detalle-libro { display: grid; grid-template-columns: 260px 1fr; gap: 2em; }
 .detalle-libro__portada img, .detalle-libro__portada .placeholder { width: 100%; border-radius: var(--radio); border: 1px solid var(--papel-borde); }
 
+.socio-summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 540px; }
+.socio-account-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2em; margin-bottom: 2em; }
+
 @media (max-width: 720px) {
 
     /* -------------------------
@@ -257,6 +260,9 @@
     .detalle-libro {
         grid-template-columns: 1fr;
     }
+
+    .socio-summary-grid { grid-template-columns: 1fr; }
+    .socio-account-grid { grid-template-columns: 1fr; gap: 1.2em; }
 
     .pub-contenido,
     .pub-hero {

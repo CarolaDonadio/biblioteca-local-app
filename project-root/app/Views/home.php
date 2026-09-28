@@ -103,7 +103,7 @@
 
         nav.querySelectorAll('a').forEach(function (link) {
             link.addEventListener('click', function () {
-                if (window.innerWidth <= 760) {
+                if (window.innerWidth <= 950) {
                     nav.classList.remove('is-open');
                     toggle.setAttribute('aria-expanded', 'false');
                     toggle.classList.remove('is-open');

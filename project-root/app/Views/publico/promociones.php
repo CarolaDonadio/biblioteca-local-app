@@ -22,7 +22,10 @@ $imagenesRespaldo = [
         <span class="brand-mark">DS</span>
         <span class="brand-copy"><strong>Biblioteca Domingo Sarmiento</strong><small>Chascomús · Buenos Aires</small></span>
       </a>
-      <nav class="main-nav" aria-label="Navegación principal">
+      <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mainNav" data-nav-toggle>
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav" id="mainNav" aria-label="Navegación principal">
         <a href="<?= base_url() ?>#la-biblioteca">La biblioteca</a><a href="<?= base_url() ?>#servicios">Servicios</a><a href="<?= base_url() ?>#agenda">Agenda</a><a href="<?= base_url('catalogo') ?>">Catálogo</a><a href="<?= base_url('socio/login') ?>" class="nav-button">Mi cuenta</a><a href="<?= base_url('admin/login') ?>" class="nav-button">Administración</a>
       </nav>
     </div>
@@ -84,5 +87,25 @@ $imagenesRespaldo = [
   </main>
 
   <footer class="site-footer"><div class="footer-main section-wrap"><div><a href="<?= base_url() ?>" class="footer-brand">Biblioteca<br><em>Domingo Sarmiento</em></a><p>Lectura, cultura y comunidad<br>en Chascomús.</p></div><div><h3>Explorá</h3><a href="<?= base_url('catalogo') ?>">Catálogo</a><a href="<?= base_url('promociones') ?>">Novedades</a></div><div><h3>Accesos</h3><a href="<?= base_url('socio/login') ?>">Mi cuenta</a><a href="<?= base_url('admin/login') ?>">Administración</a></div><div><h3>Encontranos</h3><p>Chascomús, Buenos Aires<br>Argentina</p><a href="<?= base_url() ?>#la-biblioteca">Conocé la biblioteca →</a></div></div><div class="footer-bottom"><span>© <?= date('Y') ?> Biblioteca Domingo Sarmiento</span><span>Un espacio público para leer y encontrarnos.</span></div></footer>
+  <script>
+    const promotionsToggle = document.querySelector('[data-nav-toggle]');
+    const promotionsNav = document.getElementById('mainNav');
+
+    promotionsToggle.addEventListener('click', () => {
+      const isOpen = promotionsNav.classList.toggle('is-open');
+      promotionsToggle.setAttribute('aria-expanded', String(isOpen));
+      promotionsToggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+      promotionsToggle.classList.toggle('is-open', isOpen);
+    });
+
+    promotionsNav.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        promotionsNav.classList.remove('is-open');
+        promotionsToggle.setAttribute('aria-expanded', 'false');
+        promotionsToggle.setAttribute('aria-label', 'Abrir menú');
+        promotionsToggle.classList.remove('is-open');
+      });
+    });
+  </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <div class="pub-contenido">
   <h1>Hola, <?= esc($socio['nombre']) ?></h1>
 
-  <div class="kpi-grid" style="grid-template-columns:repeat(3,minmax(140px,1fr));max-width:540px;">
+  <div class="kpi-grid socio-summary-grid">
     <div class="tarjeta kpi">
       <div class="kpi__valor"><?= (int) $historial['total_prestamos'] ?></div>
       <div class="kpi__etiqueta">Préstamos totales</div>

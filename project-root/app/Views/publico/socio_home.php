@@ -16,7 +16,7 @@
     <div class="alerta alerta--error" data-auto-cerrar><?= esc(session('error')) ?></div>
   <?php endif; ?>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2em;margin-bottom:2em;">
+  <div class="socio-account-grid">
     <!-- Panel de edición de perfil -->
     <div class="tarjeta" style="padding:1.6em 1.8em;">
       <h3>Mi Información</h3>

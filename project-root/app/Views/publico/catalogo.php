@@ -14,10 +14,17 @@
                 <span class="catalog-brand__mark">DS</span>
                 <span><strong>Biblioteca Domingo Sarmiento</strong><small>Chascomús · Catálogo</small></span>
             </a>
-            <nav class="catalog-nav" aria-label="Navegación principal">
-                <a href="<?= base_url() ?>">Inicio</a>
+            <button class="catalog-nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="catalogNav">
+                <span></span><span></span><span></span>
+            </button>
+            <nav class="catalog-nav" id="catalogNav" aria-label="Navegación principal">
+                <a href="<?= base_url() ?>#la-biblioteca">La biblioteca</a>
+                <a href="<?= base_url() ?>#servicios">Servicios</a>
+                <a href="<?= base_url() ?>#agenda">Agenda</a>
+                <a href="<?= base_url('catalogo') ?>">Catálogo</a>
                 <a href="<?= base_url('promociones') ?>">Novedades</a>
                 <a href="<?= base_url('socio/login') ?>" class="catalog-nav__account">Mi cuenta</a>
+                <a href="<?= base_url('admin/login') ?>" class="catalog-nav__account">Administración</a>
             </nav>
         </div>
     </header>
@@ -90,5 +97,23 @@
     </main>
 
     <footer class="catalog-footer"><div class="catalog-wrap"><div><strong>Biblioteca Domingo Sarmiento</strong><span>Lectura, cultura y comunidad en Chascomús.</span></div><div><span>¿Ya sos parte?</span><a href="<?= base_url('socio/login') ?>">Ingresá a tu cuenta →</a></div><small>© <?= date('Y') ?> Biblioteca Domingo Sarmiento</small></div></footer>
+    <script>
+        const catalogToggle = document.querySelector('.catalog-nav-toggle');
+        const catalogNav = document.getElementById('catalogNav');
+
+        catalogToggle.addEventListener('click', () => {
+            const isOpen = catalogNav.classList.toggle('is-open');
+            catalogToggle.setAttribute('aria-expanded', String(isOpen));
+            catalogToggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+        });
+
+        catalogNav.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => {
+                catalogNav.classList.remove('is-open');
+                catalogToggle.setAttribute('aria-expanded', 'false');
+                catalogToggle.setAttribute('aria-label', 'Abrir menú');
+            });
+        });
+    </script>
 </body>
 </html>

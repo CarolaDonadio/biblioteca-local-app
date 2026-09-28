@@ -115,6 +115,7 @@
 @media (max-width: 860px) {
   .admin-sidebar { position: static; width: 100%; padding: 1em 0 .75em; }
   .admin-layout { flex-direction: column; }
+<<<<<<< Updated upstream
   .admin-nav { display: flex; flex-wrap: wrap; }
   .admin-nav__grupo { flex: 0 0 100%; padding: .7em 1.3em .3em; }
   .admin-nav li { flex: 1 1 190px; }
@@ -143,4 +144,20 @@
 @media (max-width: 380px) {
   .admin-nav li { flex-basis: 100%; }
   .inventario-panel__header { flex-wrap: wrap; }
+=======
+  .admin-sidebar { padding: 1em 0; }
+  .admin-nav { display: flex; flex-wrap: wrap; padding: 0 .8em; }
+  .admin-nav__grupo { flex: 0 0 100%; padding: .8em .5em .3em; }
+  .admin-nav li { flex: 1 1 180px; min-width: 0; }
+  .admin-nav a { height: 100%; padding: .7em .8em; }
+}
+
+@media (max-width: 520px) {
+  .admin-contenido { padding: 1em; }
+  .admin-topbar { align-items: flex-start; flex-direction: column; gap: .6em; }
+  .admin-nav li { flex-basis: 100%; }
+  .toolbar, .toolbar form { align-items: stretch; flex-direction: column; width: 100%; }
+  .inventario-panel__header { flex-direction: column; }
+  .inventario-panel__total { align-items: flex-start; text-align: left; }
+>>>>>>> Stashed changes
 }
