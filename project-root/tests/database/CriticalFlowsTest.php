@@ -87,8 +87,8 @@ final class CriticalFlowsTest extends CIUnitTestCase
     {
         $this->db->table('libros')->insert(['titulo' => 'Otra historia', 'autor' => 'Autor', 'cantidad' => 1, 'disponible' => 1]);
         $this->db->table('registros')->insertBatch([
-            ['idlibro' => 1, 'dniUsuario' => 31001002, 'fechaPrestamo' => date('Y-m-d'), 'fechaVence' => date('Y-m-d', strtotime('+7 days'))],
-            ['idlibro' => 2, 'dniUsuario' => 31001003, 'fechaPrestamo' => date('Y-m-d'), 'fechaVence' => date('Y-m-d', strtotime('+7 days'))],
+            ['idlibro' => 1, 'dniUsuario' => 31001002, 'fechaPrestamo' => date('Y-m-d'), 'fechaVence' => date('Y-m-d', strtotime('+7 days')), 'fechaDevolucion' => null],
+            ['idlibro' => 2, 'dniUsuario' => 31001003, 'fechaPrestamo' => date('Y-m-d'), 'fechaVence' => date('Y-m-d', strtotime('+7 days')), 'fechaDevolucion' => null],
             ['idlibro' => 1, 'dniUsuario' => 31001003, 'fechaPrestamo' => date('Y-m-d'), 'fechaVence' => date('Y-m-d', strtotime('+7 days')), 'fechaDevolucion' => date('Y-m-d')],
         ]);
 
