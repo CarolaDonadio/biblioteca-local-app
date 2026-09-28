@@ -1,5 +1,23 @@
 <?php ob_start(); ?>
 
+<div class="tarjeta" style="padding:1.2em 1.5em;margin-bottom:1.5em;">
+  <h3>Avisos de nuevas reservas</h3>
+  <?php if (! empty($notificaciones)): ?>
+    <ul style="margin-bottom:0;">
+      <?php foreach ($notificaciones as $notificacion): ?>
+        <li>
+          <?= esc($notificacion['mensaje']) ?>
+          <span style="color:var(--gris-texto);font-size:.85rem;">
+            — <?= esc($notificacion['created_at']) ?>
+          </span>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+  <?php else: ?>
+    <p style="color:var(--gris-texto);margin-bottom:0;">No hay avisos nuevos de reservas.</p>
+  <?php endif; ?>
+</div>
+
 <div class="tarjeta" style="padding:1.6em 1.8em;max-width:760px;margin-bottom:1.5em;">
   <h3>Reservar libro para un socio</h3>
   <form action="/admin/reservas" method="post" style="display:grid;grid-template-columns:1fr 1fr auto;gap:1em;align-items:end;">

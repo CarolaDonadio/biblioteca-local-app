@@ -16,6 +16,24 @@
     <div class="alerta alerta--error" data-auto-cerrar><?= esc(session('error')) ?></div>
   <?php endif; ?>
 
+  <div class="tarjeta" style="padding:1.4em 1.6em;margin-bottom:1.5em;">
+    <h3>Avisos de tu cuenta</h3>
+    <?php if (! empty($notificaciones)): ?>
+      <ul style="margin-bottom:0;">
+        <?php foreach ($notificaciones as $notificacion): ?>
+          <li>
+            <?= esc($notificacion['mensaje']) ?>
+            <span style="color:var(--gris-texto);font-size:.85rem;">
+              — <?= esc($notificacion['created_at']) ?>
+            </span>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    <?php else: ?>
+      <p style="color:var(--gris-texto);margin-bottom:0;">No hay avisos recientes.</p>
+    <?php endif; ?>
+  </div>
+
   <div class="socio-account-grid">
     <!-- Panel de edición de perfil -->
     <div class="tarjeta" style="padding:1.6em 1.8em;">

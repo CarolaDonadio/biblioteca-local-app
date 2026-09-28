@@ -4,7 +4,6 @@ namespace App\Libraries;
 
 use App\Models\NotificacionModel;
 use App\Models\UsuarioModel;
-use Config\Email;
 
 class AutomaticNotificationService
 {
@@ -18,25 +17,17 @@ class AutomaticNotificationService
         $notificaciones = new NotificacionModel();
         $id = $notificaciones->insert([
             'dniUsuario'     => $dniUsuario,
-            'canal'          => 'email',
+            'canal'          => 'sistema',
             'tipo'           => $tipo,
             'mensaje'        => $mensaje,
-            'estado_entrega' => 'pendiente',
+            'estado_entrega' => 'enviado',
         ], true);
 
         if (! $id) {
-            return;
-        }
-
-        try {
-            $this->sendEmail((string) $usuario['mail'], $tipo, $mensaje);
-            $notificaciones->update($id, ['estado_entrega' => 'enviado']);
-        } catch (\Throwable $exception) {
-            $notificaciones->update($id, ['estado_entrega' => 'fallido']);
-            log_message('error', 'No se pudo enviar la notificación automática {id}: {error}', [
-                'id'    => $id,
-                'error' => $exception->getMessage(),
+            log_message('error', 'No se pudo registrar el aviso interno de tipo {tipo}.', [
+                'tipo' => $tipo,
             ]);
+            return;
         }
     }
 
@@ -49,24 +40,6 @@ class AutomaticNotificationService
 
         foreach ($usuarios as $usuario) {
             $this->notifyUser((int) $usuario['dni'], $tipo, $mensaje);
-        }
-    }
-
-    private function sendEmail(string $destinatario, string $tipo, string $mensaje): void
-    {
-        $config = config(Email::class);
-        if ($config->fromEmail === '') {
-            throw new \RuntimeException('Email sender is not configured.');
-        }
-
-        $email = service('email');
-        $email->setFrom($config->fromEmail, $config->fromName ?: 'Biblioteca Virtual');
-        $email->setTo($destinatario);
-        $email->setSubject('Biblioteca Virtual: ' . $tipo);
-        $email->setMessage($mensaje);
-
-        if (! $email->send()) {
-            throw new \RuntimeException('Email delivery failed.');
         }
     }
 }
