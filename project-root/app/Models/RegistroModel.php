@@ -26,12 +26,19 @@ class RegistroModel extends Model
     /**
      * Obtiene todos los préstamos activos (sin devolución)
      */
-    public function activos(): array
+    public function activos(string $busqueda = ''): array
     {
-        return $this->selectConRelaciones()
-                    ->where('registros.fechaDevolucion', null)
-                    ->orderBy('registros.fechaVence', 'ASC')
-                    ->findAll();
+        $consulta = $this->selectConRelaciones()
+            ->where('registros.fechaDevolucion', null);
+
+        if ($busqueda !== '') {
+            $consulta->groupStart()
+                ->like('libros.titulo', $busqueda)
+                ->orLike('registros.dniUsuario', $busqueda)
+                ->groupEnd();
+        }
+
+        return $consulta->orderBy('registros.fechaVence', 'ASC')->findAll();
     }
 
     /**

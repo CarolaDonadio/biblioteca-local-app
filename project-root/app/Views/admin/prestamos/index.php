@@ -7,6 +7,13 @@
 ?>
 
 <div class="toolbar">
+  <form action="/admin/prestamos" method="get">
+    <input type="text" name="q" placeholder="Buscar por libro o DNI..." value="<?= esc($q ?? '') ?>">
+    <button class="btn btn--outline" type="submit">Buscar</button>
+    <?php if (!empty($q)): ?>
+      <a href="/admin/prestamos" class="btn btn--outline">Borrar filtro</a>
+    <?php endif; ?>
+  </form>
   <span style="color:var(--gris-texto);font-size:.85rem;"><?= count($vencidos_lista) ?> préstamo(s) vencido(s)</span>
   <a href="/admin/prestamos/nuevo" class="btn">+ Registrar préstamo</a>
 </div>
@@ -52,7 +59,7 @@
 
       <?php if (empty($lista_prestamos)): ?>
         <tr>
-          <td colspan="7" style="text-align:center;padding:1.5em;">No hay préstamos activos.</td>
+          <td colspan="7" style="text-align:center;padding:1.5em;"><?= !empty($q) ? 'No se encontraron préstamos activos.' : 'No hay préstamos activos.' ?></td>
         </tr>
       <?php endif; ?>
     </tbody>

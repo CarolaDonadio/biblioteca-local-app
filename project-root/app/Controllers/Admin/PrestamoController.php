@@ -22,9 +22,12 @@ class PrestamoController extends BaseController
 
     public function index()
     {
+        $busqueda = trim((string) $this->request->getGet('q'));
+
         return view('admin/prestamos/index', [
-            'prestamos' => $this->prestamos->activos(),
+            'prestamos' => $this->prestamos->activos($busqueda),
             'vencidos'  => $this->prestamos->vencidos(),
+            'q'         => $busqueda,
         ]);
     }
 

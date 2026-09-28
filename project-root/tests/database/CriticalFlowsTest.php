@@ -5,6 +5,7 @@ use App\Models\LibroModel;
 use App\Models\NotificacionModel;
 use App\Models\PromocionModel;
 use App\Models\ReservaModel;
+use App\Models\RegistroModel;
 use App\Models\UsuarioModel;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\Test\CIUnitTestCase;
@@ -19,19 +20,19 @@ final class CriticalFlowsTest extends CIUnitTestCase
         }
 
         $this->db = db_connect('tests');
-        $this->db->query('DROP TABLE IF EXISTS reservas');
-        $this->db->query('DROP TABLE IF EXISTS registros');
-        $this->db->query('DROP TABLE IF EXISTS notificaciones');
-        $this->db->query('DROP TABLE IF EXISTS promociones');
-        $this->db->query('DROP TABLE IF EXISTS libros');
-        $this->db->query('DROP TABLE IF EXISTS usuarios');
+        $this->db->query('DROP TABLE IF EXISTS db_reservas');
+        $this->db->query('DROP TABLE IF EXISTS db_registros');
+        $this->db->query('DROP TABLE IF EXISTS db_notificaciones');
+        $this->db->query('DROP TABLE IF EXISTS db_promociones');
+        $this->db->query('DROP TABLE IF EXISTS db_libros');
+        $this->db->query('DROP TABLE IF EXISTS db_usuarios');
 
-        $this->db->query('CREATE TABLE usuarios (dni INTEGER PRIMARY KEY, nombre_completo VARCHAR(150) NOT NULL, mail VARCHAR(150) NOT NULL, password_hash VARCHAR(255) NOT NULL, perfil VARCHAR(20) NOT NULL, estado VARCHAR(20) NOT NULL, ultimo_login DATETIME NULL, created_at DATETIME NULL, updated_at DATETIME NULL)');
-        $this->db->query('CREATE TABLE libros (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR(255) NOT NULL, autor VARCHAR(150) NOT NULL, cantidad INTEGER NOT NULL, disponible INTEGER NOT NULL DEFAULT 1)');
-        $this->db->query('CREATE TABLE registros (id INTEGER PRIMARY KEY AUTOINCREMENT, idlibro INTEGER NOT NULL, dniUsuario INTEGER NOT NULL, fechaPrestamo DATE NOT NULL, fechaVence DATE NOT NULL, fechaDevolucion DATE NULL)');
-        $this->db->query('CREATE TABLE reservas (id INTEGER PRIMARY KEY AUTOINCREMENT, libro_id INTEGER NOT NULL, socio_id INTEGER NOT NULL, fecha_solicitud DATETIME NOT NULL, estado VARCHAR(20) NOT NULL, fecha_confirmacion DATETIME NULL, fecha_cancelacion DATETIME NULL, fecha_completada DATETIME NULL, procesada_por INTEGER NULL)');
-        $this->db->query('CREATE TABLE notificaciones (id INTEGER PRIMARY KEY AUTOINCREMENT, dniUsuario INTEGER NOT NULL, canal VARCHAR(20) NOT NULL, tipo VARCHAR(80) NOT NULL, mensaje TEXT NOT NULL, estado_entrega VARCHAR(20) NOT NULL, created_at DATETIME NULL, updated_at DATETIME NULL)');
-        $this->db->query('CREATE TABLE promociones (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR(255) NOT NULL, descripcion TEXT NULL, fecha_inicio DATE NOT NULL, fecha_fin DATE NOT NULL, imagen_url VARCHAR(255) NULL, condiciones TEXT NULL, created_at DATETIME NULL, updated_at DATETIME NULL)');
+        $this->db->query('CREATE TABLE db_usuarios (dni INTEGER PRIMARY KEY, nombre_completo VARCHAR(150) NOT NULL, mail VARCHAR(150) NOT NULL, password_hash VARCHAR(255) NOT NULL, perfil VARCHAR(20) NOT NULL, estado VARCHAR(20) NOT NULL, ultimo_login DATETIME NULL, created_at DATETIME NULL, updated_at DATETIME NULL)');
+        $this->db->query('CREATE TABLE db_libros (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR(255) NOT NULL, autor VARCHAR(150) NOT NULL, isbn VARCHAR(20) NULL, cantidad INTEGER NOT NULL, disponible INTEGER NOT NULL DEFAULT 1)');
+        $this->db->query('CREATE TABLE db_registros (id INTEGER PRIMARY KEY AUTOINCREMENT, idlibro INTEGER NOT NULL, dniUsuario INTEGER NOT NULL, fechaPrestamo DATE NOT NULL, fechaVence DATE NOT NULL, fechaDevolucion DATE NULL)');
+        $this->db->query('CREATE TABLE db_reservas (id INTEGER PRIMARY KEY AUTOINCREMENT, libro_id INTEGER NOT NULL, socio_id INTEGER NOT NULL, fecha_solicitud DATETIME NOT NULL, estado VARCHAR(20) NOT NULL, fecha_confirmacion DATETIME NULL, fecha_cancelacion DATETIME NULL, fecha_completada DATETIME NULL, procesada_por INTEGER NULL)');
+        $this->db->query('CREATE TABLE db_notificaciones (id INTEGER PRIMARY KEY AUTOINCREMENT, dniUsuario INTEGER NOT NULL, canal VARCHAR(20) NOT NULL, tipo VARCHAR(80) NOT NULL, mensaje TEXT NOT NULL, estado_entrega VARCHAR(20) NOT NULL, created_at DATETIME NULL, updated_at DATETIME NULL)');
+        $this->db->query('CREATE TABLE db_promociones (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR(255) NOT NULL, descripcion TEXT NULL, fecha_inicio DATE NOT NULL, fecha_fin DATE NOT NULL, imagen_url VARCHAR(255) NULL, condiciones TEXT NULL, created_at DATETIME NULL, updated_at DATETIME NULL)');
 
         $password = password_hash('secreto', PASSWORD_DEFAULT);
         $this->db->table('usuarios')->insertBatch([
@@ -80,6 +81,22 @@ final class CriticalFlowsTest extends CIUnitTestCase
         ]);
 
         $this->assertSame(1, (new LibroModel())->disponiblesDe(1));
+    }
+
+    public function testActiveLoansCanBeSearchedByTitleOrUserDni(): void
+    {
+        $this->db->table('libros')->insert(['titulo' => 'Otra historia', 'autor' => 'Autor', 'cantidad' => 1, 'disponible' => 1]);
+        $this->db->table('registros')->insertBatch([
+            ['idlibro' => 1, 'dniUsuario' => 31001002, 'fechaPrestamo' => date('Y-m-d'), 'fechaVence' => date('Y-m-d', strtotime('+7 days'))],
+            ['idlibro' => 2, 'dniUsuario' => 31001003, 'fechaPrestamo' => date('Y-m-d'), 'fechaVence' => date('Y-m-d', strtotime('+7 days'))],
+            ['idlibro' => 1, 'dniUsuario' => 31001003, 'fechaPrestamo' => date('Y-m-d'), 'fechaVence' => date('Y-m-d', strtotime('+7 days')), 'fechaDevolucion' => date('Y-m-d')],
+        ]);
+
+        $model = new RegistroModel();
+        $this->assertCount(2, $model->activos());
+        $this->assertSame([31001002], array_map('intval', array_column($model->activos('crítico'), 'dniUsuario')));
+        $this->assertSame([31001003], array_map('intval', array_column($model->activos('1003'), 'dniUsuario')));
+        $this->assertSame([], $model->activos('sin coincidencias'));
     }
 
     public function testSocioReservationHistoryIsAvailableForItsPanel(): void
