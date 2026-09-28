@@ -105,35 +105,11 @@ CREATE TABLE multimedia (
       ON DELETE CASCADE
 );
 
-    -- =====================================================
-    -- TABLA: recomendaciones
-    -- =====================================================
-
-    CREATE TABLE recomendaciones (
-      id INT NOT NULL AUTO_INCREMENT,
-      socio_id INT NOT NULL,
-      libro_id INT NOT NULL,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-      PRIMARY KEY (id),
-      UNIQUE KEY uk_recomendaciones_socio_libro (socio_id, libro_id),
-
-      CONSTRAINT fk_recomendaciones_socio
-        FOREIGN KEY (socio_id)
-        REFERENCES usuarios(dni)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT,
-
-      CONSTRAINT fk_recomendaciones_libro
-        FOREIGN KEY (libro_id)
-        REFERENCES libros(id)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT
-    );
-
 -- =====================================================
 -- TABLA: registros (préstamos)
 -- =====================================================
+
+DROP TABLE IF EXISTS recomendaciones;
 
 CREATE TABLE registros (
   id INT NOT NULL AUTO_INCREMENT,

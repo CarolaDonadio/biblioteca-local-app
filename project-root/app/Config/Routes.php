@@ -36,7 +36,6 @@ $routes->group('socio/panel', ['filter' => 'socioAuth'], static function ($route
     $routes->get('prestamos', 'Publico\SocioPortalController::misPrestamos');
     $routes->get('reservas', 'Publico\SocioPortalController::misReservas');
     $routes->post('renovar/(:num)', 'Publico\SocioPortalController::renovar/$1');
-    $routes->post('sugerir', 'Publico\SocioPortalController::sugerirLibro');
 });
 
 // -----------------------------------------------------------------

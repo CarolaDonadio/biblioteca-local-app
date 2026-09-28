@@ -3,12 +3,9 @@
 namespace App\Controllers\Publico;
 
 use App\Controllers\BaseController;
-use App\Libraries\AutomaticNotificationService;
 use App\Models\UsuarioModel;
 use App\Models\RegistroModel;
 use App\Models\ReservaModel;
-use App\Models\RecomendacionModel;
-use App\Models\LibroModel;
 
 class SocioPortalController extends BaseController
 {
@@ -144,50 +141,6 @@ class SocioPortalController extends BaseController
         return redirect()->to('/socio/panel/prestamos')->with('mensaje', 'Préstamo renovado correctamente.');
     }
 
-    public function sugerirLibro()
-    {
-        $titulo = trim((string) $this->request->getPost('titulo_sugerido'));
-        $autor = trim((string) $this->request->getPost('autor_sugerido'));
-
-        if ($titulo === '') {
-            return redirect()->back()->withInput()->with('error', 'Ingresá el título del libro.');
-        }
-
-        $libros = new LibroModel();
-        $consulta = $libros->where('titulo', $titulo);
-
-        if ($autor !== '') {
-            $consulta->where('autor', $autor);
-        }
-
-        $libro = $consulta->first();
-        if (! $libro) {
-            return redirect()->back()->withInput()->with('error', 'El libro no está en el catálogo. Podés recomendar libros existentes desde el catálogo.');
-        }
-
-        $socioId = (int) session()->get('socio_dni');
-        $recomendaciones = new RecomendacionModel();
-
-        if ($recomendaciones->yaRecomendo($socioId, (int) $libro['id'])) {
-            return redirect()->to('/socio/panel')->with('error', 'Ya recomendaste este libro.');
-        }
-
-        if (! $recomendaciones->insert([
-            'socio_id' => $socioId,
-            'libro_id' => (int) $libro['id'],
-        ])) {
-            return redirect()->to('/socio/panel')->with('error', 'No se pudo registrar la recomendación.');
-        }
-
-        (new AutomaticNotificationService())->notifyProfile(
-            'bibliotecario',
-            'sugerencia_nueva',
-            'El socio ' . session()->get('socio_nombre') . ' recomendó el libro «' . $libro['titulo'] . '».'
-        );
-
-        return redirect()->to('/socio/panel')->with('mensaje', 'Recomendación registrada correctamente.');
-    }
-
     public function reservar($id)
     {
         $socioDni = (int) session()->get('socio_dni');
@@ -199,38 +152,6 @@ class SocioPortalController extends BaseController
         }
 
         return redirect()->to('/socio/home')->with('mensaje', 'Reserva registrada correctamente.');
-    }
-
-    public function recomendarLibro($id)
-    {
-        $libroId = (int) $id;
-        $socioId = (int) session()->get('socio_dni');
-        $libro = (new LibroModel())->find($libroId);
-
-        if (! $libro) {
-            return redirect()->back()->with('error', 'El libro seleccionado no existe.');
-        }
-
-        $recomendaciones = new RecomendacionModel();
-        if ($recomendaciones->yaRecomendo($socioId, $libroId)) {
-            return redirect()->back()->with('error', 'Ya recomendaste este libro.');
-        }
-
-        if (! $recomendaciones->insert(['socio_id' => $socioId, 'libro_id' => $libroId])) {
-            if ($recomendaciones->yaRecomendo($socioId, $libroId)) {
-                return redirect()->back()->with('error', 'Ya recomendaste este libro.');
-            }
-
-            return redirect()->back()->with('error', 'No se pudo registrar la recomendación.');
-        }
-
-        (new AutomaticNotificationService())->notifyProfile(
-            'bibliotecario',
-            'sugerencia_nueva',
-            'El socio ' . session()->get('socio_nombre') . ' recomendó el libro «' . $libro['titulo'] . '».'
-        );
-
-        return redirect()->back()->with('mensaje', 'Recomendación registrada correctamente.');
     }
 
     public function actualizarPerfil()
