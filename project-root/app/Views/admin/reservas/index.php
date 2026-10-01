@@ -20,7 +20,7 @@
 
 <div class="tarjeta" style="padding:1.6em 1.8em;max-width:760px;margin-bottom:1.5em;">
   <h3>Reservar libro para un socio</h3>
-  <form action="/admin/reservas" method="post" style="display:grid;grid-template-columns:1fr 1fr auto;gap:1em;align-items:end;">
+  <form action="/admin/reservas" method="post" class="reserva-formulario">
     <?= csrf_field() ?>
     <div class="campo">
       <label for="libro_id">Libro</label>

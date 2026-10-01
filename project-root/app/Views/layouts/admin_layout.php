@@ -12,7 +12,25 @@
 </head>
 <body>
 <div class="admin-layout">
-  <aside class="admin-sidebar">
+  <div class="admin-mobilebar">
+    <div class="admin-mobilebar__marca">
+      <span>Mi Biblioteca Virtual</span>
+      <small>Panel administrativo</small>
+    </div>
+    <button
+      class="admin-mobilebar__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="admin-navigation"
+      aria-label="Abrir menú administrativo"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <aside class="admin-sidebar" id="admin-navigation">
     <div class="admin-sidebar__marca">Mi Biblioteca Virtual<span>Panel administrativo</span></div>
     <ul class="admin-nav">
       <li><a href="/admin" class="<?= uri_string() === 'admin' ? 'activo' : '' ?>">Dashboard</a></li>
@@ -58,6 +76,7 @@
 </div>
 <script src="/assets/js/admin/panel.js"></script>
 <script src="/assets/js/admin/konami.js"></script>
+<script src="/assets/js/admin/menu.js"></script>
 <?= $js_extra ?? '' ?>
 </body>
 </html>
