@@ -31,8 +31,10 @@ class ReservaModel extends Model
 
     public function solicitar(int $libroId, int $socioId): int
     {
-        $libro = (new LibroModel())->find($libroId);
-        if (! $libro) {
+        $ejemplares = new EjemplarModel();
+        $libros = new LibroModel();
+
+        if (! $libros->find($libroId)) {
             throw new \RuntimeException('El libro seleccionado no existe.');
         }
 
@@ -41,20 +43,40 @@ class ReservaModel extends Model
             throw new \RuntimeException('El socio no está habilitado para reservar libros.');
         }
 
-        if ($this->existeActivaParaSocio($libroId, $socioId)) {
-            throw new \RuntimeException('Ya tenés una reserva activa para este libro.');
-        }
-
-        if (! $this->insert([
-            'libro_id'       => $libroId,
-            'socio_id'       => $socioId,
-            'estado'         => 'pendiente',
-            'fecha_solicitud' => date('Y-m-d H:i:s'),
-        ])) {
+        if (! $this->db->transBegin()) {
             throw new \RuntimeException('No se pudo registrar la reserva.');
         }
 
-        $id = (int) $this->getInsertID();
+        try {
+            $libro = $ejemplares->bloquearLibro($libroId);
+            if ($this->existeActivaParaSocio($libroId, $socioId)) {
+                throw new \RuntimeException('Ya tenés una reserva activa para este libro.');
+            }
+
+            if (! $ejemplares->tomarDisponible($libroId, 'reservado')) {
+                throw new \RuntimeException('No hay ejemplares disponibles para reservar de «' . $libro['titulo'] . '».');
+            }
+
+            if (! $this->insert([
+                'libro_id'        => $libroId,
+                'socio_id'        => $socioId,
+                'estado'          => 'pendiente',
+                'fecha_solicitud' => date('Y-m-d H:i:s'),
+            ])) {
+                throw new \RuntimeException('No se pudo registrar la reserva.');
+            }
+
+            $id = (int) $this->getInsertID();
+            $libros->sincronizarDisponibilidad($libroId);
+
+            if (! $this->db->transCommit()) {
+                throw new \RuntimeException('No se pudo registrar la reserva.');
+            }
+        } catch (\Throwable $e) {
+            $this->db->transRollback();
+            throw $e;
+        }
+
         $mensaje = 'Se registró una reserva para «' . $libro['titulo'] . '».';
         $notificaciones = new AutomaticNotificationService();
         $notificaciones->notifyUser($socioId, 'reserva_solicitada', $mensaje);
@@ -137,25 +159,49 @@ class ReservaModel extends Model
             throw new \RuntimeException('Reserva no encontrada.');
         }
 
-        if ($reserva['estado'] !== 'pendiente') {
-            throw new \RuntimeException('Solo se pueden confirmar reservas pendientes.');
-        }
-
-        if ($this->existeActiva((int) $reserva['libro_id'], (int) $reserva['socio_id'], $id)) {
-            throw new \RuntimeException('El socio ya tiene otra reserva activa para este libro.');
-        }
-
-        if (! $this->update($id, [
-            'estado'             => 'confirmada',
-            'fecha_confirmacion' => date('Y-m-d H:i:s'),
-            'procesada_por'      => $adminId,
-        ])) {
+        if (! $this->db->transBegin()) {
             throw new \RuntimeException('No se pudo confirmar la reserva.');
         }
 
-        $libro = (new LibroModel())->find((int) $reserva['libro_id']);
+        try {
+            $libroId = (int) $reserva['libro_id'];
+            $ejemplares = new EjemplarModel();
+            $ejemplares->bloquearLibro($libroId);
+            $reservaBloqueada = $this->db->query(
+                'SELECT * FROM reservas WHERE id = ? FOR UPDATE',
+                [$id]
+            )->getRowArray();
+
+            if (! $reservaBloqueada || $reservaBloqueada['estado'] !== 'pendiente') {
+                throw new \RuntimeException('Solo se pueden confirmar reservas pendientes.');
+            }
+            if ($this->existeActiva($libroId, (int) $reservaBloqueada['socio_id'], $id)) {
+                throw new \RuntimeException('El socio ya tiene otra reserva activa para este libro.');
+            }
+
+            $actualizado = $this->db->table('reservas')
+                ->where('id', $id)
+                ->where('estado', 'pendiente')
+                ->update([
+                    'estado'             => 'confirmada',
+                    'fecha_confirmacion' => date('Y-m-d H:i:s'),
+                    'procesada_por'      => $adminId,
+                ]);
+            if (! $actualizado || $this->db->affectedRows() !== 1) {
+                throw new \RuntimeException('No se pudo confirmar la reserva.');
+            }
+
+            if (! $this->db->transCommit()) {
+                throw new \RuntimeException('No se pudo confirmar la reserva.');
+            }
+        } catch (\Throwable $e) {
+            $this->db->transRollback();
+            throw $e;
+        }
+
+        $libro = (new LibroModel())->find((int) $reservaBloqueada['libro_id']);
         (new AutomaticNotificationService())->notifyUser(
-            (int) $reserva['socio_id'],
+            (int) $reservaBloqueada['socio_id'],
             'reserva_confirmada',
             'Tu reserva de «' . ($libro['titulo'] ?? 'el libro solicitado') . '» fue confirmada.'
         );
@@ -175,15 +221,52 @@ class ReservaModel extends Model
             throw new \RuntimeException('La reserva ya no puede cancelarse.');
         }
 
-        if (! $this->update($id, [
-            'estado'           => 'cancelada',
-            'fecha_cancelacion' => date('Y-m-d H:i:s'),
-            'procesada_por'    => $adminId,
-        ])) {
+        $libroId = (int) $reserva['libro_id'];
+        if (! $this->db->transBegin()) {
             throw new \RuntimeException('No se pudo cancelar la reserva.');
         }
 
-        $libro = (new LibroModel())->find((int) $reserva['libro_id']);
+        try {
+            $ejemplares = new EjemplarModel();
+            $ejemplares->bloquearLibro($libroId);
+            $reservaBloqueada = $this->db->query(
+                'SELECT * FROM reservas WHERE id = ? FOR UPDATE',
+                [$id]
+            )->getRowArray();
+
+            if (! $reservaBloqueada || ! in_array($reservaBloqueada['estado'], ['pendiente', 'confirmada'], true)) {
+                throw new \RuntimeException('La reserva ya no puede cancelarse.');
+            }
+
+            if (! $ejemplares->liberarUno($libroId, 'reservado')) {
+                throw new \RuntimeException(
+                    'No se pudo cancelar la reserva: no hay un ejemplar marcado como reservado para este libro. Revise la consistencia del inventario.'
+                );
+            }
+
+            $actualizado = $this->db->table('reservas')
+                ->where('id', $id)
+                ->whereIn('estado', ['pendiente', 'confirmada'])
+                ->update([
+                    'estado'            => 'cancelada',
+                    'fecha_cancelacion' => date('Y-m-d H:i:s'),
+                    'procesada_por'     => $adminId,
+                ]);
+            if (! $actualizado || $this->db->affectedRows() !== 1) {
+                throw new \RuntimeException('No se pudo cancelar la reserva.');
+            }
+
+            (new LibroModel())->sincronizarDisponibilidad($libroId);
+
+            if (! $this->db->transCommit()) {
+                throw new \RuntimeException('No se pudo cancelar la reserva.');
+            }
+        } catch (\Throwable $e) {
+            $this->db->transRollback();
+            throw $e;
+        }
+
+        $libro = (new LibroModel())->find($libroId);
         (new AutomaticNotificationService())->notifyUser(
             (int) $reserva['socio_id'],
             'reserva_cancelada',
@@ -201,41 +284,59 @@ class ReservaModel extends Model
             throw new \RuntimeException('Reserva no encontrada.');
         }
 
-        if ($reserva['estado'] !== 'confirmada') {
-            throw new \RuntimeException('Solo se pueden completar reservas confirmadas.');
+        if (! $this->db->transBegin()) {
+            throw new \RuntimeException('No se pudo completar la reserva.');
         }
 
-        $this->db->transStart();
-
         try {
-            (new RegistroModel())->registrarPrestamo(
-                (int) $reserva['libro_id'],
-                (int) $reserva['socio_id'],
-                $adminId,
-                false
+            $libroId = (int) $reserva['libro_id'];
+            $ejemplares = new EjemplarModel();
+            $ejemplares->bloquearLibro($libroId);
+            $reservaBloqueada = $this->db->query(
+                'SELECT * FROM reservas WHERE id = ? FOR UPDATE',
+                [$id]
+            )->getRowArray();
+
+            if (! $reservaBloqueada || $reservaBloqueada['estado'] !== 'confirmada') {
+                throw new \RuntimeException('Solo se pueden completar reservas confirmadas.');
+            }
+
+            if (! $ejemplares->convertirReservadoAPrestado($libroId)) {
+                throw new \RuntimeException(
+                    'No se pudo completar la reserva: no hay un ejemplar marcado como reservado para este libro. Revise la consistencia del inventario.'
+                );
+            }
+
+            (new RegistroModel())->registrarPrestamoDesdeReserva(
+                $libroId,
+                (int) $reservaBloqueada['socio_id']
             );
 
-            if (! $this->update($id, [
+            $actualizado = $this->db->table('reservas')
+                ->where('id', $id)
+                ->where('estado', 'confirmada')
+                ->update([
                 'estado'           => 'completada',
                 'fecha_completada' => date('Y-m-d H:i:s'),
                 'procesada_por'    => $adminId,
-            ])) {
+            ]);
+            if (! $actualizado || $this->db->affectedRows() !== 1) {
                 throw new \RuntimeException('No se pudo completar la reserva.');
+            }
+
+            (new LibroModel())->sincronizarDisponibilidad($libroId);
+
+            if (! $this->db->transCommit()) {
+                throw new \RuntimeException('No se pudo registrar el retiro del libro.');
             }
         } catch (\Throwable $e) {
             $this->db->transRollback();
             throw $e;
         }
 
-        $this->db->transComplete();
-
-        if ($this->db->transStatus() === false) {
-            throw new \RuntimeException('No se pudo registrar el retiro del libro.');
-        }
-
-        $libro = (new LibroModel())->find((int) $reserva['libro_id']);
+        $libro = (new LibroModel())->find($libroId);
         (new AutomaticNotificationService())->notifyUser(
-            (int) $reserva['socio_id'],
+            (int) $reservaBloqueada['socio_id'],
             'reserva_completada',
             'Se registró el retiro de «' . ($libro['titulo'] ?? 'el libro reservado') . '». '
                 . 'La fecha de vencimiento es ' . date('d/m/Y', strtotime('+' . RegistroModel::DIAS_PRESTAMO . ' days')) . '.'

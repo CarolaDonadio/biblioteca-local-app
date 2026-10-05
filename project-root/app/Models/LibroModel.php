@@ -46,17 +46,19 @@ class LibroModel extends Model
         return $builder->orderBy('titulo', 'ASC')->findAll();
     }
 
-    /**
-     * Listado de libros con la cantidad de ejemplares libres calculada
-     * a partir de los préstamos sin devolver.
-     */
+    /** Listado de libros con ejemplares en estado realmente disponible. */
     public function conDisponibilidad(): array
     {
-        $prestados = '(SELECT COUNT(*) FROM registros r WHERE r.idlibro = libros.id AND r.fechaDevolucion IS NULL)';
+        $libros = $this->orderBy('titulo', 'ASC')->findAll();
+        $ejemplares = new EjemplarModel();
 
-        return $this->select("libros.*, GREATEST(libros.cantidad - {$prestados}, 0) AS disponibles", false)
-                    ->orderBy('titulo', 'ASC')
-                    ->findAll();
+        foreach ($libros as &$libro) {
+            $libro['disponibles'] = $ejemplares->disponiblesPorLibro((int) $libro['id']);
+            $libro['disponible'] = $libro['disponibles'] > 0 ? 1 : 0;
+        }
+        unset($libro);
+
+        return $libros;
     }
 
     /**
@@ -69,8 +71,12 @@ class LibroModel extends Model
             return 0;
         }
 
-        $prestados = (new RegistroModel())->prestadosDeLibro($id);
+        return (new EjemplarModel())->disponiblesPorLibro($id);
+    }
 
-        return max(0, (int) $libro['cantidad'] - $prestados);
+    public function sincronizarDisponibilidad(int $id): void
+    {
+        $disponibles = (new EjemplarModel())->disponiblesPorLibro($id);
+        $this->update($id, ['disponible' => $disponibles > 0 ? 1 : 0]);
     }
 }

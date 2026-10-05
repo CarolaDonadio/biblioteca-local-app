@@ -78,63 +78,23 @@ class RegistroModel extends Model
     {
         $idLibro    = (int) $idLibro;
         $dniUsuario = (int) $dniUsuario;
-
-        $libro = (new LibroModel())->find($idLibro);
-        if (! $libro) {
-            throw new \RuntimeException('El libro seleccionado no existe.');
-        }
-
-        $socio = (new SocioModel())->where('perfil', 'socio')->where('dni', $dniUsuario)->first();
-        if (! $socio) {
-            throw new \RuntimeException('El socio seleccionado no existe.');
-        }
-
-        if ($socio['estado'] !== 'activo') {
-            throw new \RuntimeException('El socio está suspendido y no puede retirar ejemplares.');
-        }
+        $this->validarLibroYSocio($idLibro, $dniUsuario);
 
         if (! $this->db->transBegin()) {
             throw new \RuntimeException('No se pudo registrar el préstamo.');
         }
 
         try {
-            $libroBloqueado = $this->db->query(
-                'SELECT * FROM libros WHERE id = ? FOR UPDATE',
-                [$idLibro]
-            )->getRowArray();
+            $ejemplares = new EjemplarModel();
+            $libro = $ejemplares->bloquearLibro($idLibro);
+            $this->validarPrestamoDuplicado($idLibro, $dniUsuario);
 
-            if (! $libroBloqueado) {
-                throw new \RuntimeException('El libro seleccionado no existe.');
+            if (! $ejemplares->tomarDisponible($idLibro, 'prestado')) {
+                throw new \RuntimeException('No hay ejemplares disponibles para prestar de «' . $libro['titulo'] . '».');
             }
 
-            $libro = $libroBloqueado;
-
-            if ($this->prestadosDeLibro($idLibro) >= (int) $libro['cantidad']) {
-                throw new \RuntimeException('No hay ejemplares disponibles de «' . $libro['titulo'] . '».');
-            }
-
-            $yaLoTiene = $this->where('idlibro', $idLibro)
-                              ->where('dniUsuario', $dniUsuario)
-                              ->where('fechaDevolucion', null)
-                              ->countAllResults();
-
-            if ($yaLoTiene > 0) {
-                throw new \RuntimeException('El socio ya tiene un ejemplar de este libro en préstamo.');
-            }
-
-            $data = [
-                'idlibro'       => $idLibro,
-                'dniUsuario'    => $dniUsuario,
-                'fechaPrestamo' => date('Y-m-d'),
-                'fechaVence'    => date('Y-m-d', strtotime('+' . self::DIAS_PRESTAMO . ' days')),
-            ];
-
-            if (! $this->insert($data)) {
-                throw new \RuntimeException('No se pudo registrar el préstamo.');
-            }
-
-            $id = $this->getInsertID();
-            $this->sincronizarDisponibilidad($idLibro);
+            $id = $this->crearRegistroPrestamo($idLibro, $dniUsuario);
+            (new LibroModel())->sincronizarDisponibilidad($idLibro);
 
             if (! $this->db->transCommit()) {
                 throw new \RuntimeException('No se pudo registrar el préstamo.');
@@ -157,6 +117,62 @@ class RegistroModel extends Model
     }
 
     /**
+     * Crea el registro después de que ReservaModel convirtió su ejemplar
+     * reservado a prestado dentro de la transacción que ya mantiene abierta.
+     */
+    public function registrarPrestamoDesdeReserva(int $idLibro, int $dniUsuario): int
+    {
+        $this->validarLibroYSocio($idLibro, $dniUsuario);
+        $this->validarPrestamoDuplicado($idLibro, $dniUsuario);
+
+        return $this->crearRegistroPrestamo($idLibro, $dniUsuario);
+    }
+
+    private function validarLibroYSocio(int $idLibro, int $dniUsuario): void
+    {
+        if (! (new LibroModel())->find($idLibro)) {
+            throw new \RuntimeException('El libro seleccionado no existe.');
+        }
+
+        $socio = (new SocioModel())->where('perfil', 'socio')->where('dni', $dniUsuario)->first();
+        if (! $socio) {
+            throw new \RuntimeException('El socio seleccionado no existe.');
+        }
+
+        if ($socio['estado'] !== 'activo') {
+            throw new \RuntimeException('El socio está suspendido y no puede retirar ejemplares.');
+        }
+    }
+
+    private function validarPrestamoDuplicado(int $idLibro, int $dniUsuario): void
+    {
+        $yaLoTiene = $this->where('idlibro', $idLibro)
+            ->where('dniUsuario', $dniUsuario)
+            ->where('fechaDevolucion', null)
+            ->countAllResults();
+
+        if ($yaLoTiene > 0) {
+            throw new \RuntimeException('El socio ya tiene un ejemplar de este libro en préstamo.');
+        }
+    }
+
+    private function crearRegistroPrestamo(int $idLibro, int $dniUsuario): int
+    {
+        $data = [
+            'idlibro'       => $idLibro,
+            'dniUsuario'    => $dniUsuario,
+            'fechaPrestamo' => date('Y-m-d'),
+            'fechaVence'    => date('Y-m-d', strtotime('+' . self::DIAS_PRESTAMO . ' days')),
+        ];
+
+        if (! $this->insert($data)) {
+            throw new \RuntimeException('No se pudo registrar el préstamo.');
+        }
+
+        return (int) $this->getInsertID();
+    }
+
+    /**
      * Registra la devolución de un préstamo
      */
     public function registrarDevolucion($id)
@@ -170,13 +186,48 @@ class RegistroModel extends Model
             throw new \RuntimeException('Este préstamo ya ha sido devuelto.');
         }
 
-        if (!$this->update($id, ['fechaDevolucion' => date('Y-m-d')])) {
+        $idLibro = (int) $registro['idlibro'];
+        if (! $this->db->transBegin()) {
             throw new \RuntimeException('No se pudo registrar la devolución.');
         }
 
-        $this->sincronizarDisponibilidad((int) $registro['idlibro']);
+        try {
+            $ejemplares = new EjemplarModel();
+            $ejemplares->bloquearLibro($idLibro);
+            $registroBloqueado = $this->db->query(
+                'SELECT * FROM registros WHERE id = ? FOR UPDATE',
+                [$id]
+            )->getRowArray();
 
-        $libro = (new LibroModel())->find((int) $registro['idlibro']);
+            if (! $registroBloqueado || ! empty($registroBloqueado['fechaDevolucion'])) {
+                throw new \RuntimeException('Este préstamo ya ha sido devuelto.');
+            }
+
+            if (! $ejemplares->liberarUno($idLibro, 'prestado')) {
+                throw new \RuntimeException(
+                    'No se pudo registrar la devolución: no hay un ejemplar marcado como prestado para este libro. Revise la consistencia del inventario.'
+                );
+            }
+
+            $actualizado = $this->db->table('registros')
+                ->where('id', (int) $id)
+                ->where('fechaDevolucion', null)
+                ->update(['fechaDevolucion' => date('Y-m-d')]);
+            if (! $actualizado || $this->db->affectedRows() !== 1) {
+                throw new \RuntimeException('No se pudo registrar la devolución.');
+            }
+
+            (new LibroModel())->sincronizarDisponibilidad($idLibro);
+
+            if (! $this->db->transCommit()) {
+                throw new \RuntimeException('No se pudo registrar la devolución.');
+            }
+        } catch (\Throwable $e) {
+            $this->db->transRollback();
+            throw $e;
+        }
+
+        $libro = (new LibroModel())->find($idLibro);
         (new AutomaticNotificationService())->notifyUser(
             (int) $registro['dniUsuario'],
             'devolucion_registrada',
@@ -184,21 +235,6 @@ class RegistroModel extends Model
         );
 
         return true;
-    }
-
-    /**
-     * Mantiene el flag `libros.disponible` en sintonía con los ejemplares libres.
-     */
-    private function sincronizarDisponibilidad(int $idLibro): void
-    {
-        $libros = new LibroModel();
-        $libro  = $libros->find($idLibro);
-        if (! $libro) {
-            return;
-        }
-
-        $libres = max(0, (int) $libro['cantidad'] - $this->prestadosDeLibro($idLibro));
-        $libros->update($idLibro, ['disponible' => $libres > 0 ? 1 : 0]);
     }
 
     /**

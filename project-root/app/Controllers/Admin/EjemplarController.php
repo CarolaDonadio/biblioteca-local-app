@@ -31,7 +31,13 @@ class EjemplarController extends BaseController
     {
         $data = $this->request->getPost(['libro_id', 'codigo_inventario', 'ubicacion']);
 
-        if (! $this->ejemplares->save($data)) {
+        try {
+            $creado = $this->ejemplares->crearAdministrativamente($data);
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
+
+        if (! $creado) {
             return redirect()->back()->withInput()->with('errors', $this->ejemplares->errors());
         }
 
@@ -48,13 +54,24 @@ class EjemplarController extends BaseController
     public function update($id = null)
     {
         $data = $this->request->getPost(['libro_id', 'codigo_inventario', 'ubicacion', 'estado']);
-        $this->ejemplares->update($id, $data);
+
+        try {
+            $this->ejemplares->actualizarAdministrativamente((int) $id, $data);
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
+
         return redirect()->to('/admin/ejemplares')->with('mensaje', 'Ejemplar actualizado.');
     }
 
     public function delete($id = null)
     {
-        $this->ejemplares->delete($id);
+        try {
+            $this->ejemplares->eliminarAdministrativamente((int) $id);
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
         return redirect()->to('/admin/ejemplares')->with('mensaje', 'Ejemplar dado de baja.');
     }
 
@@ -64,14 +81,36 @@ class EjemplarController extends BaseController
     public function marcarPerdido($id)
     {
         $observaciones = $this->request->getPost('observaciones');
-        $this->ejemplares->marcarEstado($id, 'perdido', $observaciones);
+        try {
+            $actualizado = $this->ejemplares->marcarEstado((int) $id, 'perdido', $observaciones);
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
+        if (! $actualizado) {
+            return redirect()->back()->with(
+                'error',
+                'Solo se pueden marcar como perdidos ejemplares que estén disponibles.'
+            );
+        }
         return redirect()->back()->with('mensaje', 'Ejemplar marcado como perdido.');
     }
 
     public function marcarDanado($id)
     {
         $observaciones = $this->request->getPost('observaciones');
-        $this->ejemplares->marcarEstado($id, 'danado', $observaciones);
+        try {
+            $actualizado = $this->ejemplares->marcarEstado((int) $id, 'danado', $observaciones);
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
+        if (! $actualizado) {
+            return redirect()->back()->with(
+                'error',
+                'Solo se pueden marcar como dañados ejemplares que estén disponibles.'
+            );
+        }
         return redirect()->back()->with('mensaje', 'Ejemplar marcado como dañado.');
     }
 
