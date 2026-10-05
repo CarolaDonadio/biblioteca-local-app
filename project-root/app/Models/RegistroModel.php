@@ -22,6 +22,31 @@ class RegistroModel extends Model
 
     /** Días de duración por defecto de un préstamo. */
     public const DIAS_PRESTAMO = 14;
+    public const DIAS_AVISO_VENCIMIENTO = 3;
+
+    public function proximosAVencerPorSocio(int $dni, int $dias = self::DIAS_AVISO_VENCIMIENTO): array
+    {
+        $fechaHoy = date('Y-m-d');
+        $fechaLimite = date('Y-m-d', strtotime('+' . max(0, $dias) . ' days'));
+
+        $prestamos = $this->select('registros.id, registros.fechaVence, libros.titulo')
+            ->join('libros', 'libros.id = registros.idlibro', 'left')
+            ->where('registros.dniUsuario', $dni)
+            ->where('registros.fechaDevolucion', null)
+            ->where('registros.fechaVence >=', $fechaHoy)
+            ->where('registros.fechaVence <=', $fechaLimite)
+            ->orderBy('registros.fechaVence', 'ASC')
+            ->findAll();
+
+        foreach ($prestamos as &$prestamo) {
+            $prestamo['dias_restantes'] = (new \DateTimeImmutable($fechaHoy))
+                ->diff(new \DateTimeImmutable($prestamo['fechaVence']))
+                ->days;
+        }
+        unset($prestamo);
+
+        return $prestamos;
+    }
 
     /**
      * Obtiene todos los préstamos activos (sin devolución)

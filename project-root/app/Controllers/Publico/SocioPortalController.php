@@ -97,12 +97,14 @@ class SocioPortalController extends BaseController
         $nombre = explode(' ', trim((string) $socio['nombre_completo']), 2);
         $socio['nombre'] = $nombre[0] ?? '';
         $historial = $this->registroModel->historialPorSocio($socioDni);
+        $proximosAVencer = $this->registroModel->proximosAVencerPorSocio($socioDni);
         $reservas = $this->reservaModel->reservasPorSocio($socioDni);
         $notificaciones = (new NotificacionModel())->porUsuario($socioDni);
 
         return view('publico/socio_panel', [
             'socio'           => $socio,
             'historial'       => $historial,
+            'proximosAVencer' => $proximosAVencer,
             'reservas'        => $reservas,
             'notificaciones'  => $notificaciones,
         ]);

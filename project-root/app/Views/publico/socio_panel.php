@@ -5,6 +5,14 @@
 
   <div class="tarjeta" style="padding:1.4em 1.6em;max-width:760px;margin-bottom:1.5em;">
     <h3>Avisos de tu cuenta</h3>
+    <?php foreach (($proximosAVencer ?? []) as $prestamo): ?>
+      <p role="status" style="padding:.75em 1em;border-left:4px solid #b7791f;background:#fff8e6;margin-bottom:.75em;">
+        <strong>Aviso de vencimiento:</strong>
+        El préstamo de «<?= esc($prestamo['titulo'] ?? 'tu libro') ?>» vence
+        <?= $prestamo['dias_restantes'] === 0 ? 'hoy' : ($prestamo['dias_restantes'] === 1 ? 'mañana' : 'en ' . (int) $prestamo['dias_restantes'] . ' días') ?>
+        (<?= esc(date('d/m/Y', strtotime($prestamo['fechaVence']))) ?>).
+      </p>
+    <?php endforeach; ?>
     <?php if (! empty($notificaciones)): ?>
       <ul style="margin-bottom:0;">
         <?php foreach ($notificaciones as $notificacion): ?>
