@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="CriticalFlowsTest" file="C:\xampp\htdocs\biblioteca-local-app\project-root\tests\database\CriticalFlowsTest.php" tests="1" assertions="3" errors="0" failures="0" skipped="0" time="0.516780">
+    <testcase name="testSocioPanelListsOnlyActiveLoansDueWithinThreeDays" file="C:\xampp\htdocs\biblioteca-local-app\project-root\tests\database\CriticalFlowsTest.php" line="102" class="CriticalFlowsTest" classname="CriticalFlowsTest" assertions="3" time="0.516780"/>
+  </testsuite>
+</testsuites>

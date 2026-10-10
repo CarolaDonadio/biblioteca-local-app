@@ -1,0 +1,3 @@
+Critical Flows
+ [x] Socio panel lists only active loans due within three days
+

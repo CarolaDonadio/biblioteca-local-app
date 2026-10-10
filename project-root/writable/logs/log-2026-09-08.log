@@ -1,0 +1,85 @@
+CRITICAL - 2026-09-08 22:38:38 --> Error: Class "App\Models\EjemplarModel" not found
+[Method: GET, Route: admin/ejemplares]
+in APPPATH\Controllers\Admin\EjemplarController.php on line 15.
+ 1 SYSTEMPATH\CodeIgniter.php(944): App\Controllers\Admin\EjemplarController->__construct()
+ 2 SYSTEMPATH\CodeIgniter.php(511): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH\CodeIgniter.php(363): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\public\\index.php')
+CRITICAL - 2026-09-08 22:38:50 --> Error: Class "App\Models\NotificacionModel" not found
+[Method: GET, Route: admin/notificaciones]
+in APPPATH\Controllers\Admin\NotificacionController.php on line 14.
+ 1 SYSTEMPATH\CodeIgniter.php(944): App\Controllers\Admin\NotificacionController->__construct()
+ 2 SYSTEMPATH\CodeIgniter.php(511): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH\CodeIgniter.php(363): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\public\\index.php')
+CRITICAL - 2026-09-08 22:38:53 --> Error: Class "App\Models\NotificacionModel" not found
+[Method: GET, Route: admin/notificaciones]
+in APPPATH\Controllers\Admin\NotificacionController.php on line 14.
+ 1 SYSTEMPATH\CodeIgniter.php(944): App\Controllers\Admin\NotificacionController->__construct()
+ 2 SYSTEMPATH\CodeIgniter.php(511): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH\CodeIgniter.php(363): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\public\\index.php')
+CRITICAL - 2026-09-08 22:38:55 --> ErrorException: Undefined array key "activo"
+[Method: GET, Route: admin/promociones]
+in APPPATH\Views\admin\promociones\index.php on line 16.
+ 1 APPPATH\Views\admin\promociones\index.php(16): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "activo"', 'C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\app\\Views\\admin\\promociones\\index.php', 16)
+ 2 SYSTEMPATH\View\View.php(240): include('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\app\\Views\\admin\\promociones\\index.php')
+ 3 SYSTEMPATH\View\View.php(243): CodeIgniter\View\View->{closure:CodeIgniter\View\View::render():237}()
+ 4 SYSTEMPATH\Common.php(1268): CodeIgniter\View\View->render('admin/promociones/index', [], true)
+ 5 APPPATH\Controllers\Admin\PromocionController.php(20): view('admin/promociones/index', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(974): App\Controllers\Admin\PromocionController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(520): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\PromocionController))
+ 8 SYSTEMPATH\CodeIgniter.php(363): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\public\\index.php')
+CRITICAL - 2026-09-08 23:23:27 --> Error: Class "App\Models\PrestamoModel" not found
+[Method: GET, Route: admin/prestamos]
+in APPPATH\Controllers\Admin\PrestamoController.php on line 17.
+ 1 SYSTEMPATH\CodeIgniter.php(944): App\Controllers\Admin\PrestamoController->__construct()
+ 2 SYSTEMPATH\CodeIgniter.php(511): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH\CodeIgniter.php(363): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 7 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\public\\index.php')
+CRITICAL - 2026-09-08 23:23:31 --> ErrorException: Undefined array key "activo"
+[Method: GET, Route: admin/promociones]
+in APPPATH\Views\admin\promociones\index.php on line 16.
+ 1 APPPATH\Views\admin\promociones\index.php(16): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "activo"', 'C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\app\\Views\\admin\\promociones\\index.php', 16)
+ 2 SYSTEMPATH\View\View.php(240): include('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\app\\Views\\admin\\promociones\\index.php')
+ 3 SYSTEMPATH\View\View.php(243): CodeIgniter\View\View->{closure:CodeIgniter\View\View::render():237}()
+ 4 SYSTEMPATH\Common.php(1268): CodeIgniter\View\View->render('admin/promociones/index', [], true)
+ 5 APPPATH\Controllers\Admin\PromocionController.php(20): view('admin/promociones/index', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(974): App\Controllers\Admin\PromocionController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(520): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\PromocionController))
+ 8 SYSTEMPATH\CodeIgniter.php(363): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\public\\index.php')
+CRITICAL - 2026-09-08 23:34:39 --> ErrorException: Undefined array key "activo"
+[Method: GET, Route: admin/promociones]
+in APPPATH\Views\admin\promociones\index.php on line 16.
+ 1 APPPATH\Views\admin\promociones\index.php(16): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "activo"', 'C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\app\\Views\\admin\\promociones\\index.php', 16)
+ 2 SYSTEMPATH\View\View.php(240): include('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\app\\Views\\admin\\promociones\\index.php')
+ 3 SYSTEMPATH\View\View.php(243): CodeIgniter\View\View->{closure:CodeIgniter\View\View::render():237}()
+ 4 SYSTEMPATH\Common.php(1268): CodeIgniter\View\View->render('admin/promociones/index', [], true)
+ 5 APPPATH\Controllers\Admin\PromocionController.php(20): view('admin/promociones/index', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(974): App\Controllers\Admin\PromocionController->index()
+ 7 SYSTEMPATH\CodeIgniter.php(520): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin\PromocionController))
+ 8 SYSTEMPATH\CodeIgniter.php(363): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\biblioteca-local-app\\project-root\\public\\index.php')
