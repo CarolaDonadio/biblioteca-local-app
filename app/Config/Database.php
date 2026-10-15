@@ -178,7 +178,7 @@ class Database extends Config
             'DBDriver'     => env('DB_DRIVER', 'MySQLi'),
             'DBPrefix'     => '',
             'pConnect'     => false,
-            'DBDebug'      => true,
+            'DBDebug'      => ENVIRONMENT !== 'production',
             'charset'      => env('DB_CHARSET', 'utf8mb4'),
             'DBCollat'     => env('DB_COLLATION', 'utf8mb4_general_ci'),
             'swapPre'      => '',
