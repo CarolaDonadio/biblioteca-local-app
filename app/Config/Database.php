@@ -167,36 +167,26 @@ class Database extends Config
 
     public function __construct()
     {
-        $hostname = (string) env('DB_HOST', env('database.default.hostname', env('database_default_hostname', 'localhost')));
-        $isLocal  = in_array($hostname, ['localhost', '127.0.0.1', 'db'], true);
-
-        $encryptEnv = env('DB_ENCRYPT', env('database.default.encrypt', env('database_default_encrypt', ! $isLocal)));
-        $encrypt    = $encryptEnv
-            ? [
-                'ssl_verify' => (bool) env('DB_SSL_VERIFY', false),
-                'ssl_capath' => __DIR__,
-                'ssl_ca'     => env('DB_SSL_CA', null),
-            ]
-            : false;
+        parent::__construct();
 
         $this->default = [
             'DSN'          => '',
-            'hostname'     => $hostname,
-            'username'     => (string) env('DB_USER', env('database.default.username', env('database_default_username', 'root'))),
-            'password'     => (string) env('DB_PASSWORD', env('database.default.password', env('database_default_password', ''))),
-            'database'     => (string) env('DB_NAME', env('database.default.database', env('database_default_database', 'defaultdb'))),
-            'DBDriver'     => (string) env('DB_DRIVER', env('database.default.DBDriver', env('database_default_DBDriver', 'MySQLi'))),
+            'hostname'     => (string) env('DB_HOST', env('database_default_hostname', env('database.default.hostname', 'localhost'))),
+            'username'     => (string) env('DB_USER', env('database_default_username', env('database.default.username', 'root'))),
+            'password'     => (string) env('DB_PASSWORD', env('database_default_password', env('database.default.password', ''))),
+            'database'     => (string) env('DB_NAME', env('database_default_database', env('database.default.database', 'defaultdb'))),
+            'DBDriver'     => (string) env('DB_DRIVER', env('database_default_DBDriver', env('database.default.DBDriver', 'MySQLi'))),
             'DBPrefix'     => '',
             'pConnect'     => false,
             'DBDebug'      => ENVIRONMENT !== 'production',
             'charset'      => (string) env('DB_CHARSET', 'utf8mb4'),
             'DBCollat'     => (string) env('DB_COLLATION', 'utf8mb4_general_ci'),
             'swapPre'      => '',
-            'encrypt'      => $encrypt,
+            'encrypt'      => env('DB_ENCRYPT', true),
             'compress'     => false,
             'strictOn'     => false,
             'failover'     => [],
-            'port'         => (int) env('DB_PORT', env('database.default.port', env('database_default_port', 3306))),
+            'port'         => (int) env('DB_PORT', env('database_default_port', env('database.default.port', 3306))),
             'numberNative' => false,
             'dateFormat'   => [
                 'date'     => 'Y-m-d',
@@ -204,16 +194,6 @@ class Database extends Config
                 'time'     => 'H:i:s',
             ],
         ];
-
-        parent::__construct();
-
-        if ($this->default['encrypt'] === true) {
-            $this->default['encrypt'] = [
-                'ssl_verify' => (bool) env('DB_SSL_VERIFY', false),
-                'ssl_capath' => __DIR__,
-                'ssl_ca'     => env('DB_SSL_CA', null),
-            ];
-        }
 
         // Ensure that we always set the database group to 'tests' if
         // we are currently running an automated test suite, so that
